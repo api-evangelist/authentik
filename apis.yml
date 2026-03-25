@@ -1,0 +1,38 @@
+aid: authentik
+name: Authentik
+description: >-
+  Authentik is an open source identity provider with support for OAuth2, SAML, LDAP, and SCIM for self-hosted authentication and single sign-on.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - Authentication
+  - Open Source
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/authentik/refs/heads/main/apis.yml
+created: '2026-03-25'
+modified: '2026-03-25'
+specificationVersion: '0.19'
+apis:
+  - aid: authentik:authentik
+    name: Authentik
+    description: >-
+      Authentik is an open source identity provider with support for OAuth2, SAML, LDAP, and SCIM for self-hosted authentication and single sign-on.
+    humanURL: https://goauthentik.io
+    tags:
+      - Authentication
+      - Open Source
+    properties:
+      - type: Documentation
+        url: https://docs.goauthentik.io
+      - type: GitHub Repository
+        url: https://github.com/goauthentik/authentik
+common:
+  - type: Website
+    url: https://goauthentik.io
+  - type: Documentation
+    url: https://docs.goauthentik.io
+  - type: GitHub Organization
+    url: https://github.com/goauthentik/authentik
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
