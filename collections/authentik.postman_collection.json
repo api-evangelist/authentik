@@ -1,0 +1,2444 @@
+{
+  "item": [
+    {
+      "id": "cfb1afd0-160b-4cb5-9f66-07cb71853376",
+      "name": "Core",
+      "description": {
+        "content": "Users, applications, groups and tokens.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ec790972-6dd1-4c86-ae76-5af765daf2cb",
+          "name": "List users",
+          "request": {
+            "name": "List users",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "users",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3ea448a3-0c09-4ac0-af40-cad001795a1b",
+              "name": "Users returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "users",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b2bb64ee-6c8a-4e91-88d0-863eaec17ce2",
+          "name": "Create user",
+          "request": {
+            "name": "Create user",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "users",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "34c1710b-c644-4db5-bb6d-f4791df70e2a",
+              "name": "User created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "users",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2a8fea18-db86-4a38-86e5-db23d903f44b",
+          "name": "Retrieve user",
+          "request": {
+            "name": "Retrieve user",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "users",
+                ":id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Object UUID or primary key"
+                },
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "16b09adc-772d-4388-a65f-e1660b05195b",
+              "name": "User returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "users",
+                    ":id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Object UUID or primary key"
+                    },
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4be49f1f-c092-41d3-9f2d-2cca3208f303",
+          "name": "Update user",
+          "request": {
+            "name": "Update user",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "users",
+                ":id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Object UUID or primary key"
+                },
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a2eb8bd2-2167-477e-9917-720d23fe48b4",
+              "name": "User updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "users",
+                    ":id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Object UUID or primary key"
+                    },
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2cc2878e-0237-4920-8a34-87b9d89d0c1a",
+          "name": "Delete user",
+          "request": {
+            "name": "Delete user",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "users",
+                ":id",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Object UUID or primary key"
+                },
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ea7c57fd-f553-4747-ae54-847d5b178f9e",
+              "name": "User deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "users",
+                    ":id",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Object UUID or primary key"
+                    },
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2861a828-7d84-4af9-bf98-c130a4117a67",
+          "name": "List applications",
+          "request": {
+            "name": "List applications",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "applications",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "712fb84e-d0d3-46ea-9bb4-533c3d88a2ad",
+              "name": "Applications returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "applications",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8ec5a35f-52d7-4598-88a5-53385fa29c13",
+          "name": "Create application",
+          "request": {
+            "name": "Create application",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "applications",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "03610297-6f11-4859-a680-31aa9d7a2bc1",
+              "name": "Application created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "applications",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1067704c-5b64-4434-9c31-569b9a24ecbf",
+          "name": "List groups",
+          "request": {
+            "name": "List groups",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "groups",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c437a485-3f06-4e09-94ed-27eae8827b1c",
+              "name": "Groups returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "groups",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "981111cc-579c-4a5e-a8fc-9901f4690ab3",
+          "name": "Create group",
+          "request": {
+            "name": "Create group",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "groups",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "df07dfbd-0c6a-4b64-a738-bf303448e2e1",
+              "name": "Group created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "groups",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "179fa7f4-36d8-4be4-82fa-3f899e6b0140",
+          "name": "List tokens",
+          "request": {
+            "name": "List tokens",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "tokens",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0dce954c-e83f-4ecf-b073-2d4c5c4526f3",
+              "name": "Tokens returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "tokens",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "25897377-6db9-4c50-835f-9313701d5ec8",
+          "name": "Create token",
+          "request": {
+            "name": "Create token",
+            "description": {},
+            "url": {
+              "path": [
+                "core",
+                "tokens",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7a7e102a-4916-4e90-8c2b-d9a158798eaf",
+              "name": "Token created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "core",
+                    "tokens",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "7f7bba94-d618-4de3-94c3-36c02c914bfe",
+      "name": "Flows",
+      "description": {
+        "content": "Authentication and enrollment flows.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1130ab67-4046-4ce9-8ea0-25c23e9f26d0",
+          "name": "List flows",
+          "request": {
+            "name": "List flows",
+            "description": {},
+            "url": {
+              "path": [
+                "flows",
+                "instances",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2888eee2-626f-43c4-82b1-e5e8b61eaefc",
+              "name": "Flows returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flows",
+                    "instances",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4146a22c-99a8-45a8-97f1-c15927c0eedd",
+          "name": "Create flow",
+          "request": {
+            "name": "Create flow",
+            "description": {},
+            "url": {
+              "path": [
+                "flows",
+                "instances",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "83d887f0-5ec8-4ac8-b6e4-c8feba355b7f",
+              "name": "Flow created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flows",
+                    "instances",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ef4fbe39-2646-4ae6-82d2-490d7f32cd15",
+          "name": "List flow stage bindings",
+          "request": {
+            "name": "List flow stage bindings",
+            "description": {},
+            "url": {
+              "path": [
+                "flows",
+                "bindings",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "13fc61c6-ba53-4661-831e-4076b82ef5b6",
+              "name": "Bindings returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flows",
+                    "bindings",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "d0c46361-858d-4190-8f7c-bb307d1dba03",
+      "name": "Providers",
+      "description": {
+        "content": "OAuth2/OIDC, SAML, LDAP, Proxy and other providers.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "caef0534-bd89-4128-abc3-9eeed4478a8e",
+          "name": "List providers",
+          "request": {
+            "name": "List providers",
+            "description": {},
+            "url": {
+              "path": [
+                "providers",
+                "all",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "09e083c5-dc7a-4b97-bad8-80493dce0904",
+              "name": "Providers returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "providers",
+                    "all",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "da1dcaa2-e2cc-4b39-9bbd-604d45ea103a",
+          "name": "List OAuth2/OIDC providers",
+          "request": {
+            "name": "List OAuth2/OIDC providers",
+            "description": {},
+            "url": {
+              "path": [
+                "providers",
+                "oauth2",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8fd42559-dcc1-4719-8341-44143582231f",
+              "name": "OAuth2 providers returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "providers",
+                    "oauth2",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a9ff059e-8eef-4856-9c85-108de59d32f3",
+          "name": "Create OAuth2 provider",
+          "request": {
+            "name": "Create OAuth2 provider",
+            "description": {},
+            "url": {
+              "path": [
+                "providers",
+                "oauth2",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "557b6ce0-0c18-47e5-9fe3-ec2ed14c6bae",
+              "name": "OAuth2 provider created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "providers",
+                    "oauth2",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2d72d5f3-dc4e-4075-9c4b-88d7d36a0862",
+          "name": "List SAML providers",
+          "request": {
+            "name": "List SAML providers",
+            "description": {},
+            "url": {
+              "path": [
+                "providers",
+                "saml",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3c3ee7ae-5d48-4d80-a271-e3012db97727",
+              "name": "SAML providers returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "providers",
+                    "saml",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "cbec2263-653d-40bd-ad8a-55f21933c86c",
+      "name": "Sources",
+      "description": {
+        "content": "External identity sources.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "320e6dc4-cb56-4f09-8e4f-568991dc312c",
+          "name": "List sources",
+          "request": {
+            "name": "List sources",
+            "description": {},
+            "url": {
+              "path": [
+                "sources",
+                "all",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "02c380fc-5e25-4af0-8400-c5b0ed3c7046",
+              "name": "Sources returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sources",
+                    "all",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e1253943-4440-4abe-b351-4d5ece94139b",
+      "name": "Stages",
+      "description": {
+        "content": "Flow stages (identification, password, etc.).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "85841e69-f836-47a7-a0cc-8c755d7cc2b8",
+          "name": "List stages",
+          "request": {
+            "name": "List stages",
+            "description": {},
+            "url": {
+              "path": [
+                "stages",
+                "all",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d10314c5-a6f0-404f-b04b-63c2c02c8eab",
+              "name": "Stages returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "stages",
+                    "all",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "32364f42-b905-48ad-b313-8e47fa6c2165",
+      "name": "Policies",
+      "description": {
+        "content": "Policies and policy bindings.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "68659671-bd48-4c91-9d3c-143aa6a6584f",
+          "name": "List policies",
+          "request": {
+            "name": "List policies",
+            "description": {},
+            "url": {
+              "path": [
+                "policies",
+                "all",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ca80bc16-ec3c-4e08-a776-7fd321ed0e35",
+              "name": "Policies returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "policies",
+                    "all",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "28fcce15-69d2-4e36-ad09-d2d059015bf6",
+          "name": "List policy bindings",
+          "request": {
+            "name": "List policy bindings",
+            "description": {},
+            "url": {
+              "path": [
+                "policies",
+                "bindings",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c182f1d4-d489-42a4-b7b6-873875cfad64",
+              "name": "Policy bindings returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "policies",
+                    "bindings",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "24438d03-e976-49fa-976c-75d7c7d98183",
+      "name": "Crypto",
+      "description": {
+        "content": "Certificate-key pairs.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "83dc73dc-5aef-4a23-ba25-7766d664d2a1",
+          "name": "List certificate-key pairs",
+          "request": {
+            "name": "List certificate-key pairs",
+            "description": {},
+            "url": {
+              "path": [
+                "crypto",
+                "certificatekeypairs",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "08265ea9-2772-49f2-9a91-781beeb29ab0",
+              "name": "Certificate-key pairs returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "crypto",
+                    "certificatekeypairs",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "2e0db5bf-e55a-4e3a-ada6-609f3fd654d9",
+      "name": "Events",
+      "description": {
+        "content": "Audit and notification events.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d128d7b5-4ee9-485c-8d30-ca045053d998",
+          "name": "List events",
+          "request": {
+            "name": "List events",
+            "description": {},
+            "url": {
+              "path": [
+                "events",
+                "events",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "707cc724-36ae-4a8a-a0e4-6bfa0205bea2",
+              "name": "Events returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "events",
+                    "events",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9b2750f2-d319-41b2-9f95-52d796677a0d",
+      "name": "RBAC",
+      "description": {
+        "content": "Role-based access control.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6def1cf4-51d3-493a-8b96-a0e649ca7753",
+          "name": "List roles",
+          "request": {
+            "name": "List roles",
+            "description": {},
+            "url": {
+              "path": [
+                "rbac",
+                "roles",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "be66c77f-5922-43ed-aae6-895a2e31e415",
+              "name": "Roles returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rbac",
+                    "roles",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "541c3947-f9c9-4941-ae41-371962572d53",
+          "name": "List permissions",
+          "request": {
+            "name": "List permissions",
+            "description": {},
+            "url": {
+              "path": [
+                "rbac",
+                "permissions",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8280e1cd-caee-4f61-a77d-f31f7575c106",
+              "name": "Permissions returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rbac",
+                    "permissions",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "8e369287-61d0-4f53-9cca-c691983391bc",
+      "name": "Schema",
+      "description": {
+        "content": "Self-describing OpenAPI schema.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d685428a-0384-47e7-866f-b182a4a3a697",
+          "name": "OpenAPI schema",
+          "request": {
+            "name": "OpenAPI schema",
+            "description": {},
+            "url": {
+              "path": [
+                "schema",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d41b06fd-3474-497f-8aba-8a3db6c03dca",
+              "name": "OpenAPI v3 schema for this authentik instance",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "schema",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "Hostname of your authentik deployment",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "authentik.company",
+      "key": "authentik_host"
+    },
+    {
+      "type": "string",
+      "value": "https://{{authentik_host}}/api/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "45b36194-0848-4cfd-be09-b757e5b0c106",
+    "name": "authentik API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Best-effort OpenAPI 3.1 description of the authentik identity provider's REST\nAPI (v3). authentik exposes a fully OpenAPI-driven REST surface at\n/api/v3 with browsable docs at /api/v3/ on each instance and a generated\nOpenAPI schema at /api/v3/schema/. Derived from public docs at\nhttps://docs.goauthentik.io/developer-docs/api/.\n\n\nContact Support:\n Name: authentik developer docs",
+      "type": "text/plain"
+    }
+  }
+}
