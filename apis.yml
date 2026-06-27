@@ -39,9 +39,9 @@ apis:
       url: https://api.goauthentik.io/#/Schema/schema_retrieve
     - type: APIReference
       url: https://api.goauthentik.io/
-    - type: SDK
+    - type: SDKs
       url: https://pypi.org/project/authentik-client/
-    - type: SDK
+    - type: SDKs
       url: https://www.npmjs.com/package/@goauthentik/api
     - type: GitHubRepository
       url: https://github.com/goauthentik/authentik
