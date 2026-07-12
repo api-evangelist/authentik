@@ -46,6 +46,12 @@ apis:
     - type: GitHubRepository
       url: https://github.com/goauthentik/authentik
 common:
+  - type: VulnerabilityDisclosure
+    url: security/authentik-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/authentik-domain-security.yml
+  - type: Authentication
+    url: authentication/authentik-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/authentik-security
   - type: Website
@@ -64,6 +70,8 @@ common:
     url: https://discord.gg/jg33eMhnj6
   - type: Pricing
     url: https://goauthentik.io/pricing
+  - type: Blog
+    url: https://goauthentik.io/blog/rss.xml
   - type: Features
     data:
     - name: Comprehensive REST API

@@ -1,0 +1,27 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/authentik-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - cookie
+  - header
+schemes:
+- name: tokenAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: |-
+    authentik token authentication. Use header
+    `Authorization: Bearer <token>` with a token created in the
+    Tokens & App Passwords section.
+  sources:
+  - openapi/authentik-openapi.yml
+- name: sessionAuth
+  type: apiKey
+  in: cookie
+  parameter: authentik_session
+  description: Browser session cookie for interactive use.
+  sources:
+  - openapi/authentik-openapi.yml
