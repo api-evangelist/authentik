@@ -1,0 +1,21 @@
+{
+  "repo": "authentik",
+  "feeds": [
+    {
+      "source": "https://goauthentik.io/blog/rss.xml",
+      "feed_url": "https://goauthentik.io/blog/rss.xml",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
+      "source": "https://goauthentik.io/pricing",
+      "feed_url": "https://goauthentik.io/pricing",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "fetched": "2026-07-11T11:50:51Z",
+  "post_count": 22
+}
