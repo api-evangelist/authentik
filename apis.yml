@@ -46,6 +46,8 @@ apis:
     - type: GitHubRepository
       url: https://github.com/goauthentik/authentik
 common:
+  - type: AgenticAccess
+    url: agentic-access/authentik-agentic-access.yml
   - type: VulnerabilityDisclosure
     url: security/authentik-vulnerability-disclosure.yml
   - type: DomainSecurity
