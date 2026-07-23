@@ -1,0 +1,59 @@
+openapi: 3.1.0
+info:
+  title: authentik Core Crypto API
+  description: 'Best-effort OpenAPI 3.1 description of the authentik identity provider''s REST
+
+    API (v3). authentik exposes a fully OpenAPI-driven REST surface at
+
+    /api/v3 with browsable docs at /api/v3/ on each instance and a generated
+
+    OpenAPI schema at /api/v3/schema/. Derived from public docs at
+
+    https://docs.goauthentik.io/developer-docs/api/.
+
+    '
+  version: '3'
+  contact:
+    name: authentik developer docs
+    url: https://docs.goauthentik.io/developer-docs/api/
+servers:
+- url: https://{authentik_host}/api/v3
+  description: authentik instance API root
+  variables:
+    authentik_host:
+      default: authentik.company
+      description: Hostname of your authentik deployment
+security:
+- tokenAuth: []
+- sessionAuth: []
+tags:
+- name: Crypto
+  description: Certificate-key pairs.
+paths:
+  /crypto/certificatekeypairs/:
+    get:
+      tags:
+      - Crypto
+      summary: List certificate-key pairs
+      operationId: cryptoCertificatekeypairsList
+      responses:
+        '200':
+          description: Certificate-key pairs returned
+components:
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'authentik token authentication. Use header
+
+        `Authorization: Bearer <token>` with a token created in the
+
+        Tokens & App Passwords section.
+
+        '
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: authentik_session
+      description: Browser session cookie for interactive use.

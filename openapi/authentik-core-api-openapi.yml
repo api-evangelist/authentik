@@ -1,0 +1,153 @@
+openapi: 3.1.0
+info:
+  title: authentik Core API
+  description: 'Best-effort OpenAPI 3.1 description of the authentik identity provider''s REST
+
+    API (v3). authentik exposes a fully OpenAPI-driven REST surface at
+
+    /api/v3 with browsable docs at /api/v3/ on each instance and a generated
+
+    OpenAPI schema at /api/v3/schema/. Derived from public docs at
+
+    https://docs.goauthentik.io/developer-docs/api/.
+
+    '
+  version: '3'
+  contact:
+    name: authentik developer docs
+    url: https://docs.goauthentik.io/developer-docs/api/
+servers:
+- url: https://{authentik_host}/api/v3
+  description: authentik instance API root
+  variables:
+    authentik_host:
+      default: authentik.company
+      description: Hostname of your authentik deployment
+security:
+- tokenAuth: []
+- sessionAuth: []
+tags:
+- name: Core
+  description: Users, applications, groups and tokens.
+paths:
+  /core/users/:
+    get:
+      tags:
+      - Core
+      summary: List users
+      operationId: coreUsersList
+      responses:
+        '200':
+          description: Users returned
+    post:
+      tags:
+      - Core
+      summary: Create user
+      operationId: coreUsersCreate
+      responses:
+        '201':
+          description: User created
+  /core/users/{id}/:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+      - Core
+      summary: Retrieve user
+      operationId: coreUsersRetrieve
+      responses:
+        '200':
+          description: User returned
+    put:
+      tags:
+      - Core
+      summary: Update user
+      operationId: coreUsersUpdate
+      responses:
+        '200':
+          description: User updated
+    delete:
+      tags:
+      - Core
+      summary: Delete user
+      operationId: coreUsersDestroy
+      responses:
+        '204':
+          description: User deleted
+  /core/applications/:
+    get:
+      tags:
+      - Core
+      summary: List applications
+      operationId: coreApplicationsList
+      responses:
+        '200':
+          description: Applications returned
+    post:
+      tags:
+      - Core
+      summary: Create application
+      operationId: coreApplicationsCreate
+      responses:
+        '201':
+          description: Application created
+  /core/groups/:
+    get:
+      tags:
+      - Core
+      summary: List groups
+      operationId: coreGroupsList
+      responses:
+        '200':
+          description: Groups returned
+    post:
+      tags:
+      - Core
+      summary: Create group
+      operationId: coreGroupsCreate
+      responses:
+        '201':
+          description: Group created
+  /core/tokens/:
+    get:
+      tags:
+      - Core
+      summary: List tokens
+      operationId: coreTokensList
+      responses:
+        '200':
+          description: Tokens returned
+    post:
+      tags:
+      - Core
+      summary: Create token
+      operationId: coreTokensCreate
+      responses:
+        '201':
+          description: Token created
+components:
+  parameters:
+    Id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+      description: Object UUID or primary key
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'authentik token authentication. Use header
+
+        `Authorization: Bearer <token>` with a token created in the
+
+        Tokens & App Passwords section.
+
+        '
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: authentik_session
+      description: Browser session cookie for interactive use.
