@@ -3,7 +3,20 @@ name: Authentik
 description: |
   Authentik is an open source identity provider with a comprehensive REST API for managing users, groups, flows, providers, sources, policies, and outposts. It supports OAuth2, OIDC, SAML, LDAP, SCIM, and RADIUS protocols with official client SDKs in TypeScript, Python, Go, Rust, Kotlin, and Swift.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/authentik.png
 tags:
   - Authentication
   - Authorization
@@ -21,30 +34,206 @@ created: '2026-03-25'
 modified: '2026-04-19'
 specificationVersion: '0.19'
 apis:
-  - aid: authentik:authentik-rest-api
-    name: Authentik REST API
-    description: |
-      The authentik REST API v3 provides complete management of the authentik identity platform including users, groups, tokens, flows, providers, sources, policies, outposts, events, and configuration. Every authentik instance includes a built-in API browser at /api/v3/.
-    humanURL: https://api.goauthentik.io/
-    baseURL: https://your-authentik-instance.example.com/api/v3
-    tags:
-    - Authentication
-    - Identity
-    - REST
-    - Users
-    properties:
-    - type: Documentation
-      url: https://docs.goauthentik.io/developer-docs/api/
-    - type: OpenAPI
-      url: https://api.goauthentik.io/#/Schema/schema_retrieve
-    - type: APIReference
-      url: https://api.goauthentik.io/
-    - type: SDKs
-      url: https://pypi.org/project/authentik-client/
-    - type: SDKs
-      url: https://www.npmjs.com/package/@goauthentik/api
-    - type: GitHubRepository
-      url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-core-api
+  name: Authentik Core API
+  description: Users, applications, groups and tokens.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Core
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-core-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-crypto-api
+  name: Authentik Crypto API
+  description: Certificate-key pairs.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Crypto
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-crypto-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-events-api
+  name: Authentik Events API
+  description: Audit and notification events.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-flows-api
+  name: Authentik Flows API
+  description: Authentication and enrollment flows.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Flows
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-flows-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-policies-api
+  name: Authentik Policies API
+  description: Policies and policy bindings.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Policies
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-policies-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-providers-api
+  name: Authentik Providers API
+  description: OAuth2/OIDC, SAML, LDAP, Proxy and other providers.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Providers
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-providers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-rbac-api
+  name: Authentik RBAC API
+  description: Role-based access control.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - RBAC
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-rbac-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-schema-api
+  name: Authentik Schema API
+  description: Self-describing OpenAPI schema.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Schema
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-schema-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-sources-api
+  name: Authentik Sources API
+  description: External identity sources.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Sources
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-sources-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-stages-api
+  name: Authentik Stages API
+  description: Flow stages (identification, password, etc.).
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://your-authentik-instance.example.com/api/v3
+  tags:
+  - Stages
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-stages-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io/developer-docs/api/
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
 common:
   - type: AgenticAccess
     url: agentic-access/authentik-agentic-access.yml
