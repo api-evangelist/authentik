@@ -1,0 +1,32 @@
+{
+  "provider": "authentik",
+  "sources": [
+    "authentik-core-api-openapi.yml",
+    "authentik-crypto-api-openapi.yml",
+    "authentik-events-api-openapi.yml",
+    "authentik-flows-api-openapi.yml",
+    "authentik-policies-api-openapi.yml",
+    "authentik-providers-api-openapi.yml",
+    "authentik-rbac-api-openapi.yml",
+    "authentik-schema-api-openapi.yml",
+    "authentik-sources-api-openapi.yml",
+    "authentik-stages-api-openapi.yml"
+  ],
+  "outputs": [
+    "authentik-core-api-openapi.yml",
+    "authentik-crypto-api-openapi.yml",
+    "authentik-events-api-openapi.yml",
+    "authentik-flows-api-openapi.yml",
+    "authentik-policies-api-openapi.yml",
+    "authentik-providers-api-openapi.yml",
+    "authentik-rbac-api-openapi.yml",
+    "authentik-schema-api-openapi.yml",
+    "authentik-sources-api-openapi.yml",
+    "authentik-stages-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
