@@ -235,6 +235,14 @@ apis:
   - type: GitHubRepository
     url: https://github.com/goauthentik/authentik
 common:
+  - type: IssueTracker
+    url: https://github.com/goauthentik/authentik/issues
+  - type: SecurityPolicy
+    url: https://github.com/goauthentik/authentik/blob/main/SECURITY.md
+  - type: CodeOfConduct
+    url: https://github.com/goauthentik/authentik/blob/main/CODE_OF_CONDUCT.md
+  - type: ContributionGuide
+    url: https://github.com/goauthentik/authentik/blob/main/CONTRIBUTING.md
   - type: AgenticAccess
     url: agentic-access/authentik-agentic-access.yml
   - type: VulnerabilityDisclosure
