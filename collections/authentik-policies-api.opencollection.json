@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "authentik Core Policies API",
+    "version": "3"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Policies",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{authentik_host}/api/v3/policies/all/"
+          },
+          "docs": "List policies"
+        },
+        {
+          "info": {
+            "name": "List policy bindings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{authentik_host}/api/v3/policies/bindings/"
+          },
+          "docs": "List policy bindings"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

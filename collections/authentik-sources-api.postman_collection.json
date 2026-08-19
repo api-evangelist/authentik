@@ -1,0 +1,141 @@
+{
+  "item": [
+    {
+      "id": "a0780cb4-571e-47cd-8819-71054c64970a",
+      "name": "Sources",
+      "description": {
+        "content": "External identity sources.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ca841ee8-c316-43e8-a527-e52fdee7d48f",
+          "name": "List sources",
+          "request": {
+            "name": "List sources",
+            "description": {},
+            "url": {
+              "path": [
+                "sources",
+                "all",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "df26c6dc-eb9f-4db7-a725-9c1808057214",
+              "name": "Sources returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sources",
+                    "all",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "Hostname of your authentik deployment",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "authentik.company",
+      "key": "authentik_host"
+    },
+    {
+      "type": "string",
+      "value": "https://{{authentik_host}}/api/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "7ed1c065-f0e5-4323-bbe2-3124ae6ec9c5",
+    "name": "authentik Core Sources API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Best-effort OpenAPI 3.1 description of the authentik identity provider's REST\nAPI (v3). authentik exposes a fully OpenAPI-driven REST surface at\n/api/v3 with browsable docs at /api/v3/ on each instance and a generated\nOpenAPI schema at /api/v3/schema/. Derived from public docs at\nhttps://docs.goauthentik.io/developer-docs/api/.\n\n\nContact Support:\n Name: authentik developer docs",
+      "type": "text/plain"
+    }
+  }
+}

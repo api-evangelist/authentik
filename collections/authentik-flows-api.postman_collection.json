@@ -1,0 +1,307 @@
+{
+  "item": [
+    {
+      "id": "c6b0ce69-c49b-46a2-8f94-2e399728ac03",
+      "name": "Flows",
+      "description": {
+        "content": "Authentication and enrollment flows.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "18dea61a-1ad2-47bc-ac65-e4c05cd26e13",
+          "name": "List flows",
+          "request": {
+            "name": "List flows",
+            "description": {},
+            "url": {
+              "path": [
+                "flows",
+                "instances",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "160c1457-14d9-46cc-9186-a985e43f2aca",
+              "name": "Flows returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flows",
+                    "instances",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ae65bab8-296e-4886-ab04-aef6e61069be",
+          "name": "Create flow",
+          "request": {
+            "name": "Create flow",
+            "description": {},
+            "url": {
+              "path": [
+                "flows",
+                "instances",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fc307ff7-1105-41bb-8795-22c45693a6b9",
+              "name": "Flow created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flows",
+                    "instances",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e53835c7-219b-4749-9d2a-14cedc7f4e3a",
+          "name": "List flow stage bindings",
+          "request": {
+            "name": "List flow stage bindings",
+            "description": {},
+            "url": {
+              "path": [
+                "flows",
+                "bindings",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "Hostname of your authentik deployment",
+                  "type": "any",
+                  "value": "{{authentik_host}}",
+                  "key": "authentik_host"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "dc47fc8c-f88e-4b9b-ad57-d983f8ceb93a",
+              "name": "Bindings returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flows",
+                    "bindings",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "Hostname of your authentik deployment",
+                      "type": "any",
+                      "value": "{{authentik_host}}",
+                      "key": "authentik_host"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "Hostname of your authentik deployment",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "authentik.company",
+      "key": "authentik_host"
+    },
+    {
+      "type": "string",
+      "value": "https://{{authentik_host}}/api/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "446249eb-0ee9-4985-8aa9-bd8c1c9f1a8c",
+    "name": "authentik Core Flows API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Best-effort OpenAPI 3.1 description of the authentik identity provider's REST\nAPI (v3). authentik exposes a fully OpenAPI-driven REST surface at\n/api/v3 with browsable docs at /api/v3/ on each instance and a generated\nOpenAPI schema at /api/v3/schema/. Derived from public docs at\nhttps://docs.goauthentik.io/developer-docs/api/.\n\n\nContact Support:\n Name: authentik developer docs",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "authentik Core Providers API",
+    "version": "3"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Providers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{authentik_host}/api/v3/providers/all/"
+          },
+          "docs": "List providers"
+        },
+        {
+          "info": {
+            "name": "List OAuth2/OIDC providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{authentik_host}/api/v3/providers/oauth2/"
+          },
+          "docs": "List OAuth2/OIDC providers"
+        },
+        {
+          "info": {
+            "name": "Create OAuth2 provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{authentik_host}/api/v3/providers/oauth2/"
+          },
+          "docs": "Create OAuth2 provider"
+        },
+        {
+          "info": {
+            "name": "List SAML providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{authentik_host}/api/v3/providers/saml/"
+          },
+          "docs": "List SAML providers"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
