@@ -22,6 +22,16 @@ tags:
   - Authorization
   - Identity Provider
   - LDAP
+  - Open-Source
+  - OpenID Connect
+  - SAML
+  - SCIM
+  - Self-Hosted
+tags_raw:
+  - Authentication
+  - Authorization
+  - Identity Provider
+  - LDAP
   - OAuth
   - Open Source
   - OpenID Connect
@@ -80,6 +90,8 @@ apis:
   humanURL: https://api.goauthentik.io/
   baseURL: https://your-authentik-instance.example.com/api/v3
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
