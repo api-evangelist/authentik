@@ -1,0 +1,260 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/_original/authentik-openapi.yml (1,193 operations, 613 paths, 927 schemas),
+  https://docs.goauthentik.io/sys-mgmt/user-offboarding,
+  https://docs.goauthentik.io/users-sources/user/account-types/agent-accounts,
+  https://docs.goauthentik.io/users-sources/user/account-types/service-accounts
+summary:
+  operations: 1193
+  write_operations: 636
+  base_path: /api/v3
+  style: 'Django REST Framework conventions throughout: trailing-slash collection and
+    detail paths, snake_case JSON fields, PUT for full replace and PATCH for partial,
+    DELETE returning 204.'
+auth:
+  style: bearer-token
+  header: 'Authorization: Bearer <token>'
+  schemes:
+  - name: authentik
+    type: http
+    scheme: bearer
+    note: The general API token. Issued to a user, a service account or an agent account
+      under Tokens & App Passwords.
+  - name: authentik_device_auth
+    type: http
+    scheme: bearer+agent
+    note: A non-standard `bearer+agent` HTTP auth scheme used by the authentik Agent when
+      calling device-scoped endpoints.
+  - name: authentik_device_enroll
+    type: http
+    scheme: bearer
+    note: Enrollment-token scheme for the device enrollment endpoints.
+  - name: authentik_device_federation
+    type: http
+    scheme: bearer
+    note: Federation scheme for agent device federation endpoints.
+  root_security_declared: false
+  note: 'The document declares NO root-level `security`; every operation carries its own
+    `security` array instead. See authentication/authentik-authentication.yml.'
+  docs: https://docs.goauthentik.io/users-sources/user/account-types/service-accounts
+pagination:
+  style: page-number
+  request_params:
+  - name: page
+    in: query
+    type: integer
+    description: A page number within the paginated result set.
+    component: '#/components/parameters/QueryPaginationPage'
+  - name: page_size
+    in: query
+    type: integer
+    description: Number of results to return per page.
+    component: '#/components/parameters/QueryPaginationPageSize'
+  - name: ordering
+    in: query
+    type: string
+    description: Which field to use when ordering the results.
+    component: '#/components/parameters/QueryPaginationOrdering'
+  - name: search
+    in: query
+    type: string
+    description: A search term.
+    component: '#/components/parameters/QuerySearch'
+  response_envelope:
+    schema: '#/components/schemas/Pagination'
+    wrapper_schemas: 165 Paginated<Resource>List schemas
+    fields:
+    - next
+    - previous
+    - count
+    - current
+    - total_pages
+    - start_index
+    - end_index
+    results_field: results
+    extra_field: autocomplete
+    note: 'authentik does NOT use the stock DRF envelope. The page metadata is nested under
+      a `pagination` object alongside `results` and an `autocomplete` map, and `next`/`previous`
+      are PAGE NUMBERS, not URLs — a client cannot follow a link, it must increment `page`.'
+  cursor_supported: false
+filtering:
+  style: query-parameters
+  note: Per-resource filter parameters are declared inline on each list operation (DRF
+    filtersets); `search` and `ordering` are the two universal ones.
+  query_language: AKQL
+  query_language_note: 'authentik ships AKQL, its own search query language, open-sourced
+    in release 2026.5. It applies to event search and the admin UI rather than to generic
+    REST list filtering.'
+  query_language_docs: https://docs.goauthentik.io/sys-mgmt/akql
+field_expansion:
+  supported: false
+  note: No `expand`/`fields`/`include` parameter exists. Related objects are returned as
+    UUID/PK references plus a small set of read-only denormalized `*_obj` fields baked into
+    the serializers.
+metadata:
+  supported: true
+  mechanism: custom object attributes
+  note: 'Users, groups, application entitlements and other objects carry an `attributes`
+    JSON object for arbitrary customer-defined data. Release 2026.8 added validated custom
+    field definitions on top of it.'
+  docs: https://docs.goauthentik.io/customize
+request_id_tracing:
+  header: null
+  supported: false
+  note: 'No request-id or correlation-id response header is declared in the contract.
+    Traceability is provided instead through the events log: every API-driven change writes
+    a model_created/model_updated/model_deleted event carrying the acting user, the client
+    IP and the HTTP request path.'
+  events_docs: https://docs.goauthentik.io/sys-mgmt/events
+versioning:
+  in_url: true
+  path: /api/v3
+  media_type_negotiation: false
+  see: lifecycle/authentik-lifecycle.yml
+error_envelope:
+  format: drf-json
+  content_type: application/json
+  rfc9457: false
+  shapes:
+  - status: 400
+    schema: '#/components/schemas/ValidationError'
+    fields:
+    - non_field_errors[]
+    - code
+    - '<field_name>[] (additionalProperties)'
+    declared_on: 1193 of 1193 operations
+  - status: 403
+    schema: '#/components/schemas/GenericError'
+    fields:
+    - detail
+    - code
+    declared_on: 1193 of 1193 operations
+  see: errors/authentik-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  documented: false
+  note: 'No X-RateLimit-*, RateLimit-* or Retry-After header is declared on any operation,
+    and no 429 response is declared anywhere in the contract (the only declared statuses
+    are 200, 201, 204, 400, 403, 404 and 500). This is consistent with the deployment
+    model: authentik is self-hosted, so throughput is bounded by the operator''s own
+    infrastructure and reverse proxy, not by a vendor quota.'
+  see: rate-limits/authentik-rate-limits.yml
+idempotency:
+  supported: false
+  coverage: none
+  header: null
+  scope: []
+  note: 'No Idempotency-Key header (or any equivalent replay token) is declared on any of
+    the 636 mutating operations. Retrying a POST creates a second object. The partial
+    mitigations that DO exist are structural rather than a replay mechanism: (a) PUT and
+    PATCH on a {id} path are naturally idempotent; (b) many resources enforce a unique
+    `name` or `slug`, so a duplicate POST fails validation with a 400 rather than creating
+    a twin; (c) `/lifecycle/user_offboarding/` enforces at most one PENDING offboarding per
+    user. An agent MUST NOT assume a retried POST is safe on resources without a unique
+    constraint — tokens, events, bindings and grant requests among them.'
+  evidence: openapi/_original/authentik-openapi.yml
+dry_run_mode:
+  supported: partial
+  mechanism: used_by preflight + policy/transport test endpoints
+  note: 'authentik has no `dry_run` request flag, but it does publish a genuine
+    consequence-preview surface that an agent should call before a destructive write.'
+  facilities:
+  - name: used_by impact preview
+    pattern: GET <resource>/{id}/used_by/
+    count: 100
+    description: '"Get a list of all objects that use this object." Declared on ~100
+      resources. Calling it before a DELETE tells an agent exactly what the delete will
+      cascade into. This is the single most useful pre-flight in the API.'
+  - name: policy test
+    operation_hint: POST /policies/<type>/{policy_uuid}/test/ and /policies/all/test/
+    description: Evaluate a policy against a chosen user and context without binding it.
+  - name: notification transport test
+    operation_hint: POST /events/transports/{uuid}/test/
+    description: Fire a test notification through a configured webhook/email transport.
+  - name: property mapping test
+    operation_hint: POST /propertymappings/all/{pm_uuid}/test/
+    description: Evaluate a property mapping expression against a user without applying it.
+reversibility:
+  grade: verified
+  summary: 'Mixed, and the mix matters. Two of authentik''s highest-consequence write
+    surfaces publish an explicit reversal operation AND a stated window; the ordinary CRUD
+    surface has no undo at all — a DELETE is permanent, which is exactly why the
+    `used_by` preflight above exists.'
+  surfaces:
+  - surface: Scheduled user offboarding (deactivate or delete a user at a future time)
+    write_operation: lifecycle_user_offboarding_create
+    reversal_operation: lifecycle_user_offboarding_destroy
+    reversal_path: DELETE /lifecycle/user_offboarding/{id}/
+    window: 'Any time before the scheduled date and time. The contract''s own description
+      reads "Cancel a pending offboarding instead of deleting the record. The row is
+      retained (as CANCELED) so the offboarding stays visible in the audit history."
+      authentik checks for due offboardings every five minutes, so the action normally
+      starts within five minutes after the scheduled time — cancellation must land before
+      that sweep.'
+    window_source: https://docs.goauthentik.io/sys-mgmt/user-offboarding
+    grade: verified
+    caveat: You cannot cancel an offboarding that targets your own account. Once the
+      offboarding RUNS with action=Delete, the user is permanently deleted and there is no
+      restore path.
+  - surface: Access grant (privileged access management)
+    write_operation: requests_grant_requests_fulfill_partial_update
+    reversal_operation: requests_grant_requests_revoke_destroy
+    reversal_path: DELETE /requests/grant-requests/{uuid}/revoke/
+    window: 'For as long as the grant is active. The contract states: "Immediately end an
+      active grant. Available to the same reviewers who could approve it in the first
+      place." Grants also expire automatically after their configured duration.'
+    window_source: openapi/_original/authentik-openapi.yml
+    grade: verified
+  - surface: User impersonation
+    write_operation: core_users_impersonate_create
+    reversal_operation: core_users_impersonate_end_retrieve
+    reversal_path: GET /core/users/impersonate_end/
+    window: For the duration of the impersonation session; both start and end are written
+      to the events log as impersonation_started / impersonation_ended.
+    window_source: openapi/_original/authentik-openapi.yml
+    grade: verified
+  - surface: Group and role membership
+    write_operation: core_groups_add_user_create / rbac_roles_add_user_create
+    reversal_operation: core_groups_remove_user_create / rbac_roles_remove_user_create
+    reversal_path: POST /core/groups/{group_uuid}/remove_user/ and POST /rbac/roles/{uuid}/remove_user/
+    window: No expiry — membership can be removed at any time.
+    grade: verified
+  - surface: Ordinary object CRUD (users, applications, providers, flows, stages, policies,
+      sources, property mappings, certificates, tokens)
+    write_operation: '*_destroy (DELETE /<resource>/{id}/)'
+    reversal_operation: null
+    window: null
+    grade: none
+    note: 'NO undo, no soft delete, no trash, no restore endpoint anywhere in the 1,193
+      operations. A DELETE is immediate and permanent. Before deleting, call
+      GET <resource>/{id}/used_by/ to see the cascade, and rely on blueprints
+      (https://docs.goauthentik.io/customize/blueprints) or a database backup for recovery
+      — those are the operator''s only rollback.'
+  - surface: Account lockdown (enterprise)
+    write_operation: core_users_account_lockdown_create
+    reversal_operation: null
+    window: null
+    grade: documented
+    note: 'Lockdown deactivates the account, invalidates the local password, terminates
+      sessions and revokes API/app/recovery/verification/OAuth tokens. Reversal is a manual
+      administrative action (reactivate the user, reset the password, reissue tokens) — no
+      single "unlock" operation is published, and revoked tokens cannot be restored.'
+    window_source: https://docs.goauthentik.io/security/account-lockdown
+  - surface: Session revocation
+    write_operation: core_authenticated_sessions_destroy / core_authenticated_sessions_bulk_delete_destroy
+    reversal_operation: null
+    window: null
+    grade: none
+    note: Revoking a session is terminal; the user must re-authenticate.
+  agent_guidance: 'An agent acting on this API should treat DELETE as irreversible
+    everywhere except the two scheduled/grant surfaces above, and should call the matching
+    `used_by` endpoint first. The offboarding surface is the safe pattern to prefer when
+    the intent is "remove this person" — it is scheduled, cancellable and audited, whereas
+    core_users_destroy is immediate and final.'
+cross_links:
+  errors: errors/authentik-problem-types.yml
+  lifecycle: lifecycle/authentik-lifecycle.yml
+  authentication: authentication/authentik-authentication.yml
+  rate_limits: rate-limits/authentik-rate-limits.yml
+  data_model: data-model/authentik-data-model.yml
+  agentic_access: agentic-access/authentik-agentic-access.yml

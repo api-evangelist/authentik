@@ -1,59 +1,220 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: authentik Core Schema API
-  description: 'Best-effort OpenAPI 3.1 description of the authentik identity provider''s REST
-
-    API (v3). authentik exposes a fully OpenAPI-driven REST surface at
-
-    /api/v3 with browsable docs at /api/v3/ on each instance and a generated
-
-    OpenAPI schema at /api/v3/schema/. Derived from public docs at
-
-    https://docs.goauthentik.io/developer-docs/api/.
-
-    '
-  version: '3'
+  title: authentik Schema API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
   contact:
-    name: authentik developer docs
-    url: https://docs.goauthentik.io/developer-docs/api/
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
 servers:
-- url: https://{authentik_host}/api/v3
-  description: authentik instance API root
-  variables:
-    authentik_host:
-      default: authentik.company
-      description: Hostname of your authentik deployment
-security:
-- tokenAuth: []
-- sessionAuth: []
+- url: /api/v3
 tags:
-- name: Schema
-  description: Self-describing OpenAPI schema.
+- name: schema
 paths:
   /schema/:
     get:
+      operationId: schema_retrieve
+      description: 'OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+
+        - YAML: application/vnd.oai.openapi
+
+        - JSON: application/vnd.oai.openapi+json'
+      parameters:
+      - in: query
+        name: format
+        schema:
+          $ref: '#/components/schemas/FormatEnum'
+      - in: query
+        name: lang
+        schema:
+          $ref: '#/components/schemas/LangEnum'
       tags:
-      - Schema
-      summary: OpenAPI schema
-      operationId: schemaRetrieve
+      - schema
+      security:
+      - authentik: []
+      - {}
       responses:
         '200':
-          description: OpenAPI v3 schema for this authentik instance
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
 components:
+  schemas:
+    LangEnum:
+      type: string
+      enum:
+      - af
+      - ar
+      - ar-dz
+      - ast
+      - az
+      - be
+      - bg
+      - bn
+      - br
+      - bs
+      - ca
+      - ckb
+      - cs
+      - cy
+      - da
+      - de
+      - dsb
+      - el
+      - en
+      - en-au
+      - en-gb
+      - eo
+      - es
+      - es-ar
+      - es-co
+      - es-mx
+      - es-ni
+      - es-ve
+      - et
+      - eu
+      - fa
+      - fi
+      - fr
+      - fy
+      - ga
+      - gd
+      - gl
+      - he
+      - hi
+      - hr
+      - hsb
+      - hu
+      - hy
+      - ia
+      - id
+      - ig
+      - io
+      - is
+      - it
+      - ja
+      - ka
+      - kab
+      - kk
+      - km
+      - kn
+      - ko
+      - ky
+      - lb
+      - lt
+      - lv
+      - mk
+      - ml
+      - mn
+      - mr
+      - ms
+      - my
+      - nb
+      - ne
+      - nl
+      - nn
+      - os
+      - pa
+      - pl
+      - pt
+      - pt-br
+      - ro
+      - ru
+      - sk
+      - sl
+      - sq
+      - sr
+      - sr-latn
+      - sv
+      - sw
+      - ta
+      - te
+      - tg
+      - th
+      - tk
+      - tr
+      - tt
+      - udm
+      - ug
+      - uk
+      - ur
+      - uz
+      - vi
+      - zh-hans
+      - zh-hant
+    FormatEnum:
+      type: string
+      enum:
+      - json
+      - yaml
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   securitySchemes:
-    tokenAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: 'authentik token authentication. Use header
-
-        `Authorization: Bearer <token>` with a token created in the
-
-        Tokens & App Passwords section.
-
-        '
-    sessionAuth:
-      type: apiKey
-      in: cookie
-      name: authentik_session
-      description: Browser session cookie for interactive use.
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

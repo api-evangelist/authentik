@@ -1,27 +1,126 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/authentik-openapi.yml
+generated: '2026-09-04'
+method: searched
+source: https://docs.goauthentik.io/users-sources/user/account-types/service-accounts,
+  https://docs.goauthentik.io/users-sources/user/account-types/agent-accounts,
+  https://docs.goauthentik.io/users-sources/user/account-types,
+  openapi/_original/authentik-openapi.yml#/components/securitySchemes
+docs: https://docs.goauthentik.io/users-sources/user/account-types/service-accounts
 summary:
   types:
-  - apiKey
-  api_key_in:
-  - cookie
-  - header
+  - http
+  primary: HTTP Bearer token
+  header: 'Authorization: Bearer <token>'
+  base_path: /api/v3
+  oauth2_scopes: false
+  api_keys_in_query: false
+  root_security_declared: false
+  note: 'The published contract declares FOUR http/bearer security schemes and no root-level
+    `security` block — every operation names its own. The derived pass over the split
+    per-tag files sees only two of them, because the device-enrollment and
+    device-federation schemes are referenced by a handful of endpoint operations; all four
+    are listed here from the source document.'
 schemes:
-- name: tokenAuth
-  type: apiKey
-  in: header
-  parameter: Authorization
-  description: |-
-    authentik token authentication. Use header
-    `Authorization: Bearer <token>` with a token created in the
-    Tokens & App Passwords section.
-  sources:
-  - openapi/authentik-openapi.yml
-- name: sessionAuth
-  type: apiKey
-  in: cookie
-  parameter: authentik_session
-  description: Browser session cookie for interactive use.
-  sources:
-  - openapi/authentik-openapi.yml
+- name: authentik
+  type: http
+  scheme: bearer
+  header: Authorization
+  description: 'The general authentik API token. Issued to a user, a service account or an
+    agent account under Directory > Tokens & App Passwords, or created through
+    POST /core/tokens/. This is the scheme an integration or an agent uses.'
+  applies_to: the overwhelming majority of the 1,193 published operations
+  source: openapi/_original/authentik-openapi.yml
+- name: authentik_device_auth
+  type: http
+  scheme: bearer+agent
+  header: Authorization
+  description: 'A NON-STANDARD HTTP authentication scheme — the literal token
+    `bearer+agent` — used by the authentik Agent when calling device-scoped endpoints.
+    Generic OpenAPI tooling will not recognise it; treat it as a bearer credential with a
+    different scheme label.'
+  applies_to: endpoints/agents device authentication operations
+  source: openapi/_original/authentik-openapi.yml
+- name: authentik_device_enroll
+  type: http
+  scheme: bearer
+  header: Authorization
+  description: Enrollment-token scheme for the agent device enrollment endpoints
+    (/endpoints/agents/connectors/enroll/, /endpoints/agents/enrollment_tokens/).
+  source: openapi/_original/authentik-openapi.yml
+- name: authentik_device_federation
+  type: http
+  scheme: bearer
+  header: Authorization
+  description: Federation scheme for the agent device federation endpoint
+    (/endpoints/agents/connectors/auth_fed/).
+  source: openapi/_original/authentik-openapi.yml
+session_auth:
+  present: true
+  mechanism: browser session cookie
+  note: 'The browsable API and the Admin/User interfaces authenticate with an authentik
+    session cookie. It is NOT declared as a securityScheme in the published document — the
+    contract declares only the four bearer schemes above — so it is recorded here as
+    observed behaviour rather than a contract claim.'
+credential_types:
+- name: API token
+  used_for: HTTP Bearer authentication against /api/v3/
+  issued_to: users, service accounts, agent accounts
+  default_expiry: 360 days
+  configurable_expiry: true
+  non_expiring_allowed: true
+  rotation: 'Expired tokens are automatically rotated for the token types authentik manages
+    internally; an integration token must be reissued.'
+  api: POST /core/tokens/ (core_tokens_create); read the secret once via
+    GET /core/tokens/{identifier}/view_key/ (core_tokens_view_key_retrieve)
+  audit: Viewing or rotating a token writes a secret_view / secret_rotate event.
+  docs: https://docs.goauthentik.io/users-sources/user/account-types/service-accounts
+- name: App password
+  used_for: flows and protocol clients that accept a username and password (LDAP bind, for
+    example)
+  issued_to: service accounts
+  default_expiry: 360 days
+  note: Shown exactly once, on the confirmation screen at creation. Not used for REST API
+    calls.
+- name: OAuth 2.0 access token
+  used_for: applications authenticating to authentik as an OIDC relying party
+  note: 'This is authentik acting AS an identity provider for other applications. It is not
+    the credential used to call the management API, and the management API declares no
+    oauth2 securityScheme and no scopes — which is why scopes/ is deliberately absent from
+    this repository.'
+identity_types_for_automation:
+- name: User-created service account
+  description: An authentik user of type `Service account`, created for external systems
+    and automation. Cannot access the user or Admin interfaces, has no usable account
+    password, cannot complete interactive MFA.
+  authorization: A full user object for authorization purposes — groups, roles, object
+    permissions, application bindings and policies all apply.
+  docs: https://docs.goauthentik.io/users-sources/user/account-types/service-accounts
+- name: Internal service account
+  description: Created and managed by authentik for internal components such as outpost
+    communication. Cannot be created manually or edited.
+- name: Agent account
+  description: 'THE ACCOUNT TYPE INTENDED FOR AI AGENTS AND AUTOMATION ACTING FOR A PERSON.
+    A service account that acts on behalf of a parent user: generated username, no usable
+    password, an API token for Bearer authentication, configurable policy inheritance, and
+    audit events that identify the parent user. Introduced in release 2026.8; Enterprise
+    tier.'
+  self_service: 'Internal users with the right permission can create their own agent.
+    Self-service agents always expire, always use the deployment default token duration,
+    and always use NONE policy behaviour — they copy no access from the parent.'
+  api_creation: 'Agents can be created programmatically through the authentik API. Access
+    already held by the owner can be delegated to the agent, time-boxed, via
+    POST /requests/grant-requests/agent/.'
+  docs: https://docs.goauthentik.io/users-sources/user/account-types/agent-accounts
+  see_also: agentic-access/authentik-agentic-access.yml
+authorization:
+  model: RBAC
+  granularity: global permissions, object-level permissions, roles, groups, application
+    bindings and policies
+  api: openapi/authentik-rbac-api-openapi.yml
+  docs: https://docs.goauthentik.io/customize/policies
+  denial_behaviour: 'A missing permission returns 403 with a GenericError body, not 401. An
+    object hidden by object-level permissions can present as 404.'
+  see: errors/authentik-problem-types.yml
+mfa:
+  api_relevant: false
+  note: Service and agent accounts cannot complete interactive MFA. MFA applies to human
+    users authenticating through flows, not to bearer-token API calls.

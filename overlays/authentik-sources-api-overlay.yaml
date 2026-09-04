@@ -1,0 +1,78 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — authentik Sources API
+  version: 1.0.0
+extends: authentik-sources-api-openapi.yml
+x-generated: '2026-09-04'
+x-method: generated
+x-source: openapi/_original/authentik-openapi.yml (harvested from https://api.goauthentik.io/schema.yml)
+  — this overlay records API Evangelist enhancements only; the original document is never mutated
+actions:
+- target: $.info
+  description: Record where the contract was harvested from and when it was last validated.
+  update:
+    x-source-url: https://api.goauthentik.io/schema.yml
+    x-source-repository: https://github.com/goauthentik/authentik
+    x-last-validated: '2026-09-04'
+    x-license: MIT
+- target: $.info.contact
+  description: The published contract carries only info.contact.email. Add the developer documentation
+    URL alongside it.
+  update:
+    name: Authentik Security Inc.
+    url: https://docs.goauthentik.io/
+- target: $
+  description: Add externalDocs pointing at the authentik documentation site.
+  update:
+    externalDocs:
+      description: authentik documentation
+      url: https://docs.goauthentik.io/
+- target: $.servers
+  description: 'The published document declares a RELATIVE server, `/api/v3`, because authentik is self-hosted
+    and the host is whatever the operator deployed. Replace it with the templated absolute form so tooling
+    can resolve a request: the variable, not a guessed hostname, is the honest base. Documented at https://docs.goauthentik.io/install-config/.'
+  update:
+  - url: https://{authentik_host}/api/v3
+    description: authentik instance API root
+    variables:
+      authentik_host:
+        default: authentik.company
+        description: Hostname of your authentik deployment
+- target: $
+  description: 'Record the cross-cutting runtime semantics an agent needs and the contract does not state:
+    no idempotency mechanism, no rate-limit signalling, page-number pagination with a nested envelope,
+    and DRF-shaped errors rather than RFC 9457.'
+  update:
+    x-conventions:
+      idempotency:
+        supported: false
+        coverage: none
+        artifact: conventions/authentik-conventions.yml
+      rate_limits:
+        published: false
+        headers: []
+        status_429_declared: false
+        artifact: rate-limits/authentik-rate-limits.yml
+      pagination:
+        style: page-number
+        params:
+        - page
+        - page_size
+        - ordering
+        - search
+        envelope: pagination{count,current,next,previous,total_pages,start_index,end_index} + results[]
+          + autocomplete
+        next_is_page_number: true
+      errors:
+        rfc9457: false
+        content_type: application/json
+        shapes:
+        - ValidationError (400)
+        - GenericError (403/404/500)
+        artifact: errors/authentik-problem-types.yml
+      preflight:
+        pattern: GET <resource>/{id}/used_by/
+        description: Consequence preview before a delete; the only dry-run facility this API publishes.
+      reversibility:
+        grade: verified
+        artifact: conventions/authentik-conventions.yml

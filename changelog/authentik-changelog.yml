@@ -1,0 +1,64 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.goauthentik.io/releases/
+scheme: calver
+pattern: YYYY.M[.PATCH]
+current_version: '2026.8'
+schema_version: 2026.11.0-rc1
+urls:
+  release_notes: https://docs.goauthentik.io/releases/
+  github_releases: https://github.com/goauthentik/authentik/releases
+  agent_release_notes: https://docs.goauthentik.io/endpoint-devices/authentik-agent/release-notes
+  blog: https://goauthentik.io/blog
+cadence: Roughly quarterly minor releases (2026.2, 2026.5, 2026.8) with patch releases
+  in between. Fifty prior versions are archived on the docs site.
+structure:
+  sections:
+  - Highlights
+  - Breaking changes
+  - New features and improvements
+  - Fixes
+  note: Every release page carries an explicit "Breaking changes" section, which is where
+    deprecations are announced — there is no separate deprecation policy page.
+entries:
+- version: '2026.8'
+  url: https://docs.goauthentik.io/releases/2026.8
+  breaking:
+  - '`hash_password` management command no longer accepts the password as a positional
+    argument (it was visible in the process list); use the interactive prompt or pipe via
+    stdin.'
+  - '"Prevent duplicate devices" option removed from the WebAuthn authenticator setup
+    stage.'
+  - Forwarded request headers (X-Forwarded-Proto, X-Forwarded-Host, X-Forwarded-For) are
+    honored only when the connection comes from a trusted proxy network
+    (AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS).
+  additions:
+  - 'Privileged Access Management: users request access to applications or entitlements,
+    approvers grant/deny with expiry. New `requests` API tag (29 operations).'
+  - 'Agent accounts: service accounts that act on behalf of a parent user when calling the
+    authentik API, with expiring tokens and policy inheritance. New `agents` API tag.'
+  - User switching — multiple signed-in accounts in one browser.
+  - 'User offboarding: scheduled deactivation/deletion with session and token revocation.'
+  - Custom object attributes for users, groups and application entitlements.
+  - Self-hosted event maps.
+  - 'OAuth2/OIDC: token exchange between trusted providers, key-bound ID tokens,
+    on-behalf-of (OBO) and Dynamic Client Registration (DCR).'
+- version: '2026.5'
+  url: https://docs.goauthentik.io/releases/2026.5
+  breaking:
+  - Default listen address changed from 0.0.0.0 to [::]; listening settings now accept a
+    comma-separated IP list. IPv4-only environments may need to adapt.
+  - '`AUTHENTIK_POSTGRESQL__CONN_OPTIONS` (and the replica equivalent) deprecated, to be
+    removed in the next version.'
+  additions:
+  - 'Account Lockdown (enterprise): revoke tokens, end sessions and deactivate a
+    compromised account with an audit trail.'
+  - 'Conditional access connectors: Fleet (via Fleet certificates + mTLS stage) and Google
+    Chrome Enterprise Device Trust.'
+  - AKQL search query language moved from enterprise-only to open source.
+  - Cmd+K command palette and reworked creation wizards.
+  - Rust worker entrypoint — roughly 200 MB less memory per worker container and one fewer
+    PostgreSQL connection per worker.
+  - Tap-to-login independent Secure Enclave keys for iPhone and Apple Watch.
+  - 2FA attempt throttling extended to email and SMS OTP devices.
+  - Pre-hashed Django password import for bootstrap/migration.

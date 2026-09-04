@@ -1,0 +1,511 @@
+# authentik
+
+> Bring all of your authentication into a unified platform.
+
+This index links to authentik documentation pages as Markdown, following the llmstxt.org convention. Prefer these pages over prior knowledge — authentik changes between releases.
+
+Related: [Integrations](https://integrations.goauthentik.io/llms.txt)
+
+## Overview
+
+- [Welcome to authentik](https://docs.goauthentik.io/index.md): authentik is an IdP (Identity Provider) and SSO (Single Sign-On) platform that is built with security at the forefront of every piece of code and every feature, with an emphasis on flexibility and versatility.
+
+## Core Concepts
+
+- [Architecture](https://docs.goauthentik.io/core/architecture.md): authentik consists of a handful of components, most of which are required for a functioning setup.
+
+## Customize your Instance
+
+- [File picker values](https://docs.goauthentik.io/customize/file-picker.md): Many fields in the authentik Admin interface use the same file picker.
+- [Files](https://docs.goauthentik.io/customize/files.md): Image files are used in authentik to add icons to new applications or sources, and to define the "branded" look of the authentik interface, with your company's logo and title, a favicon, or a background image for the flows.
+- [Customize your instance](https://docs.goauthentik.io/customize.md): You can customize the behavior, look, and available resources for your authentik instance.
+- [Export configurations to blueprints](https://docs.goauthentik.io/customize/blueprints/export.md): To migrate existing configurations to blueprints, run ak export_blueprint within any authentik Worker container.
+- [Blueprints](https://docs.goauthentik.io/customize/blueprints.md): Blueprints provide a way to template, automate, and distribute authentik configuration.
+- [Working with blueprints](https://docs.goauthentik.io/customize/blueprints/working_with_blueprints.md): For an overview of what blueprints are, how they're executed, and where they are stored, see the Blueprints overview documentation.
+- [Custom CSS](https://docs.goauthentik.io/brands/custom-css.md): You can add custom CSS to further customize the look of authentik.
+- [Branding](https://docs.goauthentik.io/customize/branding.md): As an authentik administrator, you can customize your instance's appearance and behavior using brands.
+- [Policy bindings and evaluation](https://docs.goauthentik.io/customize/policies/bindings.md): This page covers policy bindings: where they apply, how authentik evaluates them, and which options affect the result.
+- [Policies](https://docs.goauthentik.io/customize/policies.md): Policies are reusable checks in authentik.
+- [Working with policies](https://docs.goauthentik.io/customize/policies/working_with_policies.md): For an overview of policies, refer to our documentation on Policies.
+- [Example](https://docs.goauthentik.io/customize/blueprints/v1/example.md): This is one of the default packaged blueprints to create the default authentication flow.
+- [Meta models](https://docs.goauthentik.io/customize/blueprints/v1/meta.md): Since blueprints have a pretty strict mapping of each entry to an instance of a model in the database, meta models exist to trigger other actions within authentik that don't directly map to a model.
+- [Models](https://docs.goauthentik.io/customize/blueprints/v1/models.md): Some models behave differently and allow for access to different API fields when created via blueprint.
+- [File structure](https://docs.goauthentik.io/customize/blueprints/v1/structure.md): Blueprints are YAML files, which can use some additional tags to ease blueprint creation.
+- [YAML Tags](https://docs.goauthentik.io/customize/blueprints/v1/tags.md): To use the custom tags with your preferred editor, you must make the editor aware of the custom tags.
+- [Customize the Admin interface](https://docs.goauthentik.io/customize/interfaces/admin.md): The Admin interface can be customized using attributes configured in Brands.
+- [Customize a flow](https://docs.goauthentik.io/customize/interfaces/flow.md): Typically, settings for flows are defined as defaults in the Brand settings.
+- [Customize the User interface](https://docs.goauthentik.io/customize/interfaces/user.md): The User interface can be customized using attributes configured in Brands.
+- [Event Matcher Policy](https://docs.goauthentik.io/customize/policies/types/event-matcher.md): Use an Event Matcher policy when you want to match authentik events with built-in fields or an AKQL query.
+- [GeoIP Policy](https://docs.goauthentik.io/customize/policies/types/geoip.md): Use a GeoIP policy when you want to make access decisions based on where a request appears to come from.
+- [Types of policies in authentik](https://docs.goauthentik.io/customize/policies/types.md): These pages describe the built-in policy objects you can create in authentik.
+- [Password Expiry Policy](https://docs.goauthentik.io/customize/policies/types/password-expiry.md): Use a Password Expiry policy when passwords should expire after a fixed number of days.
+- [Password Uniqueness Policy](https://docs.goauthentik.io/customize/policies/types/password-uniqueness.md): The Password Uniqueness policy is an enterprise policy that prevents users from reusing previously used passwords.
+- [Password Policy](https://docs.goauthentik.io/customize/policies/types/password.md): Use a Password policy when you want to validate a password entered in a prompt stage.
+- [Reputation Policy](https://docs.goauthentik.io/customize/policies/types/reputation.md): Use a Reputation policy when you want authentik to react to repeated failed authentication attempts from a username, a client IP, or both.
+- [Expression Policies](https://docs.goauthentik.io/customize/policies/types/expression.md): Expression policies let you write custom Python for cases where the built-in policy types are not enough.
+- [Managing flow context keys](https://docs.goauthentik.io/customize/policies/types/expression/managing_flow_context_keys.md): Flow context can be read and updated from an Expression policy through context["flow_plan"].context.
+- [Expression Reference](https://docs.goauthentik.io/customize/policies/types/expression/reference.md): This page documents the expression policy execution environment in authentik.
+- [Switch which source is used based on email address](https://docs.goauthentik.io/customize/policies/types/expression/source_switch.md): You can use an expression policy to route users to different sources based on the email address they enter.
+- [Ensure unique email addresses](https://docs.goauthentik.io/customize/policies/types/expression/unique_email.md): By default, authentik does not require email addresses to be unique.
+- [Allow only specific email domains](https://docs.goauthentik.io/customize/policies/types/expression/whitelist_email.md): Use an expression policy when only specific email domains should be allowed to enroll or authenticate.
+
+## Developer Documentation
+
+- [Contributing to authentik](https://docs.goauthentik.io/developer-docs/contributing.md): Guidelines for contributing code, docs, and enhancements to authentik.
+- [Developer Documentation](https://docs.goauthentik.io/developer-docs.md): Quick links and entry points for developers working on authentik.
+- [Translations](https://docs.goauthentik.io/developer-docs/translation.md): Translations in authentik are handled in two places.
+- [Style guide](https://docs.goauthentik.io/developer-docs/docs/style-guide.md): This style guide helps keep authentik documentation consistent, clear, and easy to follow.
+- [Writing documentation](https://docs.goauthentik.io/developer-docs/docs/writing-documentation.md): Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project.
+- [Cascade layers](https://docs.goauthentik.io/developer-docs/frontend/cascade-layers.md): How authentik's web UI orders its CSS with @layer, and where each kind of rule belongs.
+- [CSS architecture](https://docs.goauthentik.io/developer-docs/frontend/css-architecture.md): How authentik's runtime CSS and design tokens fit together across the theme package, the document cascade, and Lit components.
+- [2023 hackathon archive](https://docs.goauthentik.io/developer-docs/hackathon.md)
+- [Debugging authentik](https://docs.goauthentik.io/developer-docs/setup/debugging.md): This page describes how to debug different components of an authentik instance, running either in production or in a development setup.
+- [Frontend development environment](https://docs.goauthentik.io/developer-docs/setup/frontend-dev-environment.md): If you're focusing solely on frontend development, you can create a minimal development environment using Docker and Node.js.
+- [Full development environment](https://docs.goauthentik.io/developer-docs/setup/full-dev-environment.md): Before you begin, ensure you have the following tools installed.
+- [Development environment](https://docs.goauthentik.io/developer-docs/setup.md): Choose how you want to run and work on authentik.
+- [Combination topic (most common)](https://docs.goauthentik.io/developer-docs/docs/templates/combo.md): ``shell wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/combo.tmpl.mdx ``
+- [MDX template: combo](https://docs.goauthentik.io/developer-docs/docs/templates/combo.tmpl.md): Add a brief description of the feature or functionality.
+- [Conceptual topic](https://docs.goauthentik.io/developer-docs/docs/templates/conceptual.md): ``shell wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/conceptual.tmpl.mdx ``
+- [MDX template: conceptual](https://docs.goauthentik.io/developer-docs/docs/templates/conceptual.tmpl.md): Write a few sentences introducing the feature/component/technology.
+- [Templates](https://docs.goauthentik.io/developer-docs/docs/templates.md): In technical documentation, there are document "types" (similar to how there are data types).
+- [Procedural topic](https://docs.goauthentik.io/developer-docs/docs/templates/procedural.md): ``shell wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/procedural.tmpl.mdx ``
+- [MDX template: procedural](https://docs.goauthentik.io/developer-docs/docs/templates/procedural.tmpl.md): Add a brief description of the feature or functionality.
+- [Reference topic](https://docs.goauthentik.io/developer-docs/docs/templates/reference.md): ``shell wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/reference.tmpl.mdx ``
+- [MDX template: reference](https://docs.goauthentik.io/developer-docs/docs/templates/reference.tmpl.md): Write a few sentences introducing the feature/component/technology, and state that this page contains reference materials.
+- [Documentation Theming](https://docs.goauthentik.io/developer-docs/docs/theming.md): This section is intended for developers of authentik's documentation site.
+
+## Endpoint Devices
+
+- [Endpoint Devices](https://docs.goauthentik.io/endpoint-devices.md): The features, methods, and even the name are yet to be confirmed.
+- [Manage devices](https://docs.goauthentik.io/endpoint-devices/manage-devices.md): The Devices page provides a list of all endpoint devices registered with your authentik deployment.
+- [Agent CLI commands](https://docs.goauthentik.io/endpoint-devices/authentik-agent/authentik-cli.md): The following commands are available when interacting with the authentik Agent via the command line.
+- [Configuration](https://docs.goauthentik.io/endpoint-devices/authentik-agent/configuration.md): Before deploying the authentik Agent, configure your authentik deployment.
+- [Development](https://docs.goauthentik.io/endpoint-devices/authentik-agent/development.md): The authentik Agent and associated components are developed in the authentik Platform GitHub repository.
+- [authentik Agent](https://docs.goauthentik.io/endpoint-devices/authentik-agent.md): The authentik Agent is a service that can be installed on Linux, macOS, and Windows devices.
+- [authentik browser extension](https://docs.goauthentik.io/endpoint-devices/device-compliance/browser-extension.md): The authentik Endpoint SSO browser extension is required for device compliance functionality, and is currently available via the Chrome Web Store, the Firefox Add-ons site, and the Edge Add-ons site.
+- [Configuration](https://docs.goauthentik.io/endpoint-devices/device-compliance/configuration.md): Device compliance functionality requires the following:
+- [Device compliance policy](https://docs.goauthentik.io/endpoint-devices/device-compliance/device-compliance-policy.md): Device compliance policies are used to limit access to authentik and applications based on Device Compliance information.
+- [Device reporting](https://docs.goauthentik.io/endpoint-devices/device-compliance/device-reporting.md): Endpoint devices registered with authentik through a connector, such as the authentik Agent connector, regularly check in with authentik and report their device facts.
+- [Fleet conditional access for Apple devices](https://docs.goauthentik.io/endpoint-devices/device-compliance/fleet-conditional-access.md): authentik can be configured to restrict access to specific services so that only Fleet-registered Apple devices are allowed.
+- [Device Compliance](https://docs.goauthentik.io/endpoint-devices/device-compliance.md): Device compliance lets authentik verify that a user's device meets security and configuration criteria, such as operating system version, disk encryption, antivirus status etc, before allowing access to resources.
+- [Automated authentik Agent deployment](https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/automated.md): The authentik Agent can be deployed at scale to multiple devices via Mobile Device Management (MDM) and automation tools.
+- [Deployment](https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment.md): You can deploy the authentik Agent on Linux, macOS, and Windows devices.
+- [Deploy authentik Agent on Linux](https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/linux.md): You must configure your authentik deployment to support the authentik Agent.
+- [Deploy authentik Agent on macOS](https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/macos.md): You must configure your authentik deployment to support the authentik Agent.
+- [Deploy authentik Agent on Windows](https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/windows.md): Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows workstations using authentik credentials.
+- [Device access groups](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/device-access-groups.md): Device access groups control access to endpoint devices.
+- [Device authentication](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication.md): The authentik Agent supports multiple types of authentication and authorization using authentik credentials:
+- [SSH authentication](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/ssh-authentication.md): You can use the authentik Agent to authenticate SSH connections between endpoint devices using authentik credentials.
+- [authentik Agent Releases](https://docs.goauthentik.io/endpoint-devices/authentik-agent/release-notes.md): Release notes for recent authentik Agent versions
+- [x.x.x](https://docs.goauthentik.io/endpoint-devices/authentik-agent/release-notes/template.md)
+- [Release 0.35](https://docs.goauthentik.io/endpoint-devices/authentik-agent/release-notes/v0.35.md): Initial release
+- [Release 0.40](https://docs.goauthentik.io/endpoint-devices/authentik-agent/release-notes/v0.40.md)
+- [authentik Agent connector](https://docs.goauthentik.io/endpoint-devices/device-compliance/connectors/authentik-agent.md): The authentik Agent connector allows device information to be reported by the authentik Agent.
+- [Fleet connector](https://docs.goauthentik.io/endpoint-devices/device-compliance/connectors/fleetdm.md): Fleet is an open-source device management platform designed to monitor, manage, and secure large fleets of devices.
+- [Google Chrome connector](https://docs.goauthentik.io/endpoint-devices/device-compliance/connectors/google-chrome.md): With this connector, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
+- [Connectors](https://docs.goauthentik.io/endpoint-devices/device-compliance/connectors.md): Connectors allow device information to be reported to authentik.
+- [AWS CLI authentication](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/aws.md): You can use the authentik Agent to authenticate to the AWS CLI with authentik credentials.
+- [CLI application authentication](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/cli-app-authentication.md): The authentik Agent can authenticate to CLI applications such as aws and kubectl.
+- [Kubernetes CLI authentication](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/k8s.md): You can use the authentik Agent to authenticate to kubectl with authentik credentials.
+- [Local device login](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/local-device-login.md): Local device login allows you to log in to devices using authentik credentials instead of separate local accounts.
+- [Linux local device login](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/local-device-login/linux.md): Local device login requires the authenticating user to have access to the device.
+- [Windows local device login](https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/local-device-login/windows.md): Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows devices using authentik credentials.
+
+## Enterprise
+
+- [Enterprise features](https://docs.goauthentik.io/enterprise/enterprise-features.md): Features included in authentik Enterprise
+- [Enterprise support](https://docs.goauthentik.io/enterprise/enterprise-support.md): Open and manage authentik Enterprise support tickets
+- [Get started with authentik Enterprise](https://docs.goauthentik.io/enterprise/get-started.md): Enable authentik Enterprise on a new or existing installation
+- [authentik Enterprise](https://docs.goauthentik.io/enterprise.md): Licensed authentik features, license management, and commercial support
+- [Manage Enterprise licensing](https://docs.goauthentik.io/enterprise/manage-enterprise.md): Manage authentik Customer Portal organizations, licenses, and billing
+
+## Installation and Configuration
+
+- [Air-gapped environments](https://docs.goauthentik.io/install-config/air-gapped.md): By default, authentik creates outbound connections to the following URLs:
+- [Automated install](https://docs.goauthentik.io/install-config/automated-install.md): To install authentik automatically (skipping the Out-of-box experience), you can use the following environment variables on the worker container:
+- [Beta and release candidate versions](https://docs.goauthentik.io/install-config/beta.md): You can test upcoming authentik versions before they are released as stable.
+- [Email](https://docs.goauthentik.io/install-config/email.md): This page covers both configuring authentik to send email and testing that email delivery is working.
+- [High availability](https://docs.goauthentik.io/install-config/high-availability.md): High availability refers to system design that minimizes downtime even in the event of failures or disruptions.
+- [Installation and Configuration](https://docs.goauthentik.io/install-config.md): Everything you need to get authentik up and running!
+- [Reverse proxy](https://docs.goauthentik.io/install-config/reverse-proxy.md): Use this page when authentik is exposed through a reverse proxy or load balancer.
+- [Upgrade authentik](https://docs.goauthentik.io/install-config/upgrade.md): Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest images and then restarting the servers and databases.
+- [Configuration](https://docs.goauthentik.io/install-config/configuration.md): This page details all the authentik configuration options that you can set via environment variables.
+- [First steps](https://docs.goauthentik.io/install-config/first-steps.md): After you have installed and started authentik, you are now ready to add your first application and provider, add some users, and get started with using authentik as your Identity provider.
+- [AWS installation](https://docs.goauthentik.io/install-config/install/aws.md): You can install authentik to run on AWS with a CloudFormation template.
+- [Docker Compose installation](https://docs.goauthentik.io/install-config/install/docker-compose.md): This installation method is for test setups and small-scale production setups.
+- [Kubernetes installation](https://docs.goauthentik.io/install-config/install/kubernetes.md): You can install authentik to run on Kubernetes using a Helm chart.
+
+## Security
+
+- [Account Lockdown](https://docs.goauthentik.io/security/account-lockdown.md): Account Lockdown is a security feature that allows administrators to quickly secure a user account during emergencies, such as suspected compromise or unauthorized access.
+- [Security Policy](https://docs.goauthentik.io/security/policy.md)
+- [Hardening authentik](https://docs.goauthentik.io/security/security-hardening.md): While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance.
+- [2023-06 Cure53 Code audit](https://docs.goauthentik.io/security/audits-and-certs/2023-06-cure53.md): In May/June of 2023, we had a pentest conducted by Cure53.
+- [2024-11 Cobalt pentest](https://docs.goauthentik.io/security/audits-and-certs/2024-11-cobalt.md): We are committed to engaging in regular pentesting and security audits of authentik.
+- [2025-09 IncludeSec pentest](https://docs.goauthentik.io/security/audits-and-certs/2025-09-includesec.md): In September of 2025, we had a pentest conducted by Include Security.
+- [CVE-2022-23555](https://docs.goauthentik.io/security/cves/CVE-2022-23555.md): Token reuse in invitation URLs leads to access control bypass via the use of a different enrollment flow than in the one provided.
+- [CVE-2022-46145](https://docs.goauthentik.io/security/cves/CVE-2022-46145.md): With the default flows, unauthenticated users can create new accounts in authentik.
+- [CVE-2022-46172](https://docs.goauthentik.io/security/cves/CVE-2022-46172.md): Any authenticated user can create an arbitrary number of accounts through the default flows.
+- [CVE-2023-26481](https://docs.goauthentik.io/security/cves/CVE-2023-26481.md): Due to an insufficient access check, a recovery flow link that is created by an admin (or sent via email by an admin) can be used to set the password for any arbitrary user.
+- [CVE-2023-36456](https://docs.goauthentik.io/security/cves/CVE-2023-36456.md): authentik does not verify the source of the X-Forwarded-For and X-Real-IP headers, both in the Python code and the go code.
+- [CVE-2023-39522](https://docs.goauthentik.io/security/cves/CVE-2023-39522.md): Using a recovery flow with an identification stage an attacker is able to determine if a username exists.
+- [CVE-2023-46249](https://docs.goauthentik.io/security/cves/CVE-2023-46249.md): In the affected versions, when the default admin user has been deleted, it is potentially possible for an attacker to set the password of the default admin user without any authentication.
+- [CVE-2023-48228](https://docs.goauthentik.io/security/cves/CVE-2023-48228.md): When initializing an OAuth2 flow with a codechallenge and codemethod (thus requesting PKCE), the SSO provider (authentik) must check if there is a matching and existing code_verifier during the token step.
+- [CVE-2024-21637](https://docs.goauthentik.io/security/cves/CVE-2024-21637.md): Given an OAuth2 provider configured with allowed redirect URIs set to ` or ., an attacker can send an OAuth Authorization request using responsemode=formpost and setting redirect_uri` to a malicious URI, to capture authentik's session token.
+- [CVE-2024-23647](https://docs.goauthentik.io/security/cves/CVE-2024-23647.md): PKCE is a very important countermeasure in OAuth2, both for public and confidential clients.
+- [CVE-2024-37905](https://docs.goauthentik.io/security/cves/CVE-2024-37905.md): Due to insufficient permission checks it was possible for any authenticated user to elevate their permissions to a superuser by creating an API token and changing the user the token belonged to.
+- [CVE-2024-38371](https://docs.goauthentik.io/security/cves/CVE-2024-38371.md): Due to a bug, access restrictions assigned to an application were not checked when using the OAuth2 Device code flow.
+- [CVE-2024-42490](https://docs.goauthentik.io/security/cves/CVE-2024-42490.md): Several API endpoints can be accessed by users without correct authentication/authorization.
+- [CVE-2024-47070](https://docs.goauthentik.io/security/cves/CVE-2024-47070.md): The vulnerability allows bypassing policies by adding X-Forwarded-For header with unparsable IP address, e.g.
+- [CVE-2024-47077](https://docs.goauthentik.io/security/cves/CVE-2024-47077.md): Access tokens issued to one application can be stolen by that application and used to impersonate the user against any other proxy provider.
+- [CVE-2024-52287](https://docs.goauthentik.io/security/cves/CVE-2024-52287.md): When using the clientcredentials or devicecode OAuth grants, it was possible for an attacker to get a token from authentik with scopes that haven't been configured in authentik.
+- [CVE-2024-52289](https://docs.goauthentik.io/security/cves/CVE-2024-52289.md): Redirect URIs in the OAuth2 provider in authentik are checked by regex comparison.
+- [CVE-2024-52307](https://docs.goauthentik.io/security/cves/CVE-2024-52307.md): Due to the usage of a non-constant time comparison for the /-/metrics/ endpoint it was possible to brute-force the SECRET_KEY, which is used to authenticate the endpoint.
+- [CVE-2025-29928](https://docs.goauthentik.io/security/cves/CVE-2025-29928.md): As of version 2025.4, the option to store sessions in cache has been removed; sessions are now exclusively stored in the database.
+- [CVE-2025-52553](https://docs.goauthentik.io/security/cves/CVE-2025-52553.md): After authorizing access to a RAC endpoint, authentik creates a token which is used for a single connection and is sent to the client in the URL.
+- [CVE-2025-53942](https://docs.goauthentik.io/security/cves/CVE-2025-53942.md): Deactivated users that had either enrolled via OAuth/SAML or had their account connected to an OAuth/SAML account can still partially access authentik even if their account is deactivated.
+- [CVE-2025-64521](https://docs.goauthentik.io/security/cves/CVE-2025-64521.md): When authenticating with clientid and clientsecret to an OAuth provider, authentik creates a service account for the provider.
+- [CVE-2025-64708](https://docs.goauthentik.io/security/cves/CVE-2025-64708.md): In previous authentik versions, invitations were considered valid regardless if they are expired or not, thus relying on background tasks to clean up expired ones.
+- [CVE-2026-25227](https://docs.goauthentik.io/security/cves/CVE-2026-25227.md): When using delegated permissions, a User that has the permission Can view \* Property Mapping or Can view Expression Policy is able to execute arbitrary code within the authentik server container through the test endpoint, which is intended to preview how a property mapping/policy works.
+- [CVE-2026-25748](https://docs.goauthentik.io/security/cves/CVE-2026-25748.md): With a malformed cookie it was possible to bypass authentication when using forward authentication in the authentik Proxy Provider when used in conjunction with Traefik or Caddy as reverse proxy.
+- [CVE-2026-25922](https://docs.goauthentik.io/security/cves/CVE-2026-25922.md): When using a SAML Source that has the option Verify Assertion Signature under Verification Certificate enabled and not Verify Response Signature, or does not have the Encryption Certificate setting under Advanced protocol settings configured, it was possible for an attacker to inject a malicious assertion before the signed assertion that authentik would use instead.
+- [CVE-2026-40165](https://docs.goauthentik.io/security/cves/CVE-2026-40165.md): Due to how authentik used to extract the NameID value from a SAML assertion, it was possible for an attacker to trick authentik into only seeing a part of the NameID value, potentially allowing an attacker to get access to other accounts.
+- [CVE-2026-40166](https://docs.goauthentik.io/security/cves/CVE-2026-40166.md): Authenticated non-admin users with at least one OAuth2 access token can retrieve the clientsecret of confidential OAuth2 providers they have previously authenticated against, via GET /api/v3/oauth2/accesstokens/.
+- [CVE-2026-41569](https://docs.goauthentik.io/security/cves/CVE-2026-41569.md): The WS-Federation provider validates the user-supplied wreply parameter using a raw string prefix check rather than proper URL parsing.
+- [CVE-2026-42849](https://docs.goauthentik.io/security/cves/CVE-2026-42849.md): Due to the implementation of stages in the SFE (Simple Flow Executor) in order to make the interface more compatible with legacy browsers, it was possible to use an XSS exploit in the AutosubmitStage.
+- [CVE-2026-47201](https://docs.goauthentik.io/security/cves/CVE-2026-47201.md): authentik's SAML Source ACS endpoint is vulnerable to XML Signature Wrapping when validating upstream SAML responses.
+- [CVE-2026-49443 / GHSA-xp7f-xjjx-gwm8](https://docs.goauthentik.io/security/cves/CVE-2026-49443.md): The Source stage can be bypassed by sending an empty POST.
+- [CVE-2026-49443 / GHSA-5wcc-hf24-rf5h](https://docs.goauthentik.io/security/cves/CVE-2026-49448.md): An attacker with the ability to change a source connection, and an account in one of the configured sources can log into any account.
+- [CVE-2026-54730 / GHSA-3v9h-3hrm-29cx](https://docs.goauthentik.io/security/cves/CVE-2026-54730.md): The enterprise Google Chrome device-trust stages advance the flow without confirming that the out-of-band device attestation actually ran.
+- [CVE-2026-55106 / GHSA-h8ff-c3h7-2gf8](https://docs.goauthentik.io/security/cves/CVE-2026-55106.md): A diagnostic action on LDAP Sources did not enforce the read-authorization check applied across the rest of the API, allowing any client, including unauthenticated ones, to retrieve directory information from a configured LDAP Source.
+- [CVE-2026-57580 / GHSA-35v6-hv2g-6992](https://docs.goauthentik.io/security/cves/CVE-2026-57580.md): On a SAML Source that matches users by username or email, an attacker who inserts an XML comment into a validly signed assertion can bind their external identity to an existing account and authenticate as that user.
+- [GHSA-4r87-w2cx-fr3f](https://docs.goauthentik.io/security/cves/GHSA-4r87-w2cx-fr3f.md): The Shared Signals Framework checked permissions only when a stream was created.
+- [GHSA-5wcc-hf24-rf5h](https://docs.goauthentik.io/security/cves/GHSA-5wcc-hf24-rf5h.md): In nginx forward-auth mode, the authentik outpost reads the forwarded request URL from a header that nginx does not set, but that a client can freely inject.
+- [GHSA-jpx7-5hcf-w9xp](https://docs.goauthentik.io/security/cves/GHSA-jpx7-5hcf-w9xp.md): The Remote Access Control (RAC) endpoint list returned every configured endpoint to any authenticated user, regardless of which applications they were allowed to access, and the response included connection settings that can hold stored credentials.
+
+## System Management
+
+- [AKQL search syntax](https://docs.goauthentik.io/sys-mgmt/akql.md): Use AKQL to filter events, users, groups, and event matcher policies.
+- [Background tasks](https://docs.goauthentik.io/background-tasks.md): authentik uses background tasks to run various operations independently and asynchronously, separated from the continuous web requests processed for general user interaction.
+- [Certificates](https://docs.goauthentik.io/sys-mgmt/certificates.md): Certificates in authentik are used for:
+- [Data Exports](https://docs.goauthentik.io/sys-mgmt/data-exports.md): authentik enterprise allows you to export user and event data in CSV format for backup or analysis purposes.
+- [Object attributes](https://docs.goauthentik.io/sys-mgmt/object-attributes.md): Define reusable object attribute fields for authentik objects
+- [Object Lifecycle Management](https://docs.goauthentik.io/sys-mgmt/object-lifecycle-management.md): Configure authentik to auto-schedule and track periodic reviews of authentication settings for groups, roles, and applications.
+- [System settings](https://docs.goauthentik.io/sys-mgmt/settings.md): System settings control system-wide behavior.
+- [Tenancy](https://docs.goauthentik.io/sys-mgmt/tenancy.md): Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants.
+- [User offboarding](https://docs.goauthentik.io/sys-mgmt/user-offboarding.md): Schedule the deactivation or deletion of a user, with optional session and token revocation.
+- [Event actions](https://docs.goauthentik.io/sys-mgmt/events/event-actions.md): Whenever any of the following actions occur, an event is created.
+- [Events](https://docs.goauthentik.io/sys-mgmt/events.md): Events are authentik's built-in logging system.
+- [Log forwarding](https://docs.goauthentik.io/sys-mgmt/events/log-forwarding.md): authentik records system, user, and admin activity as events.
+- [Logging events](https://docs.goauthentik.io/sys-mgmt/events/logging-events.md): Logs are a vital tool for system diagnostics, event auditing, user management, reporting, and more.
+- [Notification Rule Expression Policies](https://docs.goauthentik.io/sys-mgmt/events/notification_rule_expression_policies.md): Notification rules with bound expression policies can match event context, update related objects, and send custom messages.
+- [Notification Rules](https://docs.goauthentik.io/sys-mgmt/events/notifications.md): An authentik administrator can create notification rules for selected events.
+- [Notification Transports](https://docs.goauthentik.io/sys-mgmt/events/transports.md): To receive notifications about events, first create a notification transport, and then define a notification rule with a bound policy.
+- [Backup and restore your authentik instance](https://docs.goauthentik.io/sys-mgmt/ops/backup-restore.md): This guide outlines the critical components to back up and restore in authentik.
+- [GeoIP](https://docs.goauthentik.io/sys-mgmt/ops/geoip.md): authentik supports GeoIP to add additional information to login/authorization/enrollment requests.
+- [Monitoring](https://docs.goauthentik.io/sys-mgmt/ops/monitoring.md): authentik can be easily monitored in multiple ways.
+- [Worker](https://docs.goauthentik.io/worker.md): The authentik worker runs background tasks.
+- [S3-compatible storage](https://docs.goauthentik.io/sys-mgmt/ops/storage-s3.md): authentik can store uploaded files in Amazon S3 or an S3-compatible object storage service instead of storing them on the local filesystem in /data.
+- [S3-compatible storage providers](https://docs.goauthentik.io/sys-mgmt/ops/storage-s3/providers.md): Configure the shared settings in S3-compatible storage, then use the section for your storage service to set its endpoint and authentication options.
+
+## Troubleshooting
+
+- [I can't access an application](https://docs.goauthentik.io/troubleshooting/access.md): If your user is a superuser, or has the attribute goauthentik.io/user/debug set to true (can also be set on a group level):
+- [Troubleshooting CSRF Errors](https://docs.goauthentik.io/troubleshooting/csrf.md): With some proxy setups, you might run into CSRF errors when attempting to create/save objects in authentik.
+- [Troubleshooting Email sending](https://docs.goauthentik.io/troubleshooting/emails.md): To test if an email stage, or the global email settings are configured correctly, you can run the following command:
+- [Troubleshooting Forward auth](https://docs.goauthentik.io/troubleshooting/forward_auth.md): Steps to help debug forward auth setups with various reverse proxies
+- [Errors when uploading icons](https://docs.goauthentik.io/troubleshooting/image_upload.md): There are two common causes for icon and image upload problems when authentik uses local file storage.
+- [Troubleshooting LDAP Synchronization](https://docs.goauthentik.io/troubleshooting/ldap_source.md): To troubleshoot LDAP sources, you can run the command below to run a synchronization in the foreground and see any errors or warnings that might happen directly
+- [I can't log in to authentik](https://docs.goauthentik.io/troubleshooting/login.md): In case you can't log in anymore, perhaps due to an incorrectly configured stage or a failed flow import, you can create a recovery key.
+- [Missing admin group](https://docs.goauthentik.io/troubleshooting/missing_admin_group.md): If all of the Admin groups have been deleted, or misconfigured during sync, you can use the following command to gain access back.
+- [Missing Permissions system_exception events](https://docs.goauthentik.io/troubleshooting/missing_permission.md): This error can occur during initial setup, when authentik bootstraps the embedded Outpost, while the database migrations are not finished yet.
+- [Capturing authentik logs](https://docs.goauthentik.io/troubleshooting/logs.md): When troubleshooting issues in authentik, reviewing the logs can be invaluable.
+- [Capturing outpost logs](https://docs.goauthentik.io/troubleshooting/logs/outpost_logs.md): This guide only applies to standalone outposts, the embedded outpost outputs to the same place as the server, refer to Capturing authentik logs for more information.
+- [Upgrade PostgreSQL on Docker Compose](https://docs.goauthentik.io/troubleshooting/postgres/upgrade_docker.md): This guide describes a manual PostgreSQL major-version upgrade for the default authentik Docker Compose deployment.
+- [Upgrading PostgreSQL on Kubernetes](https://docs.goauthentik.io/troubleshooting/postgres/upgrade_kubernetes.md): This guide walks through a manual PostgreSQL major-version upgrade for an authentik Kubernetes deployment.
+
+## Add and Secure Applications
+
+- [Access requests](https://docs.goauthentik.io/add-secure-apps/access-requests.md): Let users request time-bound access to applications and entitlements, with request rules, expiry, and a full audit trail
+- [Applications](https://docs.goauthentik.io/add-secure-apps/applications.md): Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the Application Dashboard page.
+- [Manage applications](https://docs.goauthentik.io/add-secure-apps/applications/manage_apps.md): Managing the applications that your team uses involves several tasks, from initially adding the application and provider, to controlling access and visibility of the application, to providing access URLs.
+- [Bindings in authentik](https://docs.goauthentik.io/add-secure-apps/bindings-overview.md): A binding connects one authentik object to another object that uses it.
+- [Work with bindings](https://docs.goauthentik.io/add-secure-apps/bindings-overview/work-with-bindings.md): Bindings are configured from the object that uses them.
+- [Outposts](https://docs.goauthentik.io/add-secure-apps/outposts.md): An outpost is a single deployment of an authentik component, essentially a service, that can be deployed anywhere that allows for a connection to the authentik API.
+- [Manual Outpost deployment in Docker Compose](https://docs.goauthentik.io/add-secure-apps/outposts/manual-deploy-docker-compose.md): To deploy an outpost with Docker Compose, use the appropriate snippet from the options below and add it to your Compose file.
+- [Manual Outpost deployment on Kubernetes](https://docs.goauthentik.io/add-secure-apps/outposts/manual-deploy-kubernetes.md): Use the following manifest, replacing all values surrounded with __.
+- [Upgrading an Outpost](https://docs.goauthentik.io/add-secure-apps/outposts/upgrading.md): Outposts deployed using the Docker or Kubernetes integrations are managed by authentik and are upgraded automatically.
+- [Providers](https://docs.goauthentik.io/add-secure-apps/providers.md): A provider is an authentication method, a service that is used by authentik to authenticate the user for the associated application.
+- [Collect custom user attributes during enrollment](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/collect-user-attributes.md): Collect user data with an enrollment flow and store it as custom user attributes.
+- [Default flows](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/default-flows.md): How authentik selects and uses default flows for providers and brands.
+- [Example flows](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/flows.md): Import example flow blueprints for enrollment, MFA login, magic links, and other workflows.
+- [Flows](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow.md): Create, configure, import, and manage flows for authentication, enrollment, and other processes.
+- [Flow Inspector](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/inspector.md): Inspect running flows and troubleshoot their stages, history, and context.
+- [Flow Planner](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/planner.md): How authentik determines which stages run and the order in which they run.
+- [Example policy snippets](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/snippets.md): Example policies for use with flows.
+- [Stages](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages.md): An introduction to creating stages and adding them to flows.
+- [Embedded Outpost](https://docs.goauthentik.io/add-secure-apps/outposts/embedded.md): authentik includes an embedded outpost to simplify deployments that use the Proxy provider.
+- [Docker](https://docs.goauthentik.io/add-secure-apps/outposts/integrations/docker.md): The Docker integration automatically deploys and manages outpost containers using the Docker HTTP API.
+- [Kubernetes](https://docs.goauthentik.io/add-secure-apps/outposts/integrations/kubernetes.md): The Kubernetes integration automatically deploys and manages outposts in a Kubernetes cluster.
+- [Configure Entra ID](https://docs.goauthentik.io/add-secure-apps/providers/entra/configure-entra.md): For more information about using an Entra ID provider, see the Entra ID Overview documentation.
+- [Create an Entra ID provider](https://docs.goauthentik.io/add-secure-apps/providers/entra/create-entra-provider.md): For more information about using an Entra ID provider, see the Overview documentation.
+- [Microsoft Entra ID provider](https://docs.goauthentik.io/add-secure-apps/providers/entra.md): The Entra ID provider allows you to integrate with your Entra ID tenant.
+- [Configure Google Workspace](https://docs.goauthentik.io/add-secure-apps/providers/gws/configure-gws.md): For more information about using a Google Workspace provider, see the Overview documentation.
+- [Create a Google Workspace provider](https://docs.goauthentik.io/add-secure-apps/providers/gws/create-gws-provider.md): For more information about using a Google Workspace provider, see the Overview documentation.
+- [Google Workspace provider](https://docs.goauthentik.io/add-secure-apps/providers/gws.md): The Google Workspace provider allows you to integrate with your Google Workspace organization.
+- [Create an LDAP provider](https://docs.goauthentik.io/add-secure-apps/providers/ldap/create-ldap-provider.md): Creating an authentik LDAP provider requires the following steps:
+- [LDAP Provider](https://docs.goauthentik.io/add-secure-apps/providers/ldap.md): The LDAP provider allows you to integrate with Service Providers using LDAP.
+- [Create an OAuth2 provider](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/create-oauth2-provider.md): To create a provider along with the corresponding application that uses it for authentication, navigate to Applications > Applications and click New Application.
+- [Device code flow](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/device_code.md): The device code flow is also known as device flow or device authorization grant flow.
+- [Dynamic Client Registration (DCR)](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/dynamic-client-registration.md): Allow authorized clients to dynamically register OAuth2/OIDC applications in authentik
+- [Front-channel and back-channel logout](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout.md): Configure front-channel and back-channel logout for OAuth2/OpenID Connect providers
+- [GitHub compatibility](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/github-compatibility.md): The OAuth2 provider also exposes a GitHub-compatible endpoint.
+- [OAuth 2.0 provider](https://docs.goauthentik.io/add-secure-apps/providers/oauth2.md): In authentik, you can create an OAuth 2.0 provider to authenticate users to an associated application.
+- [Machine-to-Machine (M2M) authentication](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/machine_to_machine.md): The OAuth 2.0 specification includes the client credentials grant, which allows machine-to-machine (M2M) authentication without user involvement.
+- [Token exchange](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/token_exchange.md): Token exchange allows a client to exchange a token it already holds for a new token issued by an authentik provider.
+- [WebFinger support](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/webfinger_support.md): The WebFinger protocol allows for the discovery of information about individuals or entities on the Internet through standard HTTP methods.
+- [Property mapping expressions](https://docs.goauthentik.io/add-secure-apps/providers/property-mappings/expression.md): Write Python expressions for provider property mappings.
+- [Provider property mappings](https://docs.goauthentik.io/add-secure-apps/providers/property-mappings.md): Configure how authentik sends user, group, and other data to integrated applications.
+- [Create a proxy provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy/create-proxy-provider.md): For an overview of how proxy providers work, see the proxy provider documentation.
+- [Custom headers](https://docs.goauthentik.io/add-secure-apps/providers/proxy/custom_headers.md): The proxy can send custom headers to your upstream application.
+- [Forward auth](https://docs.goauthentik.io/add-secure-apps/providers/proxy/forward_auth.md): Forward auth uses your existing reverse proxy for application traffic and relies on the authentik outpost only to check authentication and authorization.
+- [Header authentication](https://docs.goauthentik.io/add-secure-apps/providers/proxy/header_authentication.md): Proxy providers can send HTTP Basic authentication credentials to the upstream application.
+- [Proxy provider](https://docs.goauthentik.io/add-secure-apps/providers/proxy.md): The proxy provider protects applications that do not support native authentication protocols such as OIDC, SAML, or LDAP.
+- [Caddy](https://docs.goauthentik.io/add-secure-apps/providers/proxy/server_caddy.md): The configuration template shown below applies to both single-application and domain-level forward auth.
+- [Envoy](https://docs.goauthentik.io/add-secure-apps/providers/proxy/server_envoy.md): The configuration template shown below applies to both single-application and domain-level forward auth.
+- [nginx](https://docs.goauthentik.io/add-secure-apps/providers/proxy/server_nginx.md): The configuration templates shown below apply to both single-application and domain-level forward auth.
+- [Traefik](https://docs.goauthentik.io/add-secure-apps/providers/proxy/server_traefik.md): The configuration templates shown below apply to both single-application and domain-level forward auth.
+- [Create a Remote Access Control (RAC) provider](https://docs.goauthentik.io/add-secure-apps/providers/rac/create-rac-provider.md): For an overview of Remote Access Control (RAC), see the RAC provider documentation.
+- [Remote Access Control (RAC) Provider](https://docs.goauthentik.io/add-secure-apps/providers/rac.md): The RAC provider allows users to access remote Windows, macOS, and Linux machines via RDP/SSH/VNC.
+- [RAC SSH Public Key Authentication](https://docs.goauthentik.io/add-secure-apps/providers/rac/rac-public-key.md): The RAC provider supports SSH public key authentication.
+- [RAC Credentials Prompt](https://docs.goauthentik.io/add-secure-apps/providers/rac/rac_credentials_prompt.md): You can configure the RAC provider to prompt users for their credentials when connecting to RAC endpoints.
+- [RADIUS Provider](https://docs.goauthentik.io/add-secure-apps/providers/radius.md): You can configure a Radius provider for applications that don't support any other protocols or that require Radius.
+- [Create a SAML provider](https://docs.goauthentik.io/add-secure-apps/providers/saml/create-saml-provider.md): authentik SAML providers can be created either from scratch or by using SAML metadata exported from the Service Provider (SP).
+- [SAML Provider](https://docs.goauthentik.io/add-secure-apps/providers/saml.md): The SAML provider allows you to integrate with Service Providers using the SAML2 protocol.
+- [SAML Single Logout](https://docs.goauthentik.io/add-secure-apps/providers/saml/saml_single_logout.md): Single Logout (SLO) allows authentik to log out users from all configured providers simultaneously when they sign out of authentik.
+- [Create a SCIM provider](https://docs.goauthentik.io/add-secure-apps/providers/scim/create-scim-provider.md): To create a provider along with a corresponding application, navigate to Applications > Applications and click New Application.
+- [SCIM Provider](https://docs.goauthentik.io/add-secure-apps/providers/scim.md): SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups.
+- [Single Logout (SLO)](https://docs.goauthentik.io/add-secure-apps/providers/single-logout.md): Single Logout (SLO) is a security feature that logs users out of all active applications when they log out of authentik.
+- [Configure an SSF provider](https://docs.goauthentik.io/add-secure-apps/providers/ssf/create-ssf-provider.md): How to create and configure an SSF provider in authentik
+- [Shared Signals Framework (SSF) Provider](https://docs.goauthentik.io/add-secure-apps/providers/ssf.md): Overview of SSF and the authentik SSF provider
+- [Create a WS-Federation provider](https://docs.goauthentik.io/add-secure-apps/providers/wsfed/create-wsfed-provider.md): An authentik WS-Federation provider is typically created as part of an application/provider pair, using the steps below.
+- [WS-Federation Provider](https://docs.goauthentik.io/add-secure-apps/providers/wsfed.md): The WS-Federation provider is used to integrate with applications and service providers that use WS-Federation protocol.
+- [Flow Context](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/context.md): An overview of the data stored in a flow context and how authentik uses it.
+- [Headless](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/executors/headless.md): Run authentication flows for clients that do not have a web interface.
+- [Default](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/executors/if-flow.md): An overview of the default web interface for running flows.
+- [Simplified flow executor](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/executors/sfe.md): How the simplified flow executor supports older browsers.
+- [User settings](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/executors/user-settings.md): Use the user settings flow to let users update their profiles.
+- [Account Lockdown stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/account_lockdown.md): Secure user accounts and revoke access with the Account Lockdown stage.
+- [Duo authenticator setup stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_duo.md): Enroll Duo authenticators for users as part of an authentication flow.
+- [Email authenticator setup stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_email.md): Set up email-based authenticators and one-time codes for users.
+- [Google Chrome Device Trust authenticator stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc.md): An overview of the deprecated Google Chrome Device Trust stage.
+- [SMS authenticator setup stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_sms.md): Set up SMS-based authenticators and one-time codes for users.
+- [Static authenticator setup stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_static.md): Generate single-use backup codes for users when other authenticators are unavailable.
+- [TOTP authenticator setup stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_totp.md): Set up time-based one-time password authenticators for users.
+- [Authenticator validation stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_validate.md): Validate the authentication methods that a user has already enrolled.
+- [WebAuthn / FIDO2 / Passkeys authenticator setup stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_webauthn.md): Enroll WebAuthn authenticators, security keys, and passkeys for users.
+- [Captcha stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/captcha.md): Add CAPTCHA checks to flows to verify that an interaction is human.
+- [Consent stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/consent.md): Ask users to approve sharing their data with applications.
+- [Deny stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/deny.md): Stop a flow immediately and deny access to the user.
+- [Email stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/email.md): Send verification, recovery, invitation, and other action emails from flows.
+- [Endpoint stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/endpoint.md): Check devices and make their information available to flows and policies.
+- [Identification stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/identification.md): Identify users by username, email address, or an external login source.
+- [Invitation stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/invitation.md): Require an invitation before a user can continue through enrollment.
+- [Mutual TLS stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/mtls.md): Authenticate or enroll users by validating their client certificates.
+- [Password stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/password.md): Prompt users for a password and check it against configured sources.
+- [Prompt stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/prompt.md): Collect user input and store the submitted values in the flow context.
+- [Redirect stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/redirect.md): Redirect users to another flow or to a specified URL.
+- [Source stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/source.md): Include authentication from an external login source within a flow.
+- [User delete stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_delete.md): Delete the current user's account during an unenrollment flow.
+- [User login stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_login.md): Create a user session and configure how long it remains active.
+- [User logout stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_logout.md): End a user's session and optionally start Single Logout.
+- [User write stage](https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/user_write.md): Create or update users with information collected during a flow.
+
+## Glossary
+
+- [Glossary](https://docs.goauthentik.io/core/glossary.md): This glossary provides definitions for common terms used throughout the authentik documentation.
+- [Access Token](https://docs.goauthentik.io/core/glossary/terms/access-token.md)
+- [Assertion Consumer Service (ACS)](https://docs.goauthentik.io/core/glossary/terms/acs.md)
+- [Application](https://docs.goauthentik.io/core/glossary/terms/application.md)
+- [Audience (aud)](https://docs.goauthentik.io/core/glossary/terms/audience.md)
+- [Authorization code](https://docs.goauthentik.io/core/glossary/terms/authorization-code.md)
+- [Authorization endpoint](https://docs.goauthentik.io/core/glossary/terms/authorization-endpoint.md)
+- [Authorization Server (AS)](https://docs.goauthentik.io/core/glossary/terms/authorization-server.md)
+- [Back-channel logout](https://docs.goauthentik.io/core/glossary/terms/back-channel-logout.md)
+- [Back-channel](https://docs.goauthentik.io/core/glossary/terms/back-channel.md)
+- [Blueprints](https://docs.goauthentik.io/core/glossary/terms/blueprints.md)
+- [Brand](https://docs.goauthentik.io/core/glossary/terms/brand.md)
+- [Claim](https://docs.goauthentik.io/core/glossary/terms/claim.md)
+- [Dynamic in-memory stage](https://docs.goauthentik.io/core/glossary/terms/dynamic-in-memory-stage.md)
+- [Entity ID](https://docs.goauthentik.io/core/glossary/terms/entity-id.md)
+- [Flow](https://docs.goauthentik.io/core/glossary/terms/flow.md)
+- [Front-channel logout](https://docs.goauthentik.io/core/glossary/terms/front-channel-logout.md)
+- [Front-channel](https://docs.goauthentik.io/core/glossary/terms/front-channel.md)
+- [Grant type](https://docs.goauthentik.io/core/glossary/terms/grant-type.md)
+- [ID token](https://docs.goauthentik.io/core/glossary/terms/id-token.md)
+- [Identity Provider (IdP)](https://docs.goauthentik.io/core/glossary/terms/identity-provider.md)
+- [IdP-initiated SSO](https://docs.goauthentik.io/core/glossary/terms/idp-initiated-sso.md)
+- [Introspection endpoint](https://docs.goauthentik.io/core/glossary/terms/introspection-endpoint.md)
+- [Issuer (iss)](https://docs.goauthentik.io/core/glossary/terms/issuer.md)
+- [JWK](https://docs.goauthentik.io/core/glossary/terms/jwk.md)
+- [JWKS](https://docs.goauthentik.io/core/glossary/terms/jwks.md)
+- [JWT](https://docs.goauthentik.io/core/glossary/terms/jwt.md)
+- [Base DN](https://docs.goauthentik.io/core/glossary/terms/ldap-base-dn.md)
+- [Bind DN](https://docs.goauthentik.io/core/glossary/terms/ldap-bind-dn.md)
+- [Distinguished Name (DN)](https://docs.goauthentik.io/core/glossary/terms/ldap-dn.md)
+- [LDAP search filter](https://docs.goauthentik.io/core/glossary/terms/ldap-filter.md)
+- [ObjectClass](https://docs.goauthentik.io/core/glossary/terms/ldap-objectclass.md)
+- [LDAP](https://docs.goauthentik.io/core/glossary/terms/ldap.md)
+- [NameID](https://docs.goauthentik.io/core/glossary/terms/nameid.md)
+- [Notification rule](https://docs.goauthentik.io/core/glossary/terms/notification-rule.md)
+- [OIDC discovery document](https://docs.goauthentik.io/core/glossary/terms/oidc-discovery.md)
+- [OpenID Provider (OP)](https://docs.goauthentik.io/core/glossary/terms/openid-provider.md)
+- [Outpost](https://docs.goauthentik.io/core/glossary/terms/outpost.md)
+- [Passkey](https://docs.goauthentik.io/core/glossary/terms/passkey.md)
+- [PKCE](https://docs.goauthentik.io/core/glossary/terms/pkce.md)
+- [Policy](https://docs.goauthentik.io/core/glossary/terms/policy.md)
+- [Property mappings](https://docs.goauthentik.io/core/glossary/terms/property-mappings.md)
+- [Provider](https://docs.goauthentik.io/core/glossary/terms/provider.md)
+- [RADIUS auth methods](https://docs.goauthentik.io/core/glossary/terms/radius-auth-methods.md)
+- [RADIUS messages](https://docs.goauthentik.io/core/glossary/terms/radius-messages.md)
+- [Network Access Server (NAS)](https://docs.goauthentik.io/core/glossary/terms/radius-nas.md)
+- [RADIUS shared secret](https://docs.goauthentik.io/core/glossary/terms/radius-shared-secret.md)
+- [Vendor‑Specific Attribute (VSA)](https://docs.goauthentik.io/core/glossary/terms/radius-vsa.md)
+- [RADIUS](https://docs.goauthentik.io/core/glossary/terms/radius.md)
+- [Redirect URI](https://docs.goauthentik.io/core/glossary/terms/redirect-uri.md)
+- [Refresh token](https://docs.goauthentik.io/core/glossary/terms/refresh-token.md)
+- [Relying Party (RP)](https://docs.goauthentik.io/core/glossary/terms/relying-party.md)
+- [Response type](https://docs.goauthentik.io/core/glossary/terms/response-type.md)
+- [Revocation endpoint](https://docs.goauthentik.io/core/glossary/terms/revocation-endpoint.md)
+- [SAML assertion](https://docs.goauthentik.io/core/glossary/terms/saml-assertion.md)
+- [SAML binding](https://docs.goauthentik.io/core/glossary/terms/saml-binding.md)
+- [SCIM endpoints (Users, Groups)](https://docs.goauthentik.io/core/glossary/terms/scim-endpoints.md)
+- [SCIM externalId](https://docs.goauthentik.io/core/glossary/terms/scim-externalid.md)
+- [SCIM provisioning lifecycle](https://docs.goauthentik.io/core/glossary/terms/scim-lifecycle.md)
+- [SCIM PATCH](https://docs.goauthentik.io/core/glossary/terms/scim-patch.md)
+- [SCIM resource](https://docs.goauthentik.io/core/glossary/terms/scim-resource.md)
+- [SCIM](https://docs.goauthentik.io/core/glossary/terms/scim.md)
+- [Scope](https://docs.goauthentik.io/core/glossary/terms/scope.md)
+- [Service Provider (SP)](https://docs.goauthentik.io/core/glossary/terms/service-provider.md)
+- [Single Logout (SLO)](https://docs.goauthentik.io/core/glossary/terms/single-logout.md)
+- [Source](https://docs.goauthentik.io/core/glossary/terms/source.md)
+- [SP-initiated SSO](https://docs.goauthentik.io/core/glossary/terms/sp-initiated-sso.md)
+- [Stage](https://docs.goauthentik.io/core/glossary/terms/stage.md)
+- [Subject (sub)](https://docs.goauthentik.io/core/glossary/terms/subject.md)
+- [System tasks](https://docs.goauthentik.io/core/glossary/terms/system-tasks.md)
+- [Token endpoint](https://docs.goauthentik.io/core/glossary/terms/token-endpoint.md)
+- [UserInfo endpoint](https://docs.goauthentik.io/core/glossary/terms/userinfo-endpoint.md)
+- [WebAuthn](https://docs.goauthentik.io/core/glossary/terms/webauthn.md)
+
+## Releases
+
+- [Release 2021.1](https://docs.goauthentik.io/releases/2021.1.md): In previous versions, you had to configure email connection details per Email Stage.
+- [Release 2021.10](https://docs.goauthentik.io/releases/2021.10.md): To better understand how a flow works, and why things might not be working as intended, you can now launch Flows with an inspector enabled.
+- [Release 2021.12](https://docs.goauthentik.io/releases/2021.12.md): This release does not have any headline features, and mostly fixes bugs.
+- [Release 2021.2](https://docs.goauthentik.io/releases/2021.2.md): Objects like property mappings can now be marked as managed, which means that they will be created, updated and deleted by authentik.
+- [Release 2021.3](https://docs.goauthentik.io/releases/2021.3.md): This release introduces support for WebAuthn, an open standard for the use of hardware authentication keys like YubiKeys on the web.
+- [Release 2021.4](https://docs.goauthentik.io/releases/2021.4.md): In the past, all objects, which could have policies attached to them, required all policies to pass to consider an action successful.
+- [Release 2021.5](https://docs.goauthentik.io/releases/2021.5.md): You can now configure an LDAP Provider for applications that don't support any newer protocols or require LDAP.
+- [Release 2021.6](https://docs.goauthentik.io/releases/2021.6.md): You can now add the new authenticatorduo stage to configure Duo authenticators.
+- [Release 2021.7](https://docs.goauthentik.io/releases/2021.7.md): You can now configure certificates for your LDAP Providers, meaning that all communication will be done encrypted.
+- [Release 2021.8](https://docs.goauthentik.io/releases/2021.8.md): To simplify the setup, an embedded outpost has been added.
+- [Release 2021.9](https://docs.goauthentik.io/releases/2021.9.md): This release splits the administration interface from the end-user interface.
+- [Release 2022.1](https://docs.goauthentik.io/releases/2022.1.md): This release mostly removes legacy fields and features that have been deprecated for several releases.
+- [Release 2022.10](https://docs.goauthentik.io/releases/2022.10.md): See more in the OAuth2 provider docs here.
+- [Release 2022.11](https://docs.goauthentik.io/releases/2022.11.md): The policy has been merged with the password policy which provides the same functionality.
+- [Release 2022.12](https://docs.goauthentik.io/releases/2022.12.md): To better detect if a blueprint should be fetched locally or via OCI, all OCI sourced blueprints require an oci:// protocol.
+- [Release 2022.2](https://docs.goauthentik.io/releases/2022.2.md): The integrated backup functionality has been removed due to the following reasons:
+- [Release 2022.3](https://docs.goauthentik.io/releases/2022.3.md): User settings are now configured using flows and stages, allowing administrators to configure fields, add additional fields and run custom validation for user settings.
+- [Release 2022.4](https://docs.goauthentik.io/releases/2022.4.md): For legacy reasons, authentik used to support HTTP-Basic authenticated requests, using the token as a password.
+- [Release 2022.5](https://docs.goauthentik.io/releases/2022.5.md): This requires some reconfiguration on both Twitter's and authentik's side.
+- [Release 2022.6](https://docs.goauthentik.io/releases/2022.6.md): These fields can be used to automatically configure OAuth Sources based on the OpenID Connect Discovery Spec.
+- [Release 2022.7](https://docs.goauthentik.io/releases/2022.7.md): Instead, create an OAuth Source with the certificate configured as JWKS Data, and enable the source in the provider.
+- [Release 2022.8](https://docs.goauthentik.io/releases/2022.8.md): Previously the data was parsed into a string when possible, and when decoding failed, the raw base64 would be saved.
+- [Release 2022.9](https://docs.goauthentik.io/releases/2022.9.md): Instead of manually having to call an API endpoint, there's now a UI for importing Duo devices.
+- [Release 2023.1](https://docs.goauthentik.io/releases/2023.1.md): This policy type has been deprecated since 2022.11 and was automatically migrated to the password policy with equivalent options.
+- [Release 2023.10](https://docs.goauthentik.io/releases/2023.10.md): In previous versions, requests to a path like /api/v3/core/users would be redirected to [...]/users/.
+- [Release 2023.2 - Signout and Avatar improvements](https://docs.goauthentik.io/releases/2023.2.md): In previous versions, logging out of a single proxied application would only invalidate that application's session.
+- [Release 2023.3 - SCIM support](https://docs.goauthentik.io/releases/2023.3.md): authentik can now provision users into other IT systems via the SCIM (System for Cross-domain Identity Management) protocol.
+- [Release 2023.4 - RADIUS support](https://docs.goauthentik.io/releases/2023.4.md): In previous versions, the helm chart would create a ClusterRole and ClusterRoleBinding if the service account creation was enabled.
+- [Release 2023.5](https://docs.goauthentik.io/releases/2023.5.md): The next release of authentik will only support PostgreSQL 12 and newer.
+- [Release 2023.6](https://docs.goauthentik.io/releases/2023.6.md): authentik's LDAP Provider now supports StartTLS in addition to supporting SSL.
+- [Release 2023.8](https://docs.goauthentik.io/releases/2023.8.md): As announced in the 2023.5 release notes (and postponed by a release), this release requires PostgreSQL 12 or newer.
+- [Release 2024.10](https://docs.goauthentik.io/releases/2024.10.md): We have no breaking changes this release!
+- [Release 2024.12](https://docs.goauthentik.io/releases/2024.12.md): You can disable this behavior in the Admin interface under System > Settings.
+- [Release 2024.2](https://docs.goauthentik.io/releases/2024.2.md): Tenants, which were previously used to change branding configuration, default flows, and several other settings, have been renamed to brands.
+- [Release 2024.4](https://docs.goauthentik.io/releases/2024.4.md): The following config options have been moved from the config file and can now be set using the Admin interface (under System -> Settings) or the API: AUTHENTIKDEFAULTTOKEN_LENGTH
+- [Release 2024.6](https://docs.goauthentik.io/releases/2024.6.md): With this release, authentik now requires PostgreSQL version 14 or later.
+- [Release 2024.8](https://docs.goauthentik.io/releases/2024.8.md): LDAP property mappings have been reworked to remove Object field.
+- [Release 2025.10](https://docs.goauthentik.io/releases/2025.10.md): In previous versions, authentik used Redis for caching, tasks, the embedded proxy outpost's session store, and WebSocket connections.
+- [Release 2025.12](https://docs.goauthentik.io/releases/2025.12.md): As a first step to overhaul authentik's access control system, much of how groups and roles work internally is altered in this release.
+- [Release 2025.2](https://docs.goauthentik.io/releases/2025.2.md): In previous versions, the Source stage would incorrectly continue with the initial flow after returning from the source, which didn't match the documented behavior.
+- [Release 2025.4](https://docs.goauthentik.io/releases/2025.4.md): Using the :latest tag with container images is not recommended as it can lead to unintentional updates and potentially broken setups.
+- [Release 2025.6](https://docs.goauthentik.io/releases/2025.6.md): Using the :latest tag with container images is not recommended as it can lead to unintentional updates and potentially broken setups.
+- [Release 2025.8](https://docs.goauthentik.io/releases/2025.8.md)
+- [Release 2026.2](https://docs.goauthentik.io/releases/2026.2.md): In recent years, a new authentik release was cut roughly every two months.
+- [Release 2026.5](https://docs.goauthentik.io/releases/2026.5.md): For advanced use cases, authentik now supports setting listening settings to a comma-separated list of IPs.
+- [Release 2026.8](https://docs.goauthentik.io/releases/2026.8.md): The hash_password management command no longer accepts a password as a positional command-line argument (password was visible in the process list).
+- [Release 0.10](https://docs.goauthentik.io/releases/0.10.md): This update brings a lot of big features, such as:
+- [Release 0.11](https://docs.goauthentik.io/releases/0.11.md): This update brings these headline features:
+- [Release 0.12](https://docs.goauthentik.io/releases/0.12.md): This update brings these headline features:
+- [Release 0.13 (passbook -> authentik)](https://docs.goauthentik.io/releases/0.13.md): After a long back and forth, we've finally switched to a more permanent name.
+- [Release 0.14](https://docs.goauthentik.io/releases/0.14.md): This diagram makes it significantly easier to understand how a flow works, as well as helping you design a flow that does exactly what you need.
+- [Release 0.9](https://docs.goauthentik.io/releases/0.9.md): Due to some database changes that had to be rather sooner than later, there is no possibility to directly upgrade.
+
+## Manage Users and Sources
+
+- [Access control](https://docs.goauthentik.io/users-sources/access-control.md): To comply with important regulations such as PCI-DSS, HIPAA, SOC 2, and GDPR, it's necessary to have the ability to control which users have access to specific areas of the system, what permissions they have globally and on certain objects, and a way to monitor events related to user activity.
+- [Initial permissions](https://docs.goauthentik.io/users-sources/access-control/initial_permissions.md): Set permissions for object creation.
+- [Manage permissions](https://docs.goauthentik.io/users-sources/access-control/manage_permissions.md): Learn how to use global and object permissions in authentik.
+- [About permissions](https://docs.goauthentik.io/users-sources/access-control/permissions.md): Learn about global and object permissions in authentik.
+- [Group properties and attributes](https://docs.goauthentik.io/users-sources/groups/group_ref.md): The group object has the following properties:
+- [Groups](https://docs.goauthentik.io/users-sources/groups.md): Learn about groups in authentik
+- [Manage groups](https://docs.goauthentik.io/users-sources/groups/manage_groups.md): Learn how to work with groups in authentik.
+- [Roles](https://docs.goauthentik.io/users-sources/roles.md): Roles are a way to simplify the assignment of permissions.
+- [Manage roles](https://docs.goauthentik.io/users-sources/roles/manage_roles.md): Learn how to work with roles and permissions in authentik.
+- [Sources](https://docs.goauthentik.io/users-sources/sources.md): Sources allow you to connect authentik to an external user directory.
+- [About users](https://docs.goauthentik.io/users-sources/user.md): In authentik you can create and manage users with fine-tuned access control, session and event details, group membership, role assignment, super-user rights, impersonation, and password management and recovery.
+- [Invitations](https://docs.goauthentik.io/users-sources/user/invitations.md): Learn how to create an invitation URL for new users to enroll.
+- [Force password reset on next login](https://docs.goauthentik.io/users-sources/user/password_reset_on_login.md): You can require users to reset their password on their next login, using expression policies, custom stages, and a custom user attribute.
+- [User interface](https://docs.goauthentik.io/users-sources/user/user-interface.md): End-users who are accessing their applications via authentik typically only access the User interface, not the Admin interface.
+- [User account switching](https://docs.goauthentik.io/users-sources/user/user-switching.md): authentik can keep multiple user accounts signed in within the same browser.
+- [Manage users](https://docs.goauthentik.io/users-sources/user/user_basic_operations.md): Use these procedures to create, modify, deactivate, delete, and recover users.
+- [User properties and attributes](https://docs.goauthentik.io/users-sources/user/user_ref.md): The User object has the following properties:
+- [Sources expression property mappings](https://docs.goauthentik.io/users-sources/sources/property-mappings/expressions.md): The property mapping should return a value that is expected by the source.
+- [Source property mappings](https://docs.goauthentik.io/users-sources/sources/property-mappings.md): Source property mappings allow you to modify or gather extra information from sources.
+- [Federated identity providers](https://docs.goauthentik.io/users-sources/sources/social-logins.md): Configuring authentik with a federated identity provider allows users to authenticate with their existing credentials, such as social logins or enterprise identity providers.
+- [Agent accounts](https://docs.goauthentik.io/users-sources/user/account-types/agent-accounts.md): Agent accounts are service accounts that act on behalf of a parent user when calling the authentik API.
+- [External users](https://docs.goauthentik.io/users-sources/user/account-types/external-users.md): External users are accounts for people who need access to an application but not to the authentik application dashboard.
+- [Account types](https://docs.goauthentik.io/users-sources/user/account-types.md): Choose between internal users, external users, service accounts, and agent accounts.
+- [Internal users](https://docs.goauthentik.io/users-sources/user/account-types/internal-users.md): Internal users are accounts for people who need the authentik application dashboard and their own user settings.
+- [Service accounts](https://docs.goauthentik.io/users-sources/user/account-types/service-accounts.md): Service accounts are specialized user accounts for machine-to-machine authentication and automation.
+- [Active Directory](https://docs.goauthentik.io/users-sources/sources/directory-sync/active-directory.md): The following placeholders are used in this guide:
+- [FreeIPA](https://docs.goauthentik.io/users-sources/sources/directory-sync/freeipa.md): The following placeholders are used in this guide:
+- [Browser configuration for SPNEGO](https://docs.goauthentik.io/users-sources/sources/protocols/kerberos/browser.md): You might need to configure your web browser to allow SPNEGO.
+- [Kerberos](https://docs.goauthentik.io/users-sources/sources/protocols/kerberos.md): This source allows users to enroll themselves with an existing Kerberos identity.
+- [LDAP source](https://docs.goauthentik.io/users-sources/sources/protocols/ldap.md): Sources allow you to connect authentik to an existing user directory.
+- [OAuth source](https://docs.goauthentik.io/users-sources/sources/protocols/oauth.md): This source allows users to enroll themselves with an external OAuth-based identity provider.
+- [SAML source](https://docs.goauthentik.io/users-sources/sources/protocols/saml.md): This source allows authentik to act as a SAML service provider.
+- [SCIM source](https://docs.goauthentik.io/users-sources/sources/protocols/scim.md): The SCIM source allows other applications to directly create users and groups within authentik.
+- [Log in with Apple](https://docs.goauthentik.io/users-sources/sources/social-logins/apple.md): This source lets users authenticate with their Apple ID credentials by configuring Apple as a federated identity provider with OAuth 2.0.
+- [Log in with Apereo CAS](https://docs.goauthentik.io/users-sources/sources/social-logins/cas.md): Integrate Apereo CAS as a source in authentik
+- [Log in with Discord](https://docs.goauthentik.io/users-sources/sources/social-logins/discord.md): This source lets users authenticate with their Discord credentials by configuring Discord as a federated identity provider with OAuth 2.0.
+- [Log in with Entra ID](https://docs.goauthentik.io/users-sources/sources/social-logins/entra-id.md): There are several ways that Entra ID can be integrated with authentik to allow for user and group provisioning and authentication with Entra ID user credentials.
+- [Log in with Facebook](https://docs.goauthentik.io/users-sources/sources/social-logins/facebook.md): This source lets users authenticate with their Facebook credentials by configuring Facebook as a federated identity provider with OAuth 2.0.
+- [Log in with GitHub](https://docs.goauthentik.io/users-sources/sources/social-logins/github.md): This source lets users authenticate with their GitHub credentials by configuring GitHub as a federated identity provider with OAuth 2.0.
+- [Log in with GitLab](https://docs.goauthentik.io/users-sources/sources/social-logins/gitlab.md): This source lets users authenticate with their GitLab credentials by configuring GitLab as a federated identity provider with OAuth 2.0.
+- [Google identity providers](https://docs.goauthentik.io/users-sources/sources/social-logins/google.md): There are several ways that Google services can be integrated with authentik to allow for authentication with Google user credentials.
+- [Log in with JumpCloud](https://docs.goauthentik.io/users-sources/sources/social-logins/jumpcloud.md): Integrate JumpCloud as a source in authentik
+- [Log in with Keycloak](https://docs.goauthentik.io/users-sources/sources/social-logins/keycloak.md): This source lets users authenticate with their Keycloak credentials by configuring Keycloak as a federated identity provider with SAML.
+- [Log in with Mailcow](https://docs.goauthentik.io/users-sources/sources/social-logins/mailcow.md): This source lets users authenticate with their Mailcow credentials by configuring Mailcow as a federated identity provider with OAuth 2.0.
+- [Log in with Okta](https://docs.goauthentik.io/users-sources/sources/social-logins/okta.md): Integrate Okta as a source in authentik
+- [Log in with Plex](https://docs.goauthentik.io/users-sources/sources/social-logins/plex.md): This source lets users authenticate with their Plex credentials by configuring Plex as a federated identity provider.
+- [Log in with Shibboleth](https://docs.goauthentik.io/users-sources/sources/social-logins/shibboleth.md): This source lets users authenticate with their Shibboleth credentials by configuring Shibboleth as a federated identity provider with SAML.
+- [Log in with Telegram](https://docs.goauthentik.io/users-sources/sources/social-logins/telegram.md): This source lets users authenticate with their Telegram account credentials.
+- [Log in with Twitch](https://docs.goauthentik.io/users-sources/sources/social-logins/twitch.md): This source lets users authenticate with their Twitch credentials by configuring Twitch as a federated identity provider with OAuth 2.0.
+- [Log in with X (formerly Twitter)](https://docs.goauthentik.io/users-sources/sources/social-logins/twitter.md): This source lets users authenticate with their X credentials by configuring X as a federated identity provider with OAuth 2.0.
+- [Log in with WeChat](https://docs.goauthentik.io/users-sources/sources/social-logins/wechat.md): This source lets users authenticate with their WeChat credentials by configuring WeChat as a federated identity provider with OAuth 2.0.
+- [Entra ID OAuth authentication](https://docs.goauthentik.io/users-sources/sources/social-logins/entra-id/oauth.md): Authenticating to authentik with Entra ID credentials via the OAuth 2.0 protocol
+- [Entra ID SCIM user and group provisioning](https://docs.goauthentik.io/users-sources/sources/social-logins/entra-id/scim.md): Provisioning users and groups from Entra ID to authentik via the SCIM protocol
+- [Google Cloud (with OAuth)](https://docs.goauthentik.io/users-sources/sources/social-logins/google/cloud.md): This source lets users authenticate with their Google credentials by configuring Google Cloud as a federated identity provider with OAuth 2.0.
+- [Google Workspace (with SAML)](https://docs.goauthentik.io/users-sources/sources/social-logins/google/workspace.md): This source lets users authenticate with their Google Workspace credentials by configuring Google Workspace as a federated identity provider with SAML.

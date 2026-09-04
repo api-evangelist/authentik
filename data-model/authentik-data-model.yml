@@ -1,0 +1,742 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/_original/authentik-openapi.yml — entity graph computed from components.schemas $ref links
+  and uuid id-reference fields, restricted to schemas that have a REST surface
+summary:
+  schemas_total: 927
+  entities_with_rest_surface: 151
+  ref_relationships: 16
+  id_reference_fields: 144
+  domains: 23
+  note: 'authentik is a configuration-graph product, not a records product: the entities are the objects
+    an operator wires together (applications, providers, sources, flows, stages, policies, property mappings,
+    outposts) plus the identity records themselves (users, groups, roles, tokens). Most cross-object links
+    are expressed as bare uuid/slug FIELDS rather than $ref links, which is why the id-reference count
+    far exceeds the $ref count — the contract gives an agent the foreign key but not the type it points
+    at.'
+identifier_conventions:
+  primary_key_fields:
+  - pk (uuid or int)
+  - id (int)
+  - uuid
+  - slug
+  note: 'Identifier style varies by resource family and is a real integration hazard: users and groups
+    are addressed by integer or uuid pk, applications and flows by SLUG, providers by integer id, and
+    most policy/stage/property-mapping objects by a typed uuid field (policy_uuid, stage_uuid, pm_uuid,
+    pbm_uuid). There are no prefixed opaque ids.'
+  no_id_prefixes: true
+domains:
+- tag: admin
+  entities:
+  - VersionHistory
+- tag: agents
+  entities:
+  - Agent
+- tag: authenticators
+  entities:
+  - DuoDevice
+  - EmailDevice
+  - GoogleEndpointDevice
+  - SMSDevice
+  - StaticDevice
+  - TOTPDevice
+  - WebAuthnDevice
+- tag: core
+  entities:
+  - Application
+  - AuthenticatedSession
+  - DataExport
+  - Group
+  - ObjectAttribute
+  - Token
+  - User
+  - UserConsent
+- tag: crypto
+  entities:
+  - CertificateKeyPair
+- tag: endpoints
+  entities:
+  - AppleIndependentSecureEnclave
+  - DeviceUserBinding
+  - UserSelf
+- tag: events
+  entities:
+  - Event
+  - Notification
+  - NotificationRule
+  - NotificationTransport
+- tag: flows
+  entities:
+  - Flow
+  - FlowStageBinding
+- tag: lifecycle
+  entities:
+  - LifecycleIteration
+  - LifecycleRule
+  - Review
+  - UserOffboarding
+- tag: managed
+  entities:
+  - BlueprintInstance
+- tag: oauth2
+  entities:
+  - ExpiringBaseGrantModel
+  - TokenModel
+- tag: outposts
+  entities:
+  - DockerServiceConnection
+  - KubernetesServiceConnection
+  - LDAPOutpostConfig
+  - Outpost
+  - ProxyOutpostConfig
+  - RadiusOutpostConfig
+  - ServiceConnection
+- tag: policies
+  entities:
+  - DummyPolicy
+  - EventMatcherPolicy
+  - ExpressionPolicy
+  - GeoIPPolicy
+  - PasswordExpiryPolicy
+  - PasswordPolicy
+  - Policy
+  - PolicyBinding
+  - Reputation
+  - ReputationPolicy
+  - UniquePasswordPolicy
+- tag: propertymappings
+  entities:
+  - GoogleWorkspaceProviderMapping
+  - KerberosSourcePropertyMapping
+  - LDAPSourcePropertyMapping
+  - MicrosoftEntraProviderMapping
+  - NotificationWebhookMapping
+  - OAuthSourcePropertyMapping
+  - PlexSourcePropertyMapping
+  - PropertyMapping
+  - RACPropertyMapping
+  - RadiusProviderPropertyMapping
+  - SAMLPropertyMapping
+  - SAMLSourcePropertyMapping
+  - SCIMMapping
+  - SCIMSourcePropertyMapping
+  - ScopeMapping
+  - TelegramSourcePropertyMapping
+- tag: providers
+  entities:
+  - GoogleWorkspaceProvider
+  - GoogleWorkspaceProviderGroup
+  - GoogleWorkspaceProviderUser
+  - LDAPProvider
+  - MicrosoftEntraProvider
+  - MicrosoftEntraProviderGroup
+  - MicrosoftEntraProviderUser
+  - OAuth2Provider
+  - Provider
+  - ProxyProvider
+  - RACProvider
+  - RadiusProvider
+  - SAMLProvider
+  - SCIMProvider
+  - SCIMProviderGroup
+  - SCIMProviderUser
+  - SSFProvider
+  - WSFederationProvider
+- tag: rac
+  entities:
+  - ConnectionToken
+  - Endpoint
+- tag: rbac
+  entities:
+  - ExtraRoleObjectPermission
+  - InitialPermissions
+  - Permission
+  - Role
+- tag: requests
+  entities:
+  - RequestRule
+  - RequestRuleBinding
+  - RequestRuleChildBinding
+- tag: sources
+  entities:
+  - GroupKerberosSourceConnection
+  - GroupLDAPSourceConnection
+  - GroupOAuthSourceConnection
+  - GroupPlexSourceConnection
+  - GroupSAMLSourceConnection
+  - GroupSourceConnection
+  - GroupTelegramSourceConnection
+  - KerberosSource
+  - LDAPSource
+  - OAuthSource
+  - PlexSource
+  - SAMLSource
+  - SCIMSource
+  - SCIMSourceGroup
+  - SCIMSourceUser
+  - Source
+  - TelegramSource
+  - UserKerberosSourceConnection
+  - UserLDAPSourceConnection
+  - UserOAuthSourceConnection
+  - UserPlexSourceConnection
+  - UserSAMLSourceConnection
+  - UserSourceConnection
+  - UserTelegramSourceConnection
+- tag: ssf
+  entities:
+  - SSFStream
+- tag: stages
+  entities:
+  - AccountLockdownStage
+  - AuthenticatorDuoStage
+  - AuthenticatorEmailStage
+  - AuthenticatorEndpointGDTCStage
+  - AuthenticatorSMSStage
+  - AuthenticatorStaticStage
+  - AuthenticatorTOTPStage
+  - AuthenticatorValidateStage
+  - AuthenticatorWebAuthnStage
+  - CaptchaStage
+  - ConsentStage
+  - DenyStage
+  - DummyStage
+  - EmailStage
+  - EndpointStage
+  - IdentificationStage
+  - Invitation
+  - InvitationStage
+  - MutualTLSStage
+  - PasswordStage
+  - Prompt
+  - PromptStage
+  - RedirectStage
+  - SourceStage
+  - Stage
+  - UserDeleteStage
+  - UserLoginStage
+  - UserLogoutStage
+  - UserWriteStage
+- tag: tasks
+  entities:
+  - Schedule
+- tag: tenants
+  entities:
+  - Domain
+relationships:
+- from: Application
+  to: Provider
+  relationship: has_many
+  via: backchannel_providers_obj
+  evidence: $ref
+- from: ExpiringBaseGrantModel
+  to: Provider
+  relationship: has_one
+  via: provider
+  evidence: $ref
+- from: ExpiringBaseGrantModel
+  to: User
+  relationship: has_one
+  via: user
+  evidence: $ref
+- from: Group
+  to: Role
+  relationship: has_many
+  via: roles_obj
+  evidence: $ref
+- from: Group
+  to: Role
+  relationship: has_many
+  via: inherited_roles_obj
+  evidence: $ref
+- from: InitialPermissions
+  to: Permission
+  relationship: has_many
+  via: permissions_obj
+  evidence: $ref
+- from: LifecycleIteration
+  to: Review
+  relationship: has_many
+  via: reviews
+  evidence: $ref
+- from: Notification
+  to: Event
+  relationship: has_one
+  via: event
+  evidence: $ref
+- from: Outpost
+  to: Provider
+  relationship: has_many
+  via: providers_obj
+  evidence: $ref
+- from: Prompt
+  to: PromptStage
+  relationship: has_many
+  via: prompt_stages_obj
+  evidence: $ref
+- from: SSFProvider
+  to: Provider
+  relationship: has_many
+  via: oidc_auth_providers_obj
+  evidence: $ref
+- from: TokenModel
+  to: Provider
+  relationship: has_one
+  via: provider
+  evidence: $ref
+- from: TokenModel
+  to: User
+  relationship: has_one
+  via: user
+  evidence: $ref
+- from: User
+  to: Role
+  relationship: has_many
+  via: roles_obj
+  evidence: $ref
+- from: UserConsent
+  to: User
+  relationship: has_one
+  via: user
+  evidence: $ref
+- from: UserConsent
+  to: Application
+  relationship: has_one
+  via: application
+  evidence: $ref
+id_reference_fields:
+- entity: AccountLockdownStage
+  field: self_service_completion_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Application
+  field: pbm_uuid
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorDuoStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorEmailStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorEndpointGDTCStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorSMSStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorSMSStage
+  field: mapping
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorStaticStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorTOTPStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: AuthenticatorWebAuthnStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: ConnectionToken
+  field: endpoint
+  note: uuid foreign key; the contract does not declare the target type
+- entity: DeviceUserBinding
+  field: policy
+  note: uuid foreign key; the contract does not declare the target type
+- entity: DeviceUserBinding
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: DeviceUserBinding
+  field: target
+  note: uuid foreign key; the contract does not declare the target type
+- entity: DeviceUserBinding
+  field: connector
+  note: uuid foreign key; the contract does not declare the target type
+- entity: DockerServiceConnection
+  field: tls_verification
+  note: uuid foreign key; the contract does not declare the target type
+- entity: DockerServiceConnection
+  field: tls_authentication
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Domain
+  field: tenant
+  note: uuid foreign key; the contract does not declare the target type
+- entity: EndpointStage
+  field: connector
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Flow
+  field: policybindingmodel_ptr_id
+  note: uuid foreign key; the contract does not declare the target type
+- entity: FlowStageBinding
+  field: policybindingmodel_ptr_id
+  note: uuid foreign key; the contract does not declare the target type
+- entity: FlowStageBinding
+  field: target
+  note: uuid foreign key; the contract does not declare the target type
+- entity: FlowStageBinding
+  field: stage
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GoogleWorkspaceProvider
+  field: filter_group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GoogleWorkspaceProviderGroup
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupKerberosSourceConnection
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupKerberosSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupLDAPSourceConnection
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupLDAPSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupOAuthSourceConnection
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupOAuthSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupPlexSourceConnection
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupPlexSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupSAMLSourceConnection
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupSAMLSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupSourceConnection
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupTelegramSourceConnection
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: GroupTelegramSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: IdentificationStage
+  field: password_stage
+  note: uuid foreign key; the contract does not declare the target type
+- entity: IdentificationStage
+  field: captcha_stage
+  note: uuid foreign key; the contract does not declare the target type
+- entity: IdentificationStage
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: IdentificationStage
+  field: recovery_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: IdentificationStage
+  field: passwordless_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: IdentificationStage
+  field: webauthn_stage
+  note: uuid foreign key; the contract does not declare the target type
+- entity: InitialPermissions
+  field: role
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Invitation
+  field: flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: KerberosSource
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: KerberosSource
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPOutpostConfig
+  field: certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPProvider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPProvider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPProvider
+  field: invalidation_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPProvider
+  field: certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPSource
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPSource
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPSource
+  field: peer_certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPSource
+  field: client_certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: LDAPSource
+  field: sync_parent_group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: MicrosoftEntraProvider
+  field: filter_group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: MicrosoftEntraProviderGroup
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: NotificationRule
+  field: destination_group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: NotificationTransport
+  field: webhook_ca
+  note: uuid foreign key; the contract does not declare the target type
+- entity: NotificationTransport
+  field: webhook_mapping_body
+  note: uuid foreign key; the contract does not declare the target type
+- entity: NotificationTransport
+  field: webhook_mapping_headers
+  note: uuid foreign key; the contract does not declare the target type
+- entity: OAuth2Provider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: OAuth2Provider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: OAuth2Provider
+  field: invalidation_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: OAuth2Provider
+  field: signing_key
+  note: uuid foreign key; the contract does not declare the target type
+- entity: OAuth2Provider
+  field: encryption_key
+  note: uuid foreign key; the contract does not declare the target type
+- entity: OAuthSource
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: OAuthSource
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Outpost
+  field: service_connection
+  note: uuid foreign key; the contract does not declare the target type
+- entity: PasswordStage
+  field: configure_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: PlexSource
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: PlexSource
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: PolicyBinding
+  field: policy
+  note: uuid foreign key; the contract does not declare the target type
+- entity: PolicyBinding
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: PolicyBinding
+  field: target
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Provider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Provider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Provider
+  field: invalidation_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: ProxyOutpostConfig
+  field: certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: ProxyProvider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: ProxyProvider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: ProxyProvider
+  field: invalidation_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: ProxyProvider
+  field: certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RACProvider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RACProvider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RadiusOutpostConfig
+  field: certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RadiusProvider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RadiusProvider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RadiusProvider
+  field: invalidation_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RadiusProvider
+  field: certificate
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RedirectStage
+  field: target_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RequestRule
+  field: pbm_uuid
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RequestRule
+  field: request_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RequestRuleBinding
+  field: pbm_uuid
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RequestRuleBinding
+  field: rule
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RequestRuleBinding
+  field: target
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RequestRuleChildBinding
+  field: binding
+  note: uuid foreign key; the contract does not declare the target type
+- entity: RequestRuleChildBinding
+  field: target
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Review
+  field: iteration
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: invalidation_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: name_id_mapping
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: authn_context_class_ref_mapping
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: signing_kp
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: verification_kp
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLProvider
+  field: encryption_kp
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLSource
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLSource
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLSource
+  field: pre_authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLSource
+  field: verification_kp
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLSource
+  field: signing_kp
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SAMLSource
+  field: encryption_kp
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SCIMProvider
+  field: auth_oauth
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SCIMProviderGroup
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SCIMSourceGroup
+  field: group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SCIMSourceGroup
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SCIMSourceUser
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SSFProvider
+  field: signing_key
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Source
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: Source
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: SourceStage
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: TelegramSource
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: TelegramSource
+  field: enrollment_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: TelegramSource
+  field: pre_authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserKerberosSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserLDAPSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserOAuthSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserPlexSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserSAMLSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserTelegramSourceConnection
+  field: source
+  note: uuid foreign key; the contract does not declare the target type
+- entity: UserWriteStage
+  field: create_users_group
+  note: uuid foreign key; the contract does not declare the target type
+- entity: WSFederationProvider
+  field: authentication_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: WSFederationProvider
+  field: authorization_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: WSFederationProvider
+  field: invalidation_flow
+  note: uuid foreign key; the contract does not declare the target type
+- entity: WSFederationProvider
+  field: name_id_mapping
+  note: uuid foreign key; the contract does not declare the target type
+- entity: WSFederationProvider
+  field: authn_context_class_ref_mapping
+  note: uuid foreign key; the contract does not declare the target type
+- entity: WSFederationProvider
+  field: signing_kp
+  note: uuid foreign key; the contract does not declare the target type
+- entity: WSFederationProvider
+  field: encryption_kp
+  note: uuid foreign key; the contract does not declare the target type
+render:
+  subway: null
+  note: No subway/ map exists for this provider yet.

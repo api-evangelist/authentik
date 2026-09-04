@@ -1,0 +1,286 @@
+generated: '2026-09-04'
+method: derived
+source: openapi/_original/authentik-openapi.yml — no first-party MCP server exists; this is a CANDIDATE
+  tool list derived from published operations
+status: candidate
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: searched
+  note: Authentik Security ships NO MCP server — hosted or stdio. The goauthentik GitHub organization
+    has no MCP repository, the docs site never mentions MCP, and a search of the npm and PyPI registries
+    returns only third-party packages. See impersonation_warning. authentik's own position, stated by
+    its CEO on the company blog, is that MCP servers are "temporary duct tape" and that its REST API plus
+    scoped service-account tokens is the agent surface it intends agents to use.
+  position_source: https://goauthentik.io/blog/2026-03-16-a-note-to-ai-agents-about-authentik/
+impersonation_warning:
+  severity: high
+  finding: Two third-party MCP packages present themselves as first-party authentik software and are NOT.
+    Both were published 2025-07-03 by the npm/PyPI account `cdmx` (roney.dsilva@cdmx.in).
+  packages:
+  - name: '@cdmx/authentik-mcp'
+    registry: npm
+    version: 0.1.1
+    published: '2025-07-03'
+    claimed_repository: https://github.com/goauthentik/authentik-mcp
+    claimed_repository_status: 404
+  - name: '@cdmx/authentik-diag-mcp'
+    registry: npm
+    version: 0.1.1
+    published: '2025-07-03'
+    claimed_repository: https://github.com/goauthentik/authentik-diag-mcp
+    claimed_repository_status: 404
+  - name: authentik-mcp
+    registry: pypi
+    version: 0.1.2
+    published: '2025-07-03'
+    claimed_author_email: hello@goauthentik.io
+    claimed_repository: https://github.com/goauthentik/authentik-mcp
+    claimed_repository_status: 404
+    note: The PyPI package sets author_email to authentik's own contact address (the same address in the
+      published OpenAPI info.contact) and points Homepage/Repository at a goauthentik repository that
+      does not exist.
+  evidence:
+  - url: https://github.com/goauthentik/authentik-mcp
+    status: 404
+  - url: https://pypi.org/pypi/authentik-mcp/json
+    status: 200
+  - url: https://registry.npmjs.org/@cdmx/authentik-mcp
+    status: 200
+  conclusion: NOT credited to authentik. No MCPServer pointer is emitted for this provider.
+candidate:
+  transport: stdio or http — unspecified, because nothing is built
+  auth:
+    scheme: http bearer
+    header: 'Authorization: Bearer <token>'
+    note: An agent calling authentik should use an AGENT ACCOUNT — a service account that acts on behalf
+      of a parent user, with an expiring API token and RBAC permissions scoped to exactly the objects
+      it may touch.
+    docs: https://docs.goauthentik.io/users-sources/user/account-types/agent-accounts
+  base_url: https://{authentik_host}/api/v3
+  tool_count: 41
+  derivation: One candidate tool per marquee operation, named by the published operationId so each tool
+    inherits that operation's real parameters and requestBody as its inputSchema. Nothing here is invented
+    — every name below appears in openapi/_original/authentik-openapi.yml.
+  safety:
+    destructive_tools_require_confirmation:
+    - requests_grant_requests_revoke_destroy
+    - lifecycle_user_offboarding_create
+    - core_users_set_password_create
+    - core_tokens_view_key_retrieve
+    preflight: Call the matching GET <resource>/{id}/used_by/ before any delete — see conventions/authentik-conventions.yml
+      dry_run_mode.
+    irreversible: Ordinary DELETE operations have no undo. See conventions/authentik-conventions.yml reversibility.
+  tools:
+  - name: core_users_list
+    method: GET
+    path: /core/users/
+    description: User Viewset
+    tag: core
+  - name: core_users_create
+    method: POST
+    path: /core/users/
+    description: User Viewset
+    tag: core
+  - name: core_users_retrieve
+    method: GET
+    path: /core/users/{id}/
+    description: User Viewset
+    tag: core
+  - name: core_users_partial_update
+    method: PATCH
+    path: /core/users/{id}/
+    description: User Viewset
+    tag: core
+  - name: core_users_set_password_create
+    method: POST
+    path: /core/users/{id}/set_password/
+    description: Set password for user
+    tag: core
+  - name: core_users_me_retrieve
+    method: GET
+    path: /core/users/me/
+    description: Get information about current user
+    tag: core
+  - name: core_groups_list
+    method: GET
+    path: /core/groups/
+    description: Group Viewset
+    tag: core
+  - name: core_groups_create
+    method: POST
+    path: /core/groups/
+    description: Group Viewset
+    tag: core
+  - name: core_groups_add_user_create
+    method: POST
+    path: /core/groups/{group_uuid}/add_user/
+    description: Add user to group
+    tag: core
+  - name: core_groups_remove_user_create
+    method: POST
+    path: /core/groups/{group_uuid}/remove_user/
+    description: Remove user from group
+    tag: core
+  - name: core_applications_list
+    method: GET
+    path: /core/applications/
+    description: Custom list method that checks Policy based access instead of guardian
+    tag: core
+  - name: core_applications_create
+    method: POST
+    path: /core/applications/
+    description: Application Viewset
+    tag: core
+  - name: core_applications_retrieve
+    method: GET
+    path: /core/applications/{slug}/
+    description: Application Viewset
+    tag: core
+  - name: core_tokens_list
+    method: GET
+    path: /core/tokens/
+    description: Token Viewset
+    tag: core
+  - name: core_tokens_create
+    method: POST
+    path: /core/tokens/
+    description: Token Viewset
+    tag: core
+  - name: core_tokens_view_key_retrieve
+    method: GET
+    path: /core/tokens/{identifier}/view_key/
+    description: Return token key and log access
+    tag: core
+  - name: providers_all_list
+    method: GET
+    path: /providers/all/
+    description: Provider Viewset
+    tag: providers
+  - name: providers_oauth2_list
+    method: GET
+    path: /providers/oauth2/
+    description: OAuth2Provider Viewset
+    tag: providers
+  - name: providers_oauth2_create
+    method: POST
+    path: /providers/oauth2/
+    description: OAuth2Provider Viewset
+    tag: providers
+  - name: providers_saml_list
+    method: GET
+    path: /providers/saml/
+    description: SAMLProvider Viewset
+    tag: providers
+  - name: providers_scim_list
+    method: GET
+    path: /providers/scim/
+    description: SCIMProvider Viewset
+    tag: providers
+  - name: providers_ldap_list
+    method: GET
+    path: /providers/ldap/
+    description: LDAPProvider Viewset
+    tag: providers
+  - name: sources_all_list
+    method: GET
+    path: /sources/all/
+    description: Source Viewset
+    tag: sources
+  - name: flows_instances_list
+    method: GET
+    path: /flows/instances/
+    description: Flow Viewset
+    tag: flows
+  - name: stages_all_list
+    method: GET
+    path: /stages/all/
+    description: Stage Viewset
+    tag: stages
+  - name: policies_all_list
+    method: GET
+    path: /policies/all/
+    description: Policy Viewset
+    tag: policies
+  - name: policies_bindings_list
+    method: GET
+    path: /policies/bindings/
+    description: PolicyBinding Viewset
+    tag: policies
+  - name: events_events_list
+    method: GET
+    path: /events/events/
+    description: Event Read-Only Viewset
+    tag: events
+  - name: events_rules_list
+    method: GET
+    path: /events/rules/
+    description: NotificationRule Viewset
+    tag: events
+  - name: events_transports_list
+    method: GET
+    path: /events/transports/
+    description: NotificationTransport Viewset
+    tag: events
+  - name: rbac_permissions_list
+    method: GET
+    path: /rbac/permissions/
+    description: Read-only list of all permissions, filterable by model and app
+    tag: rbac
+  - name: rbac_roles_list
+    method: GET
+    path: /rbac/roles/
+    description: Role viewset
+    tag: rbac
+  - name: outposts_instances_list
+    method: GET
+    path: /outposts/instances/
+    description: Outpost Viewset
+    tag: outposts
+  - name: crypto_certificatekeypairs_list
+    method: GET
+    path: /crypto/certificatekeypairs/
+    description: CertificateKeyPair Viewset
+    tag: crypto
+  - name: admin_version_retrieve
+    method: GET
+    path: /admin/version/
+    description: Get running and latest version.
+    tag: admin
+  - name: admin_system_retrieve
+    method: GET
+    path: /admin/system/
+    description: Get system information.
+    tag: admin
+  - name: requests_grant_requests_list
+    method: GET
+    path: /requests/grant-requests/
+    description: null
+    tag: requests
+  - name: requests_grant_requests_revoke_destroy
+    method: DELETE
+    path: /requests/grant-requests/{uuid}/revoke/
+    description: Immediately end an active grant. Available to the same reviewers who could
+    tag: requests
+  - name: lifecycle_user_offboarding_create
+    method: POST
+    path: /lifecycle/user_offboarding/
+    description: null
+    tag: lifecycle
+  - name: lifecycle_user_offboarding_destroy
+    method: DELETE
+    path: /lifecycle/user_offboarding/{id}/
+    description: Cancel a pending offboarding instead of deleting the record.
+    tag: lifecycle
+  - name: ssf_streams_list
+    method: GET
+    path: /ssf/streams/
+    description: SSFStream Viewset
+    tag: ssf
+full_surface:
+  operations: 1193
+  note: The candidate list is a curated subset. The complete callable surface is the 27 per-tag OpenAPIs
+    in openapi/.

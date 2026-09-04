@@ -1,0 +1,879 @@
+openapi: 3.2.0
+info:
+  title: authentik Admin API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
+  contact:
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
+servers:
+- url: /api/v3
+tags:
+- name: admin
+paths:
+  /admin/apps/:
+    get:
+      operationId: admin_apps_list
+      description: Read-only view list all installed apps
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/App'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/file/:
+    get:
+      operationId: admin_file_list
+      description: List files from storage backend.
+      parameters:
+      - in: query
+        name: manageable_only
+        schema:
+          type: boolean
+          default: false
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: usage
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/UsageEnum'
+          default: media
+          minLength: 1
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: admin_file_create
+      description: Upload file to storage backend.
+      tags:
+      - admin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: admin_file_destroy
+      description: Delete file from storage backend.
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: usage
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/UsageEnum'
+          default: media
+          minLength: 1
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/file/used_by/:
+    get:
+      operationId: admin_file_used_by_list
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/models/:
+    get:
+      operationId: admin_models_list
+      description: Read-only view list all installed models
+      parameters:
+      - in: query
+        name: filter_has_attributes
+        schema:
+          type:
+          - boolean
+          - 'null'
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/App'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/settings/:
+    get:
+      operationId: admin_settings_retrieve
+      description: Settings view
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: admin_settings_update
+      description: Settings view
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingsRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: admin_settings_partial_update
+      description: Settings view
+      tags:
+      - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSettingsRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/system/:
+    get:
+      operationId: admin_system_retrieve
+      description: Get system information.
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemInfo'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: admin_system_create
+      description: Get system information.
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemInfo'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/version/:
+    get:
+      operationId: admin_version_retrieve
+      description: Get running and latest version.
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Version'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/version/history/:
+    get:
+      operationId: admin_version_history_list
+      description: VersionHistory Viewset
+      parameters:
+      - in: query
+        name: build
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: version
+        schema:
+          type: string
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VersionHistory'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/version/history/{id}/:
+    get:
+      operationId: admin_version_history_retrieve
+      description: VersionHistory Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Version history.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistory'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+components:
+  schemas:
+    SettingsRequest:
+      type: object
+      description: Settings Serializer
+      properties:
+        avatars:
+          type: string
+          minLength: 1
+          description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          description: Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+          format: uri
+          maxLength: 200
+        default_user_change_name:
+          type: boolean
+          description: Enable the ability for users to change their name.
+        default_user_change_email:
+          type: boolean
+          description: Enable the ability for users to change their email address.
+        default_user_change_username:
+          type: boolean
+          description: Enable the ability for users to change their username.
+        event_retention:
+          type: string
+          minLength: 1
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        reputation_lower_limit:
+          type: integer
+          maximum: 0
+          minimum: -2147483648
+          description: Reputation cannot decrease lower than this value. Zero or negative.
+        reputation_upper_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Reputation cannot increase higher than this value. Zero or positive.
+        footer_links: {}
+        gdpr_compliance:
+          type: boolean
+          description: When enabled, all the events caused by a user will be deleted upon the user's deletion.
+        impersonation:
+          type: boolean
+          description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating a user.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
+        flags:
+          type: object
+          properties:
+            core_default_app_access:
+              type: boolean
+              description: Applications with no policies bound can be accessed by any user.
+            enterprise_audit_include_expanded_diff:
+              type: boolean
+              description: Include additional information in audit logs, may incur a performance penalty.
+            flows_continuous_login:
+              type: boolean
+              description: Upon successful authentication, re-start authentication in other open tabs.
+          required:
+          - core_default_app_access
+          - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
+      required:
+      - flags
+    App:
+      type: object
+      description: Serialize Application info
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - name
+    UsageEnum:
+      enum:
+      - media
+      type: string
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type:
+          - string
+          - 'null'
+        dark:
+          type:
+          - string
+          - 'null'
+    FileList:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        name:
+          type: string
+        mime_type:
+          type: string
+        url:
+          type: string
+        themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+      required:
+      - mime_type
+      - name
+      - url
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Version:
+      type: object
+      description: Get running and latest version.
+      properties:
+        version_current:
+          type: string
+          description: Get current version
+          readOnly: true
+        version_latest:
+          type: string
+          description: Get latest version from cache
+          readOnly: true
+        version_latest_valid:
+          type: boolean
+          description: Check if latest version is valid
+          readOnly: true
+        build_hash:
+          type: string
+          description: Get build hash, if version is not latest or released
+          readOnly: true
+        outdated:
+          type: boolean
+          description: Check if we're running the latest version
+          readOnly: true
+        outpost_outdated:
+          type: boolean
+          description: Check if any outpost is outdated/has a version mismatch
+          readOnly: true
+      required:
+      - build_hash
+      - outdated
+      - outpost_outdated
+      - version_current
+      - version_latest
+      - version_latest_valid
+    PatchedSettingsRequest:
+      type: object
+      description: Settings Serializer
+      properties:
+        avatars:
+          type: string
+          minLength: 1
+          description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          description: Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+          format: uri
+          maxLength: 200
+        default_user_change_name:
+          type: boolean
+          description: Enable the ability for users to change their name.
+        default_user_change_email:
+          type: boolean
+          description: Enable the ability for users to change their email address.
+        default_user_change_username:
+          type: boolean
+          description: Enable the ability for users to change their username.
+        event_retention:
+          type: string
+          minLength: 1
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        reputation_lower_limit:
+          type: integer
+          maximum: 0
+          minimum: -2147483648
+          description: Reputation cannot decrease lower than this value. Zero or negative.
+        reputation_upper_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Reputation cannot increase higher than this value. Zero or positive.
+        footer_links: {}
+        gdpr_compliance:
+          type: boolean
+          description: When enabled, all the events caused by a user will be deleted upon the user's deletion.
+        impersonation:
+          type: boolean
+          description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating a user.
+        default_token_duration:
+          type: string
+          minLength: 1
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
+        flags:
+          type: object
+          properties:
+            core_default_app_access:
+              type: boolean
+              description: Applications with no policies bound can be accessed by any user.
+            enterprise_audit_include_expanded_diff:
+              type: boolean
+              description: Include additional information in audit logs, may incur a performance penalty.
+            flows_continuous_login:
+              type: boolean
+              description: Upon successful authentication, re-start authentication in other open tabs.
+          required:
+          - core_default_app_access
+          - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
+    VersionHistory:
+      type: object
+      description: VersionHistory Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        build:
+          type: string
+      required:
+      - build
+      - id
+      - timestamp
+      - version
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    SystemInfo:
+      type: object
+      description: Get system information.
+      properties:
+        http_headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Get HTTP Request headers
+          readOnly: true
+        http_host:
+          type: string
+          description: Get HTTP host
+          readOnly: true
+        http_is_secure:
+          type: boolean
+          description: Get HTTP Secure flag
+          readOnly: true
+        runtime:
+          type: object
+          description: Get versions
+          properties:
+            python_version:
+              type: string
+            environment:
+              type: string
+            architecture:
+              type: string
+            platform:
+              type: string
+            uname:
+              type: string
+            openssl_version:
+              type: string
+            openssl_fips_enabled:
+              type:
+              - boolean
+              - 'null'
+            authentik_version:
+              type: string
+          required:
+          - architecture
+          - authentik_version
+          - environment
+          - openssl_fips_enabled
+          - openssl_version
+          - platform
+          - python_version
+          - uname
+          readOnly: true
+        brand:
+          type: string
+          description: Currently active brand
+          readOnly: true
+        server_time:
+          type: string
+          format: date-time
+          description: Current server time
+          readOnly: true
+        embedded_outpost_disabled:
+          type: boolean
+          description: Whether the embedded outpost is disabled
+          readOnly: true
+        embedded_outpost_host:
+          type: string
+          description: Get the FQDN configured on the embedded outpost
+          readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
+      required:
+      - base_url
+      - brand
+      - embedded_outpost_disabled
+      - embedded_outpost_host
+      - http_headers
+      - http_host
+      - http_is_secure
+      - runtime
+      - server_time
+    FileUploadRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        file:
+          type: string
+          format: binary
+        name:
+          type: string
+        usage:
+          type: string
+          minLength: 1
+          default: media
+      required:
+      - file
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    Settings:
+      type: object
+      description: Settings Serializer
+      properties:
+        avatars:
+          type: string
+          description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          description: Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+          format: uri
+          maxLength: 200
+        default_user_change_name:
+          type: boolean
+          description: Enable the ability for users to change their name.
+        default_user_change_email:
+          type: boolean
+          description: Enable the ability for users to change their email address.
+        default_user_change_username:
+          type: boolean
+          description: Enable the ability for users to change their username.
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        reputation_lower_limit:
+          type: integer
+          maximum: 0
+          minimum: -2147483648
+          description: Reputation cannot decrease lower than this value. Zero or negative.
+        reputation_upper_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Reputation cannot increase higher than this value. Zero or positive.
+        footer_links: {}
+        gdpr_compliance:
+          type: boolean
+          description: When enabled, all the events caused by a user will be deleted upon the user's deletion.
+        impersonation:
+          type: boolean
+          description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating a user.
+        default_token_duration:
+          type: string
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
+        flags:
+          type: object
+          properties:
+            core_default_app_access:
+              type: boolean
+              description: Applications with no policies bound can be accessed by any user.
+            enterprise_audit_include_expanded_diff:
+              type: boolean
+              description: Include additional information in audit logs, may incur a performance penalty.
+            flows_continuous_login:
+              type: boolean
+              description: Upon successful authentication, re-start authentication in other open tabs.
+          required:
+          - core_default_app_access
+          - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
+      required:
+      - flags
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+  securitySchemes:
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

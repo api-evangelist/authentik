@@ -1,0 +1,617 @@
+openapi: 3.2.0
+info:
+  title: authentik Managed API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
+  contact:
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
+servers:
+- url: /api/v3
+tags:
+- name: managed
+paths:
+  /managed/blueprints/:
+    get:
+      operationId: managed_blueprints_list
+      description: Blueprint instances
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: path
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBlueprintInstanceList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: managed_blueprints_create
+      description: Blueprint instances
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintInstanceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/{instance_uuid}/:
+    get:
+      operationId: managed_blueprints_retrieve
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: managed_blueprints_update
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintInstanceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: managed_blueprints_partial_update
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBlueprintInstanceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: managed_blueprints_destroy
+      description: Blueprint instances
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/{instance_uuid}/apply/:
+    post:
+      operationId: managed_blueprints_apply_create
+      description: Apply a blueprint
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/{instance_uuid}/used_by/:
+    get:
+      operationId: managed_blueprints_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: instance_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Blueprint Instance.
+        required: true
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/available/:
+    get:
+      operationId: managed_blueprints_available_list
+      description: Get blueprints
+      tags:
+      - managed
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlueprintFile'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/import/:
+    post:
+      operationId: managed_blueprints_import_create
+      description: Import blueprint from .yaml file and apply it once, without creating an instance
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BlueprintUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+components:
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+  schemas:
+    BlueprintInstanceRequest:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        name:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          default: ''
+        context:
+          type: object
+          additionalProperties: {}
+        enabled:
+          type: boolean
+        content:
+          type: string
+      required:
+      - name
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+    BlueprintImportResult:
+      type: object
+      description: Logs of an attempted blueprint import
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+        success:
+          type: boolean
+          readOnly: true
+      required:
+      - logs
+      - success
+    BlueprintUploadRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        file:
+          type: string
+          format: binary
+        path:
+          type: string
+          minLength: 1
+        context:
+          type: string
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Metadata:
+      type: object
+      description: Serializer for blueprint metadata
+      properties:
+        name:
+          type: string
+        labels:
+          type: object
+          additionalProperties: {}
+      required:
+      - labels
+      - name
+    BlueprintFile:
+      type: object
+      properties:
+        path:
+          type: string
+        last_m:
+          type: string
+          format: date-time
+        hash:
+          type: string
+        meta:
+          allOf:
+          - $ref: '#/components/schemas/Metadata'
+          readOnly: true
+      required:
+      - hash
+      - last_m
+      - meta
+      - path
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    PaginatedBlueprintInstanceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintInstance'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    BlueprintInstance:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Instance uuid
+        name:
+          type: string
+        path:
+          type: string
+          default: ''
+        context:
+          type: object
+          additionalProperties: {}
+        last_applied:
+          type: string
+          format: date-time
+          readOnly: true
+        last_applied_hash:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BlueprintInstanceStatusEnum'
+          readOnly: true
+        enabled:
+          type: boolean
+        managed_models:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        metadata:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        content:
+          type: string
+      required:
+      - last_applied
+      - last_applied_hash
+      - managed_models
+      - metadata
+      - name
+      - pk
+      - status
+    BlueprintInstanceStatusEnum:
+      enum:
+      - successful
+      - warning
+      - error
+      - orphaned
+      - unknown
+      type: string
+    PatchedBlueprintInstanceRequest:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        name:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          default: ''
+        context:
+          type: object
+          additionalProperties: {}
+        enabled:
+          type: boolean
+        content:
+          type: string
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+  securitySchemes:
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

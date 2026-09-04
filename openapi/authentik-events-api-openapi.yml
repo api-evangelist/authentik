@@ -1,59 +1,2149 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: authentik Core Events API
-  description: 'Best-effort OpenAPI 3.1 description of the authentik identity provider''s REST
-
-    API (v3). authentik exposes a fully OpenAPI-driven REST surface at
-
-    /api/v3 with browsable docs at /api/v3/ on each instance and a generated
-
-    OpenAPI schema at /api/v3/schema/. Derived from public docs at
-
-    https://docs.goauthentik.io/developer-docs/api/.
-
-    '
-  version: '3'
+  title: authentik Events API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
   contact:
-    name: authentik developer docs
-    url: https://docs.goauthentik.io/developer-docs/api/
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
 servers:
-- url: https://{authentik_host}/api/v3
-  description: authentik instance API root
-  variables:
-    authentik_host:
-      default: authentik.company
-      description: Hostname of your authentik deployment
-security:
-- tokenAuth: []
-- sessionAuth: []
+- url: /api/v3
 tags:
-- name: Events
-  description: Audit and notification events.
+- name: events
 paths:
   /events/events/:
     get:
+      operationId: events_events_list
+      description: Event Read-Only Viewset
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
       tags:
-      - Events
-      summary: List events
-      operationId: eventsEventsList
+      - events
+      security:
+      - authentik: []
       responses:
         '200':
-          description: Events returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEventList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: events_events_create
+      description: Event Read-Only Viewset
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/{event_uuid}/:
+    get:
+      operationId: events_events_retrieve
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: events_events_update
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: events_events_partial_update
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: events_events_destroy
+      description: Event Read-Only Viewset
+      parameters:
+      - in: path
+        name: event_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/actions/:
+    get:
+      operationId: events_events_actions_list
+      description: Get all actions
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeCreate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/export/:
+    post:
+      operationId: events_events_export_create
+      description: 'Create a data export for this data type. Note that the export is generated asynchronously:
+
+        this method returns a `DataExport` object that will initially have `completed=false` as well
+
+        as the permanent URL to that object in the `Location` header.
+
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
+
+        contain a URL to download'
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/stats/:
+    get:
+      operationId: events_events_stats_retrieve
+      description: Get event stats for specified filters and count steps
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - in: query
+        name: count_steps
+        schema:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        description: Timedelta, format of 'weeks=3;days=2;hours=3,seconds=2'
+        required: true
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStats'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/top_per_user/:
+    get:
+      operationId: events_events_top_per_user_list
+      description: Get the top_n events grouped by user count
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: top_n
+        schema:
+          type: integer
+          default: 15
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventTopPerUser'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/volume/:
+    get:
+      operationId: events_events_volume_list
+      description: Get event volume for specified filters and timeframe
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - in: query
+        name: history_days
+        schema:
+          type: integer
+          default: 7
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventVolume'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/notifications/:
+    get:
+      operationId: events_notifications_list
+      description: Notification Viewset
+      parameters:
+      - in: query
+        name: body
+        schema:
+          type: string
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: event
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: seen
+        schema:
+          type: boolean
+      - in: query
+        name: severity
+        schema:
+          $ref: '#/components/schemas/SeverityEnum'
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/notifications/{uuid}/:
+    get:
+      operationId: events_notifications_retrieve
+      description: Notification Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: events_notifications_update
+      description: Notification Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: events_notifications_partial_update
+      description: Notification Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: events_notifications_destroy
+      description: Notification Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/notifications/{uuid}/used_by/:
+    get:
+      operationId: events_notifications_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/notifications/mark_all_seen/:
+    post:
+      operationId: events_notifications_mark_all_seen_create
+      description: Mark all the user's notifications as seen
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Marked tasks as read successfully.
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/rules/:
+    get:
+      operationId: events_rules_list
+      description: NotificationRule Viewset
+      parameters:
+      - in: query
+        name: destination_group__name
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: severity
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          description: 'Controls which severity level the created notifications will have.
+
+
+            '
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: events_rules_create
+      description: NotificationRule Viewset
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/rules/{pbm_uuid}/:
+    get:
+      operationId: events_rules_retrieve
+      description: NotificationRule Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Rule.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: events_rules_update
+      description: NotificationRule Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Rule.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: events_rules_partial_update
+      description: NotificationRule Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Rule.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: events_rules_destroy
+      description: NotificationRule Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Rule.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/rules/{pbm_uuid}/used_by/:
+    get:
+      operationId: events_rules_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Rule.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/transports/:
+    get:
+      operationId: events_transports_list
+      description: NotificationTransport Viewset
+      parameters:
+      - in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/TransportModeEnum'
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: send_once
+        schema:
+          type: boolean
+      - in: query
+        name: webhook_url
+        schema:
+          type: string
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationTransportList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: events_transports_create
+      description: NotificationTransport Viewset
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationTransportRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTransport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/transports/{uuid}/:
+    get:
+      operationId: events_transports_retrieve
+      description: NotificationTransport Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Transport.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTransport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: events_transports_update
+      description: NotificationTransport Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Transport.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationTransportRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTransport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: events_transports_partial_update
+      description: NotificationTransport Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Transport.
+        required: true
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationTransportRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTransport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: events_transports_destroy
+      description: NotificationTransport Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Transport.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/transports/{uuid}/test/:
+    post:
+      operationId: events_transports_test_create
+      description: 'Send example notification using selected transport. Requires
+
+        Modify permissions.'
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Transport.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTransportTest'
+          description: ''
+        '500':
+          description: Failed to test transport
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /events/transports/{uuid}/used_by/:
+    get:
+      operationId: events_transports_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Notification Transport.
+        required: true
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
 components:
+  schemas:
+    Notification:
+      type: object
+      description: Notification Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          readOnly: true
+        body:
+          type: string
+          readOnly: true
+        hyperlink:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+        hyperlink_label:
+          type:
+          - string
+          - 'null'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        event:
+          $ref: '#/components/schemas/Event'
+        seen:
+          type: boolean
+      required:
+      - body
+      - created
+      - pk
+      - severity
+    NotificationTransport:
+      type: object
+      description: NotificationTransport Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+        mode:
+          $ref: '#/components/schemas/TransportModeEnum'
+        mode_verbose:
+          type: string
+          description: Return selected mode with a UI Label
+          readOnly: true
+        webhook_url:
+          type: string
+          format: uri
+        webhook_ca:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, the selected certificate is used to validate the certificate of the webhook server.
+        webhook_mapping_body:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Customize the body of the request. Mapping should return data that is JSON-serializable.
+        webhook_mapping_headers:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+        send_once:
+          type: boolean
+          description: Only send notification once, for example when sending a webhook into a chat channel.
+      required:
+      - mode_verbose
+      - name
+      - pk
+    EventActions:
+      enum:
+      - login
+      - login_failed
+      - logout
+      - user_write
+      - user_offboarded
+      - suspicious_request
+      - password_set
+      - secret_view
+      - secret_rotate
+      - invitation_used
+      - authorize_application
+      - source_linked
+      - impersonation_started
+      - impersonation_ended
+      - flow_execution
+      - policy_execution
+      - policy_exception
+      - property_mapping_exception
+      - system_task_execution
+      - system_task_exception
+      - system_exception
+      - configuration_error
+      - configuration_warning
+      - model_created
+      - model_updated
+      - model_deleted
+      - email_sent
+      - update_available
+      - export_ready
+      - review_initiated
+      - review_overdue
+      - review_attested
+      - review_completed
+      - access_request_created
+      - access_request_approved
+      - access_request_denied
+      - access_request_revoked
+      - custom_
+      type: string
+    Role:
+      type: object
+      description: Role serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+      required:
+      - name
+      - pk
+    PaginatedNotificationTransportList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationTransport'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    EventVolume:
+      type: object
+      description: Count of events of action created on day for a single event action
+      properties:
+        action:
+          $ref: '#/components/schemas/EventActions'
+        time:
+          type: string
+          format: date-time
+        count:
+          type: integer
+      required:
+      - action
+      - count
+      - time
+    NotificationRule:
+      type: object
+      description: NotificationRule Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+        transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          description: Controls which severity level the created notifications will have.
+        destination_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        destination_group_obj:
+          allOf:
+          - $ref: '#/components/schemas/Group'
+          readOnly: true
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+      required:
+      - destination_group_obj
+      - name
+      - pk
+    RelatedGroup:
+      type: object
+      description: Stripped down group serializer to show relevant children/parents for groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+        group_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - group_uuid
+      - name
+      - pk
+    NotificationRuleRequest:
+      type: object
+      description: NotificationRule Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          description: Controls which severity level the created notifications will have.
+        destination_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+      required:
+      - name
+    PaginatedNotificationRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PaginatedNotificationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    DataExport:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        requested_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        requested_on:
+          type: string
+          format: date-time
+          readOnly: true
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        query_params:
+          type: object
+          additionalProperties: {}
+        file_url:
+          type: string
+          readOnly: true
+        completed:
+          type: boolean
+          readOnly: true
+      required:
+      - completed
+      - content_type
+      - file_url
+      - id
+      - query_params
+      - requested_by
+      - requested_on
+    EventTopPerUser:
+      type: object
+      description: Response object of Event's top_per_user
+      properties:
+        application:
+          type: object
+          additionalProperties: {}
+        counted_events:
+          type: integer
+        unique_users:
+          type: integer
+      required:
+      - application
+      - counted_events
+      - unique_users
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    SeverityEnum:
+      enum:
+      - notice
+      - warning
+      - alert
+      type: string
+    PatchedEventRequest:
+      type: object
+      description: Event Serializer
+      properties:
+        user:
+          type: object
+          additionalProperties: {}
+        action:
+          $ref: '#/components/schemas/EventActions'
+        app:
+          type: string
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        client_ip:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        expires:
+          type: string
+          format: date-time
+        brand:
+          type: object
+          additionalProperties: {}
+    NotificationTransportTest:
+      type: object
+      description: Notification test serializer
+      properties:
+        messages:
+          type: array
+          items:
+            type: string
+      required:
+      - messages
+    TransportModeEnum:
+      enum:
+      - local
+      - webhook
+      - webhook_slack
+      - email
+      type: string
+    NotificationTransportRequest:
+      type: object
+      description: NotificationTransport Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        mode:
+          $ref: '#/components/schemas/TransportModeEnum'
+        webhook_url:
+          type: string
+          format: uri
+        webhook_ca:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, the selected certificate is used to validate the certificate of the webhook server.
+        webhook_mapping_body:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Customize the body of the request. Mapping should return data that is JSON-serializable.
+        webhook_mapping_headers:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
+        send_once:
+          type: boolean
+          description: Only send notification once, for example when sending a webhook into a chat channel.
+      required:
+      - name
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    ContentType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        fully_qualified_model:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - fully_qualified_model
+      - id
+      - model
+      - verbose_name_plural
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    Group:
+      type: object
+      description: Group Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        parents:
+          type: array
+          items:
+            type: string
+            format: uuid
+        parents_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RelatedGroup'
+          readOnly: true
+        users:
+          type: array
+          items:
+            type: integer
+        users_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        roles_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+        inherited_roles_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+        children:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        children_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RelatedGroup'
+          readOnly: true
+      required:
+      - children
+      - children_obj
+      - inherited_roles_obj
+      - name
+      - num_pk
+      - parents_obj
+      - pk
+      - roles_obj
+      - users_obj
+    NotificationRequest:
+      type: object
+      description: Notification Serializer
+      properties:
+        hyperlink:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+        hyperlink_label:
+          type:
+          - string
+          - 'null'
+        event:
+          $ref: '#/components/schemas/EventRequest'
+        seen:
+          type: boolean
+    PatchedNotificationTransportRequest:
+      type: object
+      description: NotificationTransport Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        mode:
+          $ref: '#/components/schemas/TransportModeEnum'
+        webhook_url:
+          type: string
+          format: uri
+        webhook_ca:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, the selected certificate is used to validate the certificate of the webhook server.
+        webhook_mapping_body:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Customize the body of the request. Mapping should return data that is JSON-serializable.
+        webhook_mapping_headers:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
+        send_once:
+          type: boolean
+          description: Only send notification once, for example when sending a webhook into a chat channel.
+    PaginatedEventList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    EventStats:
+      type: object
+      description: Count of unique users in events and aggregated counts per specified deltas
+      properties:
+        unique_users:
+          type: integer
+        count_step:
+          type: object
+          additionalProperties: {}
+      required:
+      - count_step
+      - unique_users
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    Event:
+      type: object
+      description: Event Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Event uuid
+        user:
+          type: object
+          additionalProperties: {}
+        action:
+          $ref: '#/components/schemas/EventActions'
+        app:
+          type: string
+        context:
+          type: object
+          additionalProperties: {}
+        client_ip:
+          type:
+          - string
+          - 'null'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+        brand:
+          type: object
+          additionalProperties: {}
+      required:
+      - action
+      - app
+      - created
+      - pk
+    PatchedNotificationRequest:
+      type: object
+      description: Notification Serializer
+      properties:
+        hyperlink:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+        hyperlink_label:
+          type:
+          - string
+          - 'null'
+        event:
+          $ref: '#/components/schemas/EventRequest'
+        seen:
+          type: boolean
+    EventRequest:
+      type: object
+      description: Event Serializer
+      properties:
+        user:
+          type: object
+          additionalProperties: {}
+        action:
+          $ref: '#/components/schemas/EventActions'
+        app:
+          type: string
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        client_ip:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        expires:
+          type: string
+          format: date-time
+        brand:
+          type: object
+          additionalProperties: {}
+      required:
+      - action
+      - app
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PatchedNotificationRuleRequest:
+      type: object
+      description: NotificationRule Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          description: Controls which severity level the created notifications will have.
+        destination_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
-    tokenAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: 'authentik token authentication. Use header
-
-        `Authorization: Bearer <token>` with a token created in the
-
-        Tokens & App Passwords section.
-
-        '
-    sessionAuth:
-      type: apiKey
-      in: cookie
-      name: authentik_session
-      description: Browser session cookie for interactive use.
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

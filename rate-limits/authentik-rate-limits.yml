@@ -3,95 +3,54 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Authentik
 providerId: authentik
+generated: '2026-09-04'
+method: searched
+source: https://docs.goauthentik.io, https://goauthentik.io/pricing,
+  openapi/_original/authentik-openapi.yml
+modified: '2026-09-04'
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
-tags:
-  - Authentication
-  - Authorization
-  - Identity Provider
-  - LDAP
-  - OAuth
-  - Open Source
-  - OpenID Connect
-  - SAML
-  - SCIM
-  - Self-Hosted
-  - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Authentik API surface. Captures per-tier
-  quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to
-  be replaced with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
-responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
-limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Authentik REST API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Authentik REST API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Authentik REST API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Authentik REST API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Authentik REST API
-policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+limit_count: 0
+headers: {}
+responseCodes: {}
+limits: []
+description: 'authentik publishes NO API rate limits, and that is the correct finding rather
+  than a gap in this profile. authentik is self-hosted open-source software: the operator
+  runs the server, so throughput is bounded by their own infrastructure and reverse proxy,
+  not by a vendor quota. The evidence is threefold and each part was checked directly.'
+evidence:
+- claim: No rate-limit response headers are declared in the contract.
+  detail: A search of the published OpenAPI (openapi/_original/authentik-openapi.yml, 1,193
+    operations) finds no X-RateLimit-*, no RateLimit-*, and no Retry-After header on any
+    operation.
+  source: openapi/_original/authentik-openapi.yml
+- claim: No 429 response is declared anywhere.
+  detail: 'The only response statuses declared across all 1,193 operations are 200 (868),
+    204 (184), 201 (141), 400 (1,193), 403 (1,193), 404 (15) and 500 (2). There is no 429
+    and no 503.'
+  source: openapi/_original/authentik-openapi.yml
+- claim: No published quota on any commercial tier.
+  detail: The pricing page prices per internal user per month and per external user per
+    month. No request quota, burst ceiling or overage rate appears on any of the three
+    tiers, and there is no hosted offering to meter.
+  source: https://goauthentik.io/pricing
+  status: 200
+adjacent_throttling:
+  note: 'authentik DOES ship request-throttling behaviour, but it protects authentication
+    rather than the management API, and it is policy-driven and operator-configured rather
+    than a published API limit. An agent will not encounter it on /api/v3 CRUD calls.'
+  mechanisms:
+  - name: Reputation policy
+    description: Reacts to repeated failed authentication attempts from a username, a
+      client IP, or both, lowering a reputation score that other policies can gate on.
+    docs: https://docs.goauthentik.io/customize/policies/types/reputation
+  - name: 2FA attempt throttling
+    description: The Authenticator Validation stage throttles repeated failed attempts for
+      TOTP, static, email and SMS OTP devices (email/SMS added in release 2026.5).
+    docs: https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_validate
+agent_guidance: An agent integrating with an authentik deployment should apply its own
+  client-side pacing and exponential backoff, and should treat a 500 as the signal to back
+  off, since no 429 or Retry-After will ever be returned. Concurrency ceilings are whatever
+  the operator's reverse proxy and worker pool impose.
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com

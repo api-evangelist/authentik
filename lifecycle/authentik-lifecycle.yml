@@ -1,0 +1,80 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.goauthentik.io/releases/, https://status.goauthentik.io,
+  https://goauthentik.io/pricing, openapi/_original/authentik-openapi.yml
+versioning:
+  scheme: calver
+  pattern: YYYY.M[.PATCH]
+  current: 2026.11.0-rc1
+  current_source: openapi/_original/authentik-openapi.yml#/info/version
+  latest_stable: '2026.8'
+  api_version_path: /api/v3
+  note: 'Two version numbers coexist and they mean different things. The PRODUCT is CalVer
+    (2026.8, 2026.5, …) and the schema''s info.version tracks it — the schema published at
+    api.goauthentik.io/schema.yml is built from main, which is why it currently reads
+    2026.11.0-rc1 rather than the newest stable release. The REST API itself is versioned
+    only by the /api/v3 path prefix, which has not changed across the CalVer train.'
+  in_url: true
+  header_negotiation: false
+deprecation:
+  policy_published: true
+  policy_url: https://docs.goauthentik.io/releases/
+  mechanism: release-notes
+  headers:
+    sunset: false
+    deprecation: false
+    note: No RFC 8594 Sunset or Deprecation response header is declared anywhere in the
+      published OpenAPI, and none was observed. Deprecations are announced in the per-release
+      "Breaking changes" section of the release notes only.
+  deprecated_operations: 0
+  deprecated_operations_source: 'openapi/_original/authentik-openapi.yml — zero of 1,193
+    operations carry a deprecated flag.'
+  commitment: 'Stated on the pricing FAQ: "As part of our core principles, we will not move
+    any features from the open source version to the enterprise version. Some features from
+    the enterprise version may move to the open source version over time."'
+  recent_examples:
+  - release: '2026.8'
+    change: '`hash_password` management command no longer accepts a positional password
+      argument.'
+    kind: breaking
+  - release: '2026.8'
+    change: '"Prevent duplicate devices" removed from the WebAuthn authenticator setup
+      stage (disabled by default in 2026.5.4, removed in 2026.8).'
+    kind: breaking
+  - release: '2026.8'
+    change: Forwarded headers (X-Forwarded-Proto/Host/For) are now honored only from
+      trusted proxy networks.
+    kind: breaking
+  - release: '2026.5'
+    change: '`AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent deprecated,
+      slated for removal in the next version.'
+    kind: deprecation
+status_page:
+  present: true
+  url: https://status.goauthentik.io
+  provider: hosted status page for Authentik Security Inc.
+  http_status: 200
+  note: 'Covers Authentik Security''s own hosted properties (website, docs, customer
+    portal). It does NOT report on a customer''s authentik deployment: authentik is
+    self-hosted, so the running API lives on infrastructure the customer operates.'
+sla:
+  published: false
+  note: 'No public SLA document. The pricing page attaches "Dedicated, customized support
+    and SLAs" to the Enterprise Plus tier (from $20k annually) as a contract term; the
+    Enterprise tier gets "ticket-based support for subscriptions over $1k" and the open
+    source tier gets community support only (GitHub Discussions + Discord), explicitly "No
+    support".'
+support:
+  community:
+  - https://github.com/goauthentik/authentik/discussions
+  - https://goauthentik.io/discord
+  commercial: https://docs.goauthentik.io/enterprise/enterprise-support
+  customer_portal: https://customers.goauthentik.io
+releases:
+  url: https://docs.goauthentik.io/releases/
+  github: https://github.com/goauthentik/authentik/releases
+  archive_depth: 50 prior versions retained under docs.goauthentik.io/releases/
+support_window:
+  published: false
+  note: No documented N-1/N-2 support window or end-of-life calendar for prior CalVer
+    releases was found on the docs site.

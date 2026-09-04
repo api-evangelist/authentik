@@ -1,0 +1,2106 @@
+openapi: 3.2.0
+info:
+  title: authentik Outposts API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
+  contact:
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
+servers:
+- url: /api/v3
+tags:
+- name: outposts
+paths:
+  /outposts/instances/:
+    get:
+      operationId: outposts_instances_list
+      description: Outpost Viewset
+      parameters:
+      - in: query
+        name: managed__icontains
+        schema:
+          type: string
+      - in: query
+        name: managed__iexact
+        schema:
+          type: string
+      - in: query
+        name: name__icontains
+        schema:
+          type: string
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: providers__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: service_connection__name__icontains
+        schema:
+          type: string
+      - in: query
+        name: service_connection__name__iexact
+        schema:
+          type: string
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOutpostList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: outposts_instances_create
+      description: Outpost Viewset
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutpostRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Outpost'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/:
+    get:
+      operationId: outposts_instances_retrieve
+      description: Outpost Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Outpost'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: outposts_instances_update
+      description: Outpost Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutpostRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Outpost'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: outposts_instances_partial_update
+      description: Outpost Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOutpostRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Outpost'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: outposts_instances_destroy
+      description: Outpost Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/health/:
+    get:
+      operationId: outposts_instances_health_list
+      description: Get outposts current health
+      parameters:
+      - in: query
+        name: managed__icontains
+        schema:
+          type: string
+      - in: query
+        name: managed__iexact
+        schema:
+          type: string
+      - in: query
+        name: name__icontains
+        schema:
+          type: string
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - in: query
+        name: providers__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: providers_by_pk
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: service_connection__name__icontains
+        schema:
+          type: string
+      - in: query
+        name: service_connection__name__iexact
+        schema:
+          type: string
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutpostHealth'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/used_by/:
+    get:
+      operationId: outposts_instances_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/default_settings/:
+    get:
+      operationId: outposts_instances_default_settings_retrieve
+      description: Global default outpost config
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutpostDefaultConfig'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/ldap/:
+    get:
+      operationId: outposts_ldap_list
+      description: LDAPProvider Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLDAPOutpostConfigList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/ldap/{id}/check_access/:
+    get:
+      operationId: outposts_ldap_access_check
+      description: Check access to a single application by slug
+      parameters:
+      - in: query
+        name: app_slug
+        schema:
+          type: string
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this LDAP Provider.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPCheckAccess'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/proxy/:
+    get:
+      operationId: outposts_proxy_list
+      description: ProxyProvider Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProxyOutpostConfigList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/radius/:
+    get:
+      operationId: outposts_radius_list
+      description: RadiusProvider Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRadiusOutpostConfigList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/radius/{id}/check_access/:
+    get:
+      operationId: outposts_radius_access_check
+      description: Check access to a single application by slug
+      parameters:
+      - in: query
+        name: app_slug
+        schema:
+          type: string
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusCheckAccess'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/all/:
+    get:
+      operationId: outposts_service_connections_all_list
+      description: ServiceConnection Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/all/{uuid}/:
+    get:
+      operationId: outposts_service_connections_all_retrieve
+      description: ServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: outposts_service_connections_all_destroy
+      description: ServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/all/{uuid}/state/:
+    get:
+      operationId: outposts_service_connections_all_state_retrieve
+      description: Get the service connection's state
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceConnectionState'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/all/{uuid}/used_by/:
+    get:
+      operationId: outposts_service_connections_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/all/types/:
+    get:
+      operationId: outposts_service_connections_all_types_list
+      description: Get all creatable types
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeCreate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/docker/:
+    get:
+      operationId: outposts_service_connections_docker_list
+      description: DockerServiceConnection Viewset
+      parameters:
+      - in: query
+        name: local
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: tls_authentication
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: tls_verification
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: url
+        schema:
+          type: string
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDockerServiceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: outposts_service_connections_docker_create
+      description: DockerServiceConnection Viewset
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DockerServiceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DockerServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/docker/{uuid}/:
+    get:
+      operationId: outposts_service_connections_docker_retrieve
+      description: DockerServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Docker Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DockerServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: outposts_service_connections_docker_update
+      description: DockerServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Docker Service-Connection.
+        required: true
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DockerServiceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DockerServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: outposts_service_connections_docker_partial_update
+      description: DockerServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Docker Service-Connection.
+        required: true
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDockerServiceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DockerServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: outposts_service_connections_docker_destroy
+      description: DockerServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Docker Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/docker/{uuid}/used_by/:
+    get:
+      operationId: outposts_service_connections_docker_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Docker Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/kubernetes/:
+    get:
+      operationId: outposts_service_connections_kubernetes_list
+      description: KubernetesServiceConnection Viewset
+      parameters:
+      - in: query
+        name: local
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKubernetesServiceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: outposts_service_connections_kubernetes_create
+      description: KubernetesServiceConnection Viewset
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubernetesServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/kubernetes/{uuid}/:
+    get:
+      operationId: outposts_service_connections_kubernetes_retrieve
+      description: KubernetesServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kubernetes Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubernetesServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: outposts_service_connections_kubernetes_update
+      description: KubernetesServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kubernetes Service-Connection.
+        required: true
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KubernetesServiceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubernetesServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: outposts_service_connections_kubernetes_partial_update
+      description: KubernetesServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kubernetes Service-Connection.
+        required: true
+      tags:
+      - outposts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedKubernetesServiceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KubernetesServiceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: outposts_service_connections_kubernetes_destroy
+      description: KubernetesServiceConnection Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kubernetes Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/service_connections/kubernetes/{uuid}/used_by/:
+    get:
+      operationId: outposts_service_connections_kubernetes_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kubernetes Service-Connection.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+components:
+  schemas:
+    OutpostDefaultConfig:
+      type: object
+      description: Global default outpost config
+      properties:
+        config:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - config
+    PatchedOutpostRequest:
+      type: object
+      description: Outpost Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/OutpostTypeEnum'
+        providers:
+          type: array
+          items:
+            type: integer
+        service_connection:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
+        config:
+          type: object
+          additionalProperties: {}
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+    Outpost:
+      type: object
+      description: Outpost Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/OutpostTypeEnum'
+        providers:
+          type: array
+          items:
+            type: integer
+        providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
+        service_connection:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
+        service_connection_obj:
+          allOf:
+          - $ref: '#/components/schemas/ServiceConnection'
+          readOnly: true
+        refresh_interval_s:
+          type: integer
+          readOnly: true
+        token_identifier:
+          type: string
+          description: Get Token identifier
+          readOnly: true
+        config:
+          type: object
+          additionalProperties: {}
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+      required:
+      - config
+      - name
+      - pk
+      - providers
+      - providers_obj
+      - refresh_interval_s
+      - service_connection_obj
+      - token_identifier
+      - type
+    PatchedDockerServiceConnectionRequest:
+      type: object
+      description: DockerServiceConnection Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        url:
+          type: string
+          minLength: 1
+          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
+        tls_verification:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
+        tls_authentication:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Certificate/Key used for authentication. Can be left empty for no authentication.
+    OutpostTypeEnum:
+      enum:
+      - proxy
+      - ldap
+      - radius
+      - rac
+      type: string
+    ProxyMode:
+      enum:
+      - proxy
+      - forward_single
+      - forward_domain
+      type: string
+    ServiceConnectionState:
+      type: object
+      description: Serializer for Service connection state
+      properties:
+        healthy:
+          type: boolean
+          readOnly: true
+        version:
+          type: string
+          readOnly: true
+      required:
+      - healthy
+      - version
+    OutpostHealth:
+      type: object
+      description: Outpost health status
+      properties:
+        uid:
+          type: string
+          readOnly: true
+        last_seen:
+          type: string
+          format: date-time
+          readOnly: true
+        version:
+          type: string
+          readOnly: true
+        golang_version:
+          type: string
+          readOnly: true
+        openssl_enabled:
+          type: boolean
+          readOnly: true
+        openssl_version:
+          type: string
+          readOnly: true
+        fips_enabled:
+          type:
+          - boolean
+          - 'null'
+          description: Get FIPS enabled
+          readOnly: true
+        version_should:
+          type: string
+          readOnly: true
+        version_outdated:
+          type: boolean
+          readOnly: true
+        build_hash:
+          type: string
+          readOnly: true
+        build_hash_should:
+          type: string
+          readOnly: true
+        hostname:
+          type: string
+          readOnly: true
+      required:
+      - build_hash
+      - build_hash_should
+      - fips_enabled
+      - golang_version
+      - hostname
+      - last_seen
+      - openssl_enabled
+      - openssl_version
+      - uid
+      - version
+      - version_outdated
+      - version_should
+    PatchedKubernetesServiceConnectionRequest:
+      type: object
+      description: KubernetesServiceConnection Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        kubeconfig:
+          type: object
+          additionalProperties: {}
+          description: Paste your kubeconfig here. authentik will automatically use the currently selected context.
+        verify_ssl:
+          type: boolean
+          description: Verify SSL Certificates of the Kubernetes API endpoint
+    Provider:
+      type: object
+      description: Provider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    RadiusOutpostConfig:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        application_slug:
+          type: string
+        auth_flow_slug:
+          type: string
+        client_networks:
+          type: string
+          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+        shared_secret:
+          type: string
+          description: Shared secret between clients and server to hash packets.
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+        certificate:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      required:
+      - application_slug
+      - auth_flow_slug
+      - name
+      - pk
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+    PaginatedOutpostList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Outpost'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    KubernetesServiceConnectionRequest:
+      type: object
+      description: KubernetesServiceConnection Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        kubeconfig:
+          type: object
+          additionalProperties: {}
+          description: Paste your kubeconfig here. authentik will automatically use the currently selected context.
+        verify_ssl:
+          type: boolean
+          description: Verify SSL Certificates of the Kubernetes API endpoint
+      required:
+      - name
+    PaginatedProxyOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PaginatedRadiusOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedLDAPOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    LDAPOutpostConfig:
+      type: object
+      description: LDAPProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        base_dn:
+          type: string
+          description: DN under which objects are accessible.
+        bind_flow_slug:
+          type: string
+        unbind_flow_slug:
+          type:
+          - string
+          - 'null'
+          description: Get slug for unbind flow, defaulting to brand's default flow.
+          readOnly: true
+        application_slug:
+          type: string
+          description: Prioritize backchannel slug over direct application slug
+          readOnly: true
+        certificate:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+      required:
+      - application_slug
+      - bind_flow_slug
+      - name
+      - pk
+      - unbind_flow_slug
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    RadiusCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        attributes:
+          type: string
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
+    OutpostRequest:
+      type: object
+      description: Outpost Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/OutpostTypeEnum'
+        providers:
+          type: array
+          items:
+            type: integer
+        service_connection:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
+        config:
+          type: object
+          additionalProperties: {}
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+      required:
+      - config
+      - name
+      - providers
+      - type
+    ServiceConnection:
+      type: object
+      description: ServiceConnection Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        component:
+          type: string
+          description: Return component used to edit this object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedKubernetesServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KubernetesServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    OpenIDConnectConfiguration:
+      type: object
+      description: rest_framework Serializer for OIDC Configuration
+      properties:
+        issuer:
+          type: string
+        authorization_endpoint:
+          type: string
+        token_endpoint:
+          type: string
+        userinfo_endpoint:
+          type: string
+        end_session_endpoint:
+          type: string
+        introspection_endpoint:
+          type: string
+        jwks_uri:
+          type: string
+        response_types_supported:
+          type: array
+          items:
+            type: string
+        id_token_signing_alg_values_supported:
+          type: array
+          items:
+            type: string
+        subject_types_supported:
+          type: array
+          items:
+            type: string
+        token_endpoint_auth_methods_supported:
+          type: array
+          items:
+            type: string
+      required:
+      - authorization_endpoint
+      - end_session_endpoint
+      - id_token_signing_alg_values_supported
+      - introspection_endpoint
+      - issuer
+      - jwks_uri
+      - response_types_supported
+      - subject_types_supported
+      - token_endpoint
+      - token_endpoint_auth_methods_supported
+      - userinfo_endpoint
+    DockerServiceConnection:
+      type: object
+      description: DockerServiceConnection Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        component:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        url:
+          type: string
+          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
+        tls_verification:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
+        tls_authentication:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Certificate/Key used for authentication. Can be left empty for no authentication.
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - url
+      - verbose_name
+      - verbose_name_plural
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    DockerServiceConnectionRequest:
+      type: object
+      description: DockerServiceConnection Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        url:
+          type: string
+          minLength: 1
+          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
+        tls_verification:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
+        tls_authentication:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Certificate/Key used for authentication. Can be left empty for no authentication.
+      required:
+      - name
+      - url
+    LDAPAPIAccessMode:
+      enum:
+      - direct
+      - cached
+      type: string
+    PolicyTestResult:
+      type: object
+      description: result of a policy test
+      properties:
+        passing:
+          type: boolean
+        messages:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        log_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+      required:
+      - log_messages
+      - messages
+      - passing
+    PaginatedServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    KubernetesServiceConnection:
+      type: object
+      description: KubernetesServiceConnection Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        component:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        kubeconfig:
+          type: object
+          additionalProperties: {}
+          description: Paste your kubeconfig here. authentik will automatically use the currently selected context.
+        verify_ssl:
+          type: boolean
+          description: Verify SSL Certificates of the Kubernetes API endpoint
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    ProxyOutpostConfig:
+      type: object
+      description: Proxy provider serializer for outposts
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        internal_host:
+          type: string
+          format: uri
+        external_host:
+          type: string
+          format: uri
+        internal_host_ssl_validation:
+          type: boolean
+          description: Validate SSL Certificates of upstream servers
+        client_id:
+          type: string
+          maxLength: 255
+        client_secret:
+          type: string
+          maxLength: 255
+        oidc_configuration:
+          allOf:
+          - $ref: '#/components/schemas/OpenIDConnectConfiguration'
+          readOnly: true
+        cookie_secret:
+          type: string
+        certificate:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        skip_path_regex:
+          type: string
+          description: Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
+        basic_auth_enabled:
+          type: boolean
+          title: Set HTTP-Basic Authentication
+          description: Set a custom HTTP-Basic Authentication header based on values from authentik.
+        basic_auth_password_attribute:
+          type: string
+          title: HTTP-Basic Password Key
+          description: User/Group Attribute used for the password part of the HTTP-Basic Header.
+        basic_auth_user_attribute:
+          type: string
+          title: HTTP-Basic Username Key
+          description: User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ProxyMode'
+          description: Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+        cookie_domain:
+          type: string
+        access_token_validity:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Get token validity as second count
+          readOnly: true
+        intercept_header_auth:
+          type: boolean
+          description: When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
+        scopes_to_request:
+          type: array
+          items:
+            type: string
+          description: 'Get all the scope names the outpost should request,
+
+            including custom-defined ones'
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+      required:
+      - access_token_validity
+      - assigned_application_name
+      - assigned_application_slug
+      - external_host
+      - name
+      - oidc_configuration
+      - pk
+      - scopes_to_request
+    LDAPCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        has_search_permission:
+          type: boolean
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
+    PaginatedDockerServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DockerServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+  securitySchemes:
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

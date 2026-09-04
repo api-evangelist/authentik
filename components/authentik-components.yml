@@ -1,0 +1,50 @@
+generated: '2026-09-04'
+method: searched
+source: https://github.com/goauthentik/elements, https://registry.npmjs.org/@goauthentik/elements,
+  https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/executors/,
+  https://docs.goauthentik.io/customize/interfaces/
+summary:
+  families: 3
+  note: authentik is self-hosted, so its "embeddable" surface is not a hosted widget served
+    from a vendor CDN — it is a Lit/web-component library plus the flow executors a
+    deployment renders from its own instance.
+families:
+- name: authentik Elements
+  kind: web-component-library
+  description: Lit-based web component library backing the authentik Admin and User
+    interfaces. Published to npm and developed in the open.
+  package: '@goauthentik/elements'
+  registry: npm
+  version: 0.0.5
+  published: '2026-01-03'
+  repository: https://github.com/goauthentik/elements
+  url: https://www.npmjs.com/package/@goauthentik/elements
+  note: 'Version 0.0.5 and last published 2026-01-03 — pre-1.0 and eight months stale
+    relative to the server train, so it should be read as an internal extraction in
+    progress rather than a supported public embedding surface.'
+- name: Flow executors
+  kind: hosted-flow-surface
+  description: The renderers a deployment serves for an authentication, enrollment or
+    recovery flow. Applications embed or redirect to these rather than reimplementing the
+    stage sequence.
+  variants:
+  - name: Default (web) executor
+    description: Full browser-rendered flow interface driven by the /flows/executor/ API.
+    docs: https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/executors/
+  - name: Headless executor
+    description: Runs authentication flows for clients with no web interface, driving the
+      same flow API programmatically.
+    docs: https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/executors/headless
+  api_backing: openapi/authentik-flows-api-openapi.yml
+- name: Customizable interfaces
+  kind: themeable-surface
+  description: The Admin interface, User interface and flow interface are each customizable
+    per brand through Brand attributes and custom CSS, using authentik's design tokens and
+    CSS cascade layers.
+  docs:
+  - https://docs.goauthentik.io/customize/interfaces/admin
+  - https://docs.goauthentik.io/customize/interfaces/user
+  - https://docs.goauthentik.io/customize/interfaces/flow
+  - https://docs.goauthentik.io/brands/custom-css
+  - https://docs.goauthentik.io/developer-docs/frontend/css-architecture
+  - https://docs.goauthentik.io/developer-docs/frontend/cascade-layers

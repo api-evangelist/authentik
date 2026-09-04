@@ -1,0 +1,88 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.goauthentik.io/endpoint-devices/authentik-agent/authentik-cli
+name: authentik CLI
+binary: ak
+description: First-party command-line client shipped with the authentik Agent. It
+  authenticates against an authentik deployment using a device profile and exposes the
+  authentik REST API as subcommands generated from the same OpenAPI schema this repo
+  harvests, plus credential brokering for AWS and kubectl.
+repository: https://github.com/goauthentik/platform
+docs: https://docs.goauthentik.io/endpoint-devices/authentik-agent/authentik-cli
+latest_release: v0.61.0
+latest_release_date: '2026-08-25'
+release_source: https://api.github.com/repos/goauthentik/platform/releases
+install:
+  note: 'The CLI is distributed as part of the authentik Agent, not as a standalone
+    registry package. Deployment guides exist for Linux, macOS and Windows, including
+    at-scale deployment via MDM.'
+  docs:
+  - https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment
+  - https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/linux
+  - https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/macos
+  - https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/windows
+  - https://docs.goauthentik.io/endpoint-devices/authentik-agent/agent-deployment/automated
+global_flags:
+- flag: -v, --verbose
+  description: Verbose output. Available on most commands.
+- flag: -h, --help
+  description: Help for any command.
+commands:
+- name: api
+  usage: ak api <command>
+  description: Directly interact with the authentik API, authenticated as the active
+    profile's user.
+  note: 'THE SUBCOMMANDS ARE GENERATED FROM THE AUTHENTIK API SCHEMA — the same document
+    saved at openapi/_original/authentik-openapi.yml. `ak api --help` lists the ones
+    available in the installed version, so the command surface tracks the server release
+    rather than the CLI release.'
+- name: auth
+  usage: ak auth <command>
+  description: Authenticate other CLI applications with authentik credentials.
+  subcommands:
+  - name: aws
+    description: Authenticate to AWS with the authentik profile.
+    docs: https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/aws
+  - name: kubectl
+    description: Authenticate to a Kubernetes cluster with the authentik profile.
+    docs: https://docs.goauthentik.io/endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/k8s
+  - name: raw
+    description: Authenticate arbitrary API calls.
+- name: completion
+  usage: ak completion <shell>
+  description: Generate a shell autocompletion script.
+  subcommands:
+  - name: bash
+  - name: fish
+  - name: powershell
+  - name: zsh
+- name: config
+  usage: ak config <command>
+  description: Configure the authentik CLI.
+  subcommands:
+  - name: list-profiles
+    description: List profiles enabled on the device. Each profile maps to a separate
+      authentik deployment.
+  - name: setup
+    description: Configure the authentik CLI.
+- name: help
+  usage: ak help <command>
+  description: Output help information about any command.
+- name: switch-profile
+  usage: ak switch-profile <profile>
+  alias: ak s
+  description: Switch the active profile to another authentik deployment.
+- name: version
+  usage: ak version
+  description: Show the version of all installed authentik components.
+- name: whoami
+  usage: ak whoami
+  description: Show the identity the active profile is authenticated as.
+  note: Referenced in the docs as an example target of `ak help`.
+other_cli:
+- name: ak (server management command)
+  description: 'Distinct from the CLI above: authentik server and worker containers ship a
+    Django management entrypoint also invoked as `ak` (e.g. `ak export_blueprint`,
+    `ak hash_password`). It runs INSIDE the container against the local deployment, not
+    over the API.'
+  docs: https://docs.goauthentik.io/customize/blueprints/export

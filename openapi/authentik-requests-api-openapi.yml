@@ -1,0 +1,1725 @@
+openapi: 3.2.0
+info:
+  title: authentik Requests API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
+  contact:
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
+servers:
+- url: /api/v3
+tags:
+- name: requests
+paths:
+  /requests/grant-requests/:
+    get:
+      operationId: requests_grant_requests_list
+      parameters:
+      - in: query
+        name: agent_owner
+        schema:
+          type: integer
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/RequestStatus'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrantRequestList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_grant_requests_create
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantRequestCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/{uuid}/:
+    get:
+      operationId: requests_grant_requests_retrieve
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantRequest'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_grant_requests_destroy
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/{uuid}/fulfill/:
+    patch:
+      operationId: requests_grant_requests_fulfill_partial_update
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGrantRequestFulfillRequest'
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Request fulfilled
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/{uuid}/revoke/:
+    delete:
+      operationId: requests_grant_requests_revoke_destroy
+      description: 'Immediately end an active grant. Available to the same reviewers who could
+
+        approve it in the first place.'
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Grant revoked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/agent/:
+    post:
+      operationId: requests_grant_requests_agent_create
+      description: 'Delegate access an agent''s owner already holds to the agent, time-boxed. Unlike
+
+        `create` this persists the request directly instead of returning a flow link -- an agent
+
+        authenticates with an API token and has no browser to run a flow in, so no justification
+
+        is ever collected. That is why the agent may only ask for what its owner already has:
+
+        the owner''s approval is then the whole decision, and no reviewer is asked to judge a
+
+        request with nothing in it. The returned `fulfill_url` is what the agent hands to its
+
+        owner so they can act on it.'
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentGrantRequestCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentGrantRequestCreated'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/pending_review/:
+    get:
+      operationId: requests_grant_requests_pending_review_list
+      description: List pending grant requests the current user is eligible to review.
+      parameters:
+      - in: query
+        name: agent_owner
+        schema:
+          type: integer
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/RequestStatus'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrantRequestList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-bindings/:
+    get:
+      operationId: requests_rule_bindings_list
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: rule
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestRuleBindingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_rule_bindings_create
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-bindings/{uuid}/:
+    get:
+      operationId: requests_rule_bindings_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: requests_rule_bindings_update
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: requests_rule_bindings_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRequestRuleBindingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_rule_bindings_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-bindings/{uuid}/used_by/:
+    get:
+      operationId: requests_rule_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-child-bindings/:
+    get:
+      operationId: requests_rule_child_bindings_list
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: query
+        name: binding
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestRuleChildBindingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_rule_child_bindings_create
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleChildBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-child-bindings/{uuid}/:
+    get:
+      operationId: requests_rule_child_bindings_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: requests_rule_child_bindings_update
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleChildBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: requests_rule_child_bindings_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRequestRuleChildBindingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_rule_child_bindings_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-child-bindings/{uuid}/used_by/:
+    get:
+      operationId: requests_rule_child_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rules/:
+    get:
+      operationId: requests_rules_list
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: request_flow__slug
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_rules_create
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rules/{uuid}/:
+    get:
+      operationId: requests_rules_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: requests_rules_update
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: requests_rules_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRequestRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_rules_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rules/{uuid}/used_by/:
+    get:
+      operationId: requests_rules_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+components:
+  schemas:
+    RequestRuleBindingRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+        expiry_pending:
+          type: string
+          minLength: 1
+          description: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          minLength: 1
+          description: The maximum duration a grant approved against this binding can last.
+      required:
+      - rule
+      - target
+    Link:
+      type: object
+      description: Returns a single link
+      properties:
+        link:
+          type: string
+      required:
+      - link
+    RequestableTarget:
+      type: object
+      description: 'Generic representation of a single request target: whatever was actually
+
+        requested (an Application, an Application Entitlement, ...), always paired with the
+
+        parent it belongs to, so the UI/audit trail has that context even when the
+
+        request itself was scoped narrower than the whole app.'
+      properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/Application'
+          readOnly: true
+      required:
+      - label
+      - meta_model_name
+      - parent
+      - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
+    RelatedTarget:
+      type: object
+      description: Simplified related target object
+      properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+      required:
+      - label
+      - meta_model_name
+      - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
+    RequestRuleChildBinding:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+      required:
+      - binding
+      - target
+    Provider:
+      type: object
+      description: Provider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedRequestRuleChildBindingRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    GrantRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        requester_data:
+          type: object
+          additionalProperties: {}
+        fulfiller_data:
+          type: object
+          additionalProperties: {}
+        revoked_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        agent_owner:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          allOf:
+          - $ref: '#/components/schemas/RequestStatus'
+          readOnly: true
+        targets:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        target_objs:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestableTarget'
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - agent_owner
+      - created
+      - created_by
+      - is_active
+      - revoked_by
+      - status
+      - target_objs
+      - targets
+    GrantRequestCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+        expiry:
+          type: string
+          description: Optional override for how long the grant should last once approved. Clamped to the granting rule binding(s)' expiry_granted_max.
+      required:
+      - pbms
+    Application:
+      type: object
+      description: Application Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: Application's display Name.
+        slug:
+          type: string
+          description: Internal application name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        provider:
+          type:
+          - integer
+          - 'null'
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/Provider'
+          readOnly: true
+        backchannel_providers:
+          type: array
+          items:
+            type: integer
+        backchannel_providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
+        launch_url:
+          type:
+          - string
+          - 'null'
+          description: Allow formatting of launch URL
+          readOnly: true
+        open_in_new_tab:
+          type: boolean
+          description: Open launch URL in a new browser tab or window.
+        meta_launch_url:
+          type: string
+          format: uri
+        meta_icon:
+          type: string
+        meta_icon_url:
+          type:
+          - string
+          - 'null'
+          description: Get the URL to the App Icon image
+          readOnly: true
+        meta_icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+        meta_description:
+          type: string
+        meta_publisher:
+          type: string
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        group:
+          type: string
+        meta_hide:
+          type: boolean
+          description: Hide this application from the user's My applications page.
+      required:
+      - backchannel_providers_obj
+      - launch_url
+      - meta_icon_themed_urls
+      - meta_icon_url
+      - name
+      - pbm_uuid
+      - pk
+      - provider_obj
+      - slug
+    RequestRule:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+        targets:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        request_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      required:
+      - name
+      - pbm_uuid
+      - targets
+    RequestRuleChildBindingRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+      required:
+      - binding
+      - target
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type:
+          - string
+          - 'null'
+        dark:
+          type:
+          - string
+          - 'null'
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    RequestRuleRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        request_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      required:
+      - name
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    AgentGrantRequestCreated:
+      type: object
+      description: 'Response to an agent''s access request: the request it created, plus the URL to hand to
+
+        the human it acts for. An agent has no browser, so it cannot run the approval itself --
+
+        `fulfill_url` is what its owner opens to approve or deny.'
+      properties:
+        grant_request:
+          allOf:
+          - $ref: '#/components/schemas/GrantRequest'
+          readOnly: true
+        fulfill_url:
+          type: string
+          readOnly: true
+      required:
+      - fulfill_url
+      - grant_request
+    PatchedGrantRequestFulfillRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+    PolicyEngineMode:
+      enum:
+      - all
+      - any
+      type: string
+    RequestRuleBinding:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        rule_obj:
+          allOf:
+          - $ref: '#/components/schemas/RequestRule'
+          readOnly: true
+        target:
+          type: string
+          format: uuid
+        related:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        related_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedTarget'
+          readOnly: true
+        expiry_pending:
+          type: string
+          description: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          description: The maximum duration a grant approved against this binding can last.
+      required:
+      - pbm_uuid
+      - related
+      - related_obj
+      - rule
+      - rule_obj
+      - target
+    PaginatedRequestRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedRequestRuleBindingRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+        expiry_pending:
+          type: string
+          minLength: 1
+          description: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          minLength: 1
+          description: The maximum duration a grant approved against this binding can last.
+    PaginatedGrantRequestList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantRequest'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedRequestRuleRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        request_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    AgentGrantRequestCreateRequest:
+      type: object
+      description: 'Body for an agent requesting access for itself. Deliberately narrower than
+
+        `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
+
+        derived from the granting rules and capped by the agent''s own lifetime.'
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - pbms
+    NotificationModeEnum:
+      enum:
+      - all
+      - direct
+      - random_min_reviewers
+      type: string
+    PaginatedRequestRuleChildBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRuleChildBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    RequestStatus:
+      enum:
+      - created
+      - approved
+      - denied
+      - revoked
+      type: string
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PaginatedRequestRuleBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRuleBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+  securitySchemes:
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

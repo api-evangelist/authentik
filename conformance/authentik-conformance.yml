@@ -1,0 +1,119 @@
+generated: '2026-09-04'
+method: searched
+source: https://goauthentik.io/pricing (feature matrix + FAQ), https://docs.goauthentik.io/add-secure-apps/providers/ssf/,
+  openapi/_original/authentik-openapi.yml (path + tag evidence)
+summary:
+  asserted: 11
+  conforming: 9
+  note: authentik is an identity provider, so most of these standards are implemented as
+    PROVIDER-SIDE protocol surfaces the product speaks to relying parties — not as
+    properties of its own management REST API. Each entry says which it is.
+conformance:
+- id: oidc
+  name: OpenID Connect 1.0
+  conforms: true
+  role: provider
+  evidence: https://goauthentik.io/pricing
+  note: 'authentik states on its pricing page that it is OpenID Certified™ for OpenID
+    Connect, linking the OpenID Foundation certified-provider register at
+    https://openid.net/certification/certified-openid-providers-profiles/. Provider surface
+    is documented at https://docs.goauthentik.io/add-secure-apps/providers/oauth2/ and the
+    management API exposes it under the `oauth2` and `providers` tags.'
+- id: oauth2
+  name: OAuth 2.0
+  conforms: true
+  role: provider
+  evidence: https://docs.goauthentik.io/add-secure-apps/providers/oauth2/
+  note: Authorization code, client credentials (M2M), device code and refresh grants, plus
+    RFC 8693 token exchange and RFC 7591-style Dynamic Client Registration added in 2026.8.
+- id: saml2
+  name: SAML 2.0
+  conforms: true
+  role: provider
+  evidence: https://docs.goauthentik.io/add-secure-apps/providers/saml/
+- id: scim2
+  name: SCIM 2.0
+  conforms: true
+  role: provider
+  evidence: https://docs.goauthentik.io/add-secure-apps/providers/scim/
+  note: 'authentik acts as a SCIM CLIENT (outbound provisioning to downstream apps) and as
+    a SCIM SOURCE. The management API models this under /providers/scim/ and
+    /sources/scim/. NOTE for scoring: no urn:ietf:params:scim:schemas:* URN appears in the
+    published OpenAPI — a grep of openapi/_original/authentik-openapi.yml returns zero
+    matches — because the SCIM payloads are constructed at runtime from property mappings
+    rather than declared as schemas in the management contract.'
+- id: ldap
+  name: LDAP v3
+  conforms: true
+  role: provider
+  evidence: https://docs.goauthentik.io/add-secure-apps/providers/ldap/
+- id: radius
+  name: RADIUS
+  conforms: true
+  role: provider
+  evidence: https://docs.goauthentik.io/add-secure-apps/providers/radius/
+  note: EAP and EAP-TLS support (enterprise tier).
+- id: kerberos
+  name: Kerberos
+  conforms: true
+  role: source
+  evidence: https://docs.goauthentik.io/users-sources/sources/protocols/kerberos/
+- id: rfc9116
+  name: RFC 9116 security.txt
+  conforms: true
+  role: self
+  evidence: https://goauthentik.io/.well-known/security.txt
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  role: self
+  evidence: openapi/_original/authentik-openapi.yml
+  note: 'The management API does NOT use application/problem+json. Errors are returned as
+    application/json with a Django REST Framework shape — components.schemas.GenericError
+    {detail, code} for 403/404/500 and components.schemas.ValidationError
+    {non_field_errors[], code, <field>: [...]} for 400. See errors/authentik-problem-types.yml.'
+- id: idempotency-key
+  name: Idempotency-Key header (draft-ietf-httpapi-idempotency-key-header)
+  conforms: false
+  role: self
+  evidence: openapi/_original/authentik-openapi.yml
+  note: No Idempotency-Key (or equivalent) header is declared on any of the 1,193 published
+    operations. See conventions/authentik-conventions.yml.
+domain_standards:
+- id: openid-ssf
+  name: OpenID Shared Signals Framework (SSF) 1.0
+  conforms: true
+  spec: https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html
+  evidence: openapi/_original/authentik-openapi.yml#/paths/~1ssf~1streams~1
+  contract_location: 'Declared in the contract, not only in prose: the published OpenAPI
+    carries an `ssf` tag with GET /ssf/streams/, GET /ssf/streams/{uuid}/ and DELETE
+    /ssf/streams/{uuid}/ (the SSF stream-management surface a receiver calls on the
+    transmitter), plus an `ssf` provider CRUD surface at /providers/ssf/. authentik acts as
+    the SSF TRANSMITTER, emitting Security Event Tokens (SETs) to subscribed receivers.'
+  docs: https://docs.goauthentik.io/add-secure-apps/providers/ssf/
+  note: This is the domain standard for the identity market — a receiver that already
+    speaks SSF/CAEP subscribes to authentik's signal stream with no bespoke connector.
+    Named on the pricing page as "Shared Signals Framework (ABM) support" in the Enterprise
+    tier; the reference integration is Apple Business Manager.
+compliance:
+  certifications:
+  - name: OpenID Certified™ (OpenID Connect provider)
+    source: https://goauthentik.io/pricing
+    register: https://openid.net/certification/certified-openid-providers-profiles/
+  claims:
+  - name: FIPS compliance for FedRAMP requirements
+    tier: Enterprise Plus
+    source: https://goauthentik.io/pricing
+    note: 'Shipped as a separate FIPS build; the goauthentik/fips repository exists. This is
+      a capability claim, not an audited attestation.'
+  - name: GDPR / HIPAA / FedRAMP support features
+    source: https://goauthentik.io/pricing
+    note: 'The pricing FAQ says authentik offers "MFA, conditional access policies, audit
+      logging, and FIPS compliance (Enterprise tier) to help meet various security and
+      compliance requirements including GDPR, HIPAA, and FedRAMP". This is a
+      feature-enablement claim about what a customer can build, NOT a statement that
+      Authentik Security holds SOC 2, ISO 27001 or a FedRAMP authorization. No trust center
+      and no third-party audit report was found — see security/authentik-trust-center.yml
+      absence and probe-security-programs.py result trust=none.'
+  no_trust_center: true
+  no_soc2_or_iso_found: true

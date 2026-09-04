@@ -1,0 +1,146 @@
+openapi: 3.2.0
+info:
+  title: authentik Root API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
+  contact:
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
+servers:
+- url: /api/v3
+tags:
+- name: root
+paths:
+  /root/config/:
+    get:
+      operationId: root_config_retrieve
+      description: Retrieve public configuration options
+      tags:
+      - root
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+components:
+  schemas:
+    CapabilitiesEnum:
+      enum:
+      - can_save_media
+      - can_save_reports
+      - can_geo_ip
+      - can_asn
+      - can_impersonate
+      - can_debug
+      - is_enterprise
+      - can_request
+      - can_agent_self_service
+      type: string
+    ErrorReportingConfig:
+      type: object
+      description: Config for error reporting
+      properties:
+        enabled:
+          type: boolean
+          readOnly: true
+        sentry_dsn:
+          type: string
+          readOnly: true
+        environment:
+          type: string
+          readOnly: true
+        send_pii:
+          type: boolean
+          readOnly: true
+        traces_sample_rate:
+          type: number
+          format: double
+          readOnly: true
+      required:
+      - enabled
+      - environment
+      - send_pii
+      - sentry_dsn
+      - traces_sample_rate
+    Config:
+      type: object
+      description: Serialize authentik Config into DRF Object
+      properties:
+        error_reporting:
+          $ref: '#/components/schemas/ErrorReportingConfig'
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilitiesEnum'
+        cache_timeout:
+          type: integer
+        cache_timeout_flows:
+          type: integer
+        cache_timeout_policies:
+          type: integer
+      required:
+      - cache_timeout
+      - cache_timeout_flows
+      - cache_timeout_policies
+      - capabilities
+      - error_reporting
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+  securitySchemes:
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

@@ -1,59 +1,617 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: authentik Core Crypto API
-  description: 'Best-effort OpenAPI 3.1 description of the authentik identity provider''s REST
-
-    API (v3). authentik exposes a fully OpenAPI-driven REST surface at
-
-    /api/v3 with browsable docs at /api/v3/ on each instance and a generated
-
-    OpenAPI schema at /api/v3/schema/. Derived from public docs at
-
-    https://docs.goauthentik.io/developer-docs/api/.
-
-    '
-  version: '3'
+  title: authentik Crypto API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
   contact:
-    name: authentik developer docs
-    url: https://docs.goauthentik.io/developer-docs/api/
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
 servers:
-- url: https://{authentik_host}/api/v3
-  description: authentik instance API root
-  variables:
-    authentik_host:
-      default: authentik.company
-      description: Hostname of your authentik deployment
-security:
-- tokenAuth: []
-- sessionAuth: []
+- url: /api/v3
 tags:
-- name: Crypto
-  description: Certificate-key pairs.
+- name: crypto
 paths:
   /crypto/certificatekeypairs/:
     get:
+      operationId: crypto_certificatekeypairs_list
+      description: CertificateKeyPair Viewset
+      parameters:
+      - in: query
+        name: has_key
+        schema:
+          type: boolean
+        description: Only return certificate-key pairs with keys
+      - in: query
+        name: key_type
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyTypeEnum'
+          description: Filter by key algorithm type (RSA, EC, DSA, etc). Can be specified multiple times (e.g. '?key_type=rsa&key_type=ec')
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - Crypto
-      summary: List certificate-key pairs
-      operationId: cryptoCertificatekeypairsList
+      - crypto
+      security:
+      - authentik: []
       responses:
         '200':
-          description: Certificate-key pairs returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCertificateKeyPairList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: crypto_certificatekeypairs_create
+      description: CertificateKeyPair Viewset
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPair'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairs/{kp_uuid}/:
+    get:
+      operationId: crypto_certificatekeypairs_retrieve
+      description: CertificateKeyPair Viewset
+      parameters:
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPair'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: crypto_certificatekeypairs_update
+      description: CertificateKeyPair Viewset
+      parameters:
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateKeyPairRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPair'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: crypto_certificatekeypairs_partial_update
+      description: CertificateKeyPair Viewset
+      parameters:
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCertificateKeyPairRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPair'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: crypto_certificatekeypairs_destroy
+      description: CertificateKeyPair Viewset
+      parameters:
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairs/{kp_uuid}/used_by/:
+    get:
+      operationId: crypto_certificatekeypairs_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairs/{kp_uuid}/view_certificate/:
+    get:
+      operationId: crypto_certificatekeypairs_view_certificate_retrieve
+      description: Return certificate-key pairs certificate and log access
+      parameters:
+      - in: query
+        name: download
+        schema:
+          type: boolean
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateData'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairs/{kp_uuid}/view_private_key/:
+    get:
+      operationId: crypto_certificatekeypairs_view_private_key_retrieve
+      description: Return certificate-key pairs private key and log access
+      parameters:
+      - in: query
+        name: download
+        schema:
+          type: boolean
+      - in: path
+        name: kp_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+      tags:
+      - crypto
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateData'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /crypto/certificatekeypairs/generate/:
+    post:
+      operationId: crypto_certificatekeypairs_generate_create
+      description: Generate a new, self-signed certificate-key pair
+      tags:
+      - crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CertificateGenerationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateKeyPair'
+          description: ''
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
 components:
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+  schemas:
+    AlgEnum:
+      enum:
+      - rsa
+      - ecdsa
+      - ed25519
+      - ed448
+      type: string
+    CertificateKeyPair:
+      type: object
+      description: CertificateKeyPair Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Kp uuid
+        name:
+          type: string
+        fingerprint_sha256:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: SHA256 fingerprint of the certificate
+        fingerprint_sha1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: SHA1 fingerprint of the certificate
+        cert_expiry:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+          description: Certificate expiry date
+        cert_subject:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Certificate subject as RFC4514 string
+        private_key_available:
+          type: boolean
+          description: Show if this keypair has a private key configured or not
+          readOnly: true
+        key_type:
+          allOf:
+          - $ref: '#/components/schemas/CertificateKeyPairKeyTypeEnum'
+          readOnly: true
+          description: Key algorithm type detected from the certificate's public key
+        certificate_download_url:
+          type: string
+          description: Get URL to download certificate
+          readOnly: true
+        private_key_download_url:
+          type: string
+          description: Get URL to download private key
+          readOnly: true
+        managed:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+      required:
+      - cert_expiry
+      - cert_subject
+      - certificate_download_url
+      - fingerprint_sha1
+      - fingerprint_sha256
+      - key_type
+      - managed
+      - name
+      - pk
+      - private_key_available
+      - private_key_download_url
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    CertificateData:
+      type: object
+      description: Get CertificateKeyPair's data
+      properties:
+        data:
+          type: string
+          readOnly: true
+      required:
+      - data
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    CertificateKeyPairRequest:
+      type: object
+      description: CertificateKeyPair Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        certificate_data:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: PEM-encoded Certificate data
+        key_data:
+          type: string
+          writeOnly: true
+          description: Optional Private Key. If this is set, you can use this keypair for encryption.
+      required:
+      - certificate_data
+      - name
+    KeyTypeEnum:
+      type: string
+      enum:
+      - dsa
+      - ec
+      - ed25519
+      - ed448
+      - rsa
+    CertificateKeyPairKeyTypeEnum:
+      enum:
+      - rsa
+      - ec
+      - dsa
+      - ed25519
+      - ed448
+      type: string
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    PaginatedCertificateKeyPairList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateKeyPair'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PatchedCertificateKeyPairRequest:
+      type: object
+      description: CertificateKeyPair Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        certificate_data:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: PEM-encoded Certificate data
+        key_data:
+          type: string
+          writeOnly: true
+          description: Optional Private Key. If this is set, you can use this keypair for encryption.
+    CertificateGenerationRequest:
+      type: object
+      description: Certificate generation parameters
+      properties:
+        common_name:
+          type: string
+          minLength: 1
+        subject_alt_name:
+          type: string
+        validity_days:
+          type: integer
+        alg:
+          allOf:
+          - $ref: '#/components/schemas/AlgEnum'
+          default: rsa
+      required:
+      - common_name
+      - validity_days
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
-    tokenAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: 'authentik token authentication. Use header
-
-        `Authorization: Bearer <token>` with a token created in the
-
-        Tokens & App Passwords section.
-
-        '
-    sessionAuth:
-      type: apiKey
-      in: cookie
-      name: authentik_session
-      description: Browser session cookie for interactive use.
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

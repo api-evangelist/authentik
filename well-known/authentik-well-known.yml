@@ -1,0 +1,109 @@
+generated: '2026-09-04'
+method: probed
+source: live HTTP probes of every host in apis.yml (registrable domain + www, docs, API
+  reference and customer-portal hosts) for the named RFC/registry paths
+summary:
+  hosts_probed: 5
+  documents_found: 5
+  document_types:
+  - security.txt
+  note: security.txt (RFC 9116) is served on every authentik host. No openid-configuration,
+    oauth-authorization-server, api-catalog, ai-plugin.json or agent card is published at
+    any host root — every one of those paths returns a 404 HTML page from the Docusaurus
+    site. authentik instances DO serve OIDC discovery, but per-provider under
+    /application/o/<application-slug>/.well-known/openid-configuration on a customer's own
+    self-hosted deployment, not on a goauthentik.io host.
+hosts:
+- host: goauthentik.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: authentik-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: www.goauthentik.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: authentik-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: api.goauthentik.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: authentik-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: docs.goauthentik.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: authentik-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: customers.goauthentik.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: authentik-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+evidence:
+- url: https://goauthentik.io/.well-known/security.txt
+  status: 200
+  content_type: text/plain
+- url: https://goauthentik.io/.well-known/api-catalog
+  status: 404
+- url: https://goauthentik.io/.well-known/agent-card.json
+  status: 404

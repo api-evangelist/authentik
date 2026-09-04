@@ -1,0 +1,107 @@
+generated: '2026-09-04'
+method: searched
+source: registry metadata endpoints (registry.npmjs.org, pypi.org, proxy.golang.org,
+  crates.io, rubygems.org, registry.terraform.io) plus the goauthentik GitHub organization
+  repository list
+summary:
+  total: 8
+  official: 7
+  third_party: 1
+  note: authentik auto-generates every first-party client from the same published OpenAPI
+    schema (openapi/_original/authentik-openapi.yml), so the TypeScript, Python, Go and
+    Rust clients all track the server release train and were republished on the same day
+    (2026-09-01, release 2026.8.1). The Kotlin client is the outlier — its GitHub
+    repository is ARCHIVED and last tagged v3.2023106.6, roughly three years behind the
+    API it wraps, and it was never published to Maven Central.
+packages:
+- name: '@goauthentik/api'
+  registry: npm
+  language: TypeScript
+  official: true
+  version: 2026.8.1
+  published: '2026-09-01'
+  url: https://www.npmjs.com/package/@goauthentik/api
+  repository: https://github.com/goauthentik/client-ts
+  source: https://registry.npmjs.org/@goauthentik/api
+  note: Generated from the authentik OpenAPI schema; version tracks the authentik server
+    release.
+- name: authentik-client
+  registry: pypi
+  language: Python
+  official: true
+  version: 2026.8.1
+  published: '2026-09-01'
+  url: https://pypi.org/project/authentik-client/
+  repository: https://github.com/goauthentik/client-python
+  source: https://pypi.org/pypi/authentik-client/json
+  note: PyPI project_urls still carries the unreplaced openapi-generator placeholder
+    (https://github.com/GIT_USER_ID/GIT_REPO_ID); the real repository is
+    goauthentik/client-python.
+- name: goauthentik.io/api/v3
+  registry: pkg.go.dev
+  language: Go
+  official: true
+  version: v3.2026080.1
+  published: '2026-09-01'
+  url: https://pkg.go.dev/goauthentik.io/api/v3
+  repository: https://github.com/goauthentik/client-go
+  source: https://proxy.golang.org/goauthentik.io/api/v3/@latest
+- name: authentik-client
+  registry: crates.io
+  language: Rust
+  official: true
+  version: 2026.8.1
+  published: '2026-09-01'
+  url: https://crates.io/crates/authentik-client
+  repository: https://github.com/goauthentik/client-rust
+  source: https://crates.io/api/v1/crates/authentik-client
+  note: Owned on crates.io by rissson (Marc Schmitt), an authentik core maintainer, and the
+    matching tag version/2026.8.1 exists on goauthentik/client-rust. The crate's own
+    `repository` field points at authentik-community/client-rust, a mirror.
+- name: goauthentik/client-kotlin
+  registry: github
+  language: Kotlin
+  official: true
+  version: v3.2023106.6
+  published: '2024-02-08'
+  url: https://github.com/goauthentik/client-kotlin
+  repository: https://github.com/goauthentik/client-kotlin
+  source: https://api.github.com/repos/goauthentik/client-kotlin
+  note: ABANDONED. Repository is archived (archived=true, last push 2024-02-08) and the
+    newest tag v3.2023106.6 wraps the 2023.10 API. Never published to Maven Central — a
+    search of search.maven.org for a:authentik-client returns 0 documents — so there is no
+    registry metadata endpoint to read and the version above is read from the git tag.
+- name: goauthentik/client-swift
+  registry: github
+  language: Swift
+  official: true
+  version: 3.2026020.24
+  published: null
+  url: https://github.com/goauthentik/client-swift
+  repository: https://github.com/goauthentik/client-swift
+  source: https://api.github.com/repos/goauthentik/client-swift/tags
+  note: Distributed as a Swift Package via the git tag only; there is no package registry
+    with a metadata endpoint, so `published` is null. Newest tag 3.2026020.24 wraps the
+    2026.2 API, roughly two releases behind the TypeScript/Python/Go/Rust clients.
+- name: goauthentik/authentik
+  registry: terraform
+  language: HCL
+  official: true
+  version: 2026.5.1
+  published: '2026-08-10'
+  url: https://registry.terraform.io/providers/goauthentik/authentik/latest
+  repository: https://github.com/goauthentik/terraform-provider-authentik
+  source: https://registry.terraform.io/v1/providers/goauthentik/authentik
+  note: Official Terraform provider for managing authentik objects as infrastructure-as-code.
+- name: authentik-client
+  registry: rubygems
+  language: Ruby
+  official: false
+  version: 0.2.0
+  published: '2026-04-27'
+  url: https://rubygems.org/gems/authentik-client
+  repository: https://github.com/david-uhlig/authentik-client
+  source: https://rubygems.org/api/v1/gems/authentik-client.json
+  note: THIRD PARTY. Published by david-uhlig, not by Authentik Security; the goauthentik
+    organization ships no Ruby client. Listed for completeness, not credited as a
+    first-party SDK.

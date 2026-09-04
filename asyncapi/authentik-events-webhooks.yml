@@ -1,0 +1,182 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.goauthentik.io/sys-mgmt/events/event-actions,
+  https://docs.goauthentik.io/sys-mgmt/events/,
+  https://docs.goauthentik.io/add-secure-apps/providers/ssf/,
+  openapi/_original/authentik-openapi.yml
+asyncapi_published: false
+asyncapi_note: authentik publishes NO AsyncAPI document. The event surface below was read
+  from the event-actions reference, the SSF provider documentation and the notification
+  transport schemas in the published OpenAPI. Nothing here is fabricated and nothing is
+  presented as an AsyncAPI spec.
+surfaces:
+- id: notification-transports
+  name: Notification transport webhooks
+  kind: outbound-webhook
+  description: 'authentik''s general-purpose webhook surface. An operator creates a
+    Notification Transport with mode `webhook` (generic JSON POST) or `webhook_slack`
+    (Slack/Discord-compatible payload), then binds it to a Notification Rule that matches
+    a policy against incoming events. The transport can validate the receiver''s TLS
+    certificate against a chosen CA and the request body is fully customizable through a
+    Notification Webhook Mapping expression.'
+  configured_via_api: true
+  api:
+    resources:
+    - path: /events/transports/
+      operations:
+      - events_transports_list
+      - events_transports_create
+      - events_transports_retrieve
+      - events_transports_update
+      - events_transports_partial_update
+      - events_transports_destroy
+      - events_transports_test_create
+    - path: /events/rules/
+      description: Notification rules that decide which events reach which transport.
+    - path: /propertymappings/notification/
+      description: Webhook body mappings (expressions returning JSON-serializable data).
+    schemas:
+    - NotificationTransport
+    - NotificationWebhookMapping
+    - TransportModeEnum
+  modes:
+  - local
+  - webhook
+  - webhook_slack
+  - email
+  fields:
+    webhook_url: uri
+    webhook_ca: uuid — certificate-key pair used to validate the receiver's TLS certificate
+    webhook_mapping_body: uuid — NotificationWebhookMapping controlling the request body
+  delivery_semantics:
+    signing: not documented
+    retries: not documented
+    ordering: not documented
+    note: The docs do not state a signing scheme, retry policy or delivery guarantee for
+      notification-transport webhooks. A receiver should not assume replay protection.
+  docs: https://docs.goauthentik.io/sys-mgmt/events/notifications
+- id: ssf
+  name: Shared Signals Framework (SSF) event stream
+  kind: standards-based-event-stream
+  standard: OpenID Shared Signals Framework 1.0
+  spec: https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html
+  description: 'authentik acts as an SSF TRANSMITTER. A receiving application creates a
+    stream declaring the signal types it wants; authentik then POSTs Security Event Tokens
+    (SETs) to the receiver as those signals occur. Configured as a backchannel provider
+    alongside a normal OIDC provider. Reference integration is Apple Business Manager.'
+  api:
+    resources:
+    - path: /ssf/streams/
+      operations:
+      - ssf_streams_list
+      - ssf_streams_retrieve
+      - ssf_streams_destroy
+    - path: /providers/ssf/
+      description: CRUD for the SSF provider that backs a stream.
+  signal_types_documented:
+  - MFA device added
+  - MFA device removed
+  - logout
+  - session revoked (by admin or by the user)
+  - credentials changed
+  payload: Security Event Token (SET, RFC 8417)
+  docs: https://docs.goauthentik.io/add-secure-apps/providers/ssf/
+  tier: Enterprise
+event_catalog:
+  source: https://docs.goauthentik.io/sys-mgmt/events/event-actions
+  enum_source: openapi/_original/authentik-openapi.yml#/components/schemas/EventActions
+  note: 'These are the actions that create an event object; a notification rule can match
+    any of them and route it to a webhook transport. The list below is the EventActions
+    enum from the published contract, which is a superset of the documented reference page.'
+  events:
+  - id: login
+    description: A user logs in (including the source, if available).
+  - id: login_failed
+    description: A failed login attempt.
+  - id: logout
+    description: A user logs out.
+  - id: user_write
+    description: A user is written to during a flow execution.
+  - id: user_offboarded
+    description: A scheduled user offboarding completed. Records the scheduling admin, the
+      action, and whether sessions and tokens were revoked.
+  - id: suspicious_request
+    description: A suspicious request was detected.
+  - id: password_set
+    description: A user's password was set.
+  - id: secret_view
+    description: A secret (token, certificate key) was viewed.
+  - id: secret_rotate
+    description: A secret was rotated.
+  - id: invitation_used
+    description: An invitation was used during enrollment.
+  - id: authorize_application
+    description: A user authorized an application.
+  - id: source_linked
+    description: An external source was linked to a user account.
+  - id: impersonation_started
+    description: An administrator started impersonating a user.
+  - id: impersonation_ended
+    description: An impersonation session ended.
+  - id: flow_execution
+    description: A flow was executed.
+  - id: policy_execution
+    description: A policy was evaluated.
+  - id: policy_exception
+    description: A policy raised an exception during evaluation.
+  - id: property_mapping_exception
+    description: A property mapping expression raised an exception.
+  - id: system_task_execution
+    description: A scheduled system task ran.
+  - id: system_task_exception
+    description: A scheduled system task raised an exception.
+  - id: system_exception
+    description: An unhandled server-side exception.
+  - id: configuration_error
+    description: A configuration error was detected.
+  - id: configuration_warning
+    description: A configuration warning was raised.
+  - id: model_created
+    description: An object was created (the audit trail for every write through the API).
+  - id: model_updated
+    description: An object was updated.
+  - id: model_deleted
+    description: An object was deleted.
+  - id: email_sent
+    description: authentik sent an email.
+  - id: update_available
+    description: A new authentik version is available.
+  - id: export_ready
+    description: A CSV data export finished and is ready to download.
+  - id: review_initiated
+    description: An access review was initiated.
+  - id: review_overdue
+    description: An access review passed its due date.
+  - id: review_attested
+    description: A reviewer attested to an access review.
+  - id: review_completed
+    description: An access review completed.
+  - id: access_request_created
+    description: A user requested access to an application or entitlement.
+  - id: access_request_approved
+    description: A reviewer approved an access request.
+  - id: access_request_denied
+    description: A reviewer denied an access request.
+  - id: access_request_revoked
+    description: An active grant was revoked.
+  - id: custom_
+    description: Prefix for customer-defined event actions raised from expressions.
+  payload_shape:
+    fields:
+    - pk
+    - user {pk, email, username}
+    - action
+    - app
+    - context
+    - client_ip
+    - created
+    - expires
+    - brand
+    note: Documented with a worked JSON example per action on the event-actions reference
+      page. Sensitive values (for example passwords in a login_failed context) are masked
+      with asterisks by authentik before the event is stored.

@@ -1,0 +1,795 @@
+openapi: 3.2.0
+info:
+  title: authentik Oauth2 API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
+  contact:
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
+servers:
+- url: /api/v3
+tags:
+- name: oauth2
+paths:
+  /oauth2/access_tokens/:
+    get:
+      operationId: oauth2_access_tokens_list
+      description: AccessToken Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTokenModelList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/access_tokens/{id}/:
+    get:
+      operationId: oauth2_access_tokens_retrieve
+      description: AccessToken Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Access Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenModel'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: oauth2_access_tokens_destroy
+      description: AccessToken Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Access Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/access_tokens/{id}/used_by/:
+    get:
+      operationId: oauth2_access_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Access Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/authorization_codes/:
+    get:
+      operationId: oauth2_authorization_codes_list
+      description: AuthorizationCode Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedExpiringBaseGrantModelList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/authorization_codes/{id}/:
+    get:
+      operationId: oauth2_authorization_codes_retrieve
+      description: AuthorizationCode Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Authorization Code.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpiringBaseGrantModel'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: oauth2_authorization_codes_destroy
+      description: AuthorizationCode Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Authorization Code.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/authorization_codes/{id}/used_by/:
+    get:
+      operationId: oauth2_authorization_codes_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Authorization Code.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/refresh_tokens/:
+    get:
+      operationId: oauth2_refresh_tokens_list
+      description: RefreshToken Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTokenModelList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/refresh_tokens/{id}/:
+    get:
+      operationId: oauth2_refresh_tokens_retrieve
+      description: RefreshToken Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Refresh Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenModel'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: oauth2_refresh_tokens_destroy
+      description: RefreshToken Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Refresh Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /oauth2/refresh_tokens/{id}/used_by/:
+    get:
+      operationId: oauth2_refresh_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Refresh Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+components:
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+  schemas:
+    PaginatedTokenModelList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Role:
+      type: object
+      description: Role serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+      required:
+      - name
+      - pk
+    Provider:
+      type: object
+      description: Provider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    User:
+      type: object
+      description: User Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        is_superuser:
+          type: boolean
+          readOnly: true
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        groups_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        roles_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          description: User's avatar, either a http/https URL or a data URI
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+        path:
+          type: string
+        type:
+          $ref: '#/components/schemas/UserTypeEnum'
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        password_change_date:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - avatar
+      - date_joined
+      - groups_obj
+      - is_superuser
+      - last_updated
+      - name
+      - password_change_date
+      - pk
+      - roles_obj
+      - uid
+      - username
+      - uuid
+    ExpiringBaseGrantModel:
+      type: object
+      description: Serializer for BaseGrantModel and ExpiringBaseGrant
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          $ref: '#/components/schemas/Provider'
+        user:
+          $ref: '#/components/schemas/User'
+        is_expired:
+          type: boolean
+          description: Check if token is expired yet.
+          readOnly: true
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        scope:
+          type: array
+          items:
+            type: string
+      required:
+      - is_expired
+      - pk
+      - provider
+      - scope
+      - user
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    PaginatedExpiringBaseGrantModelList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpiringBaseGrantModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    TokenModel:
+      type: object
+      description: Serializer for BaseGrantModel and RefreshToken
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          $ref: '#/components/schemas/Provider'
+        user:
+          $ref: '#/components/schemas/User'
+        is_expired:
+          type: boolean
+          description: Check if token is expired yet.
+          readOnly: true
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        scope:
+          type: array
+          items:
+            type: string
+        id_token:
+          type: string
+          description: Get the token's id_token as JSON String
+          readOnly: true
+        revoked:
+          type: boolean
+      required:
+      - id_token
+      - is_expired
+      - pk
+      - provider
+      - scope
+      - user
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+  securitySchemes:
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer

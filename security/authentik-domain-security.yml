@@ -1,4 +1,4 @@
-generated: '2026-07-11'
+generated: '2026-09-04'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
@@ -18,12 +18,12 @@ domains:
 - domain: goauthentik.io
   dnssec: true
   caa:
-  - 0 issuewild "letsencrypt.org"
   - 0 issuewild "pki.goog; cansignhttpexchanges=yes"
   - 0 iodef "infrastructure+caa@goauthentik.io"
   - 0 issue "letsencrypt.org"
   - 0 issue "pki.goog; cansignhttpexchanges=yes"
   - 0 issuemail ";"
+  - 0 issuewild "letsencrypt.org"
   spf: true
   dmarc: true
   dmarc_policy: quarantine

@@ -1,68 +1,4505 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: authentik Core Policies API
-  description: 'Best-effort OpenAPI 3.1 description of the authentik identity provider''s REST
-
-    API (v3). authentik exposes a fully OpenAPI-driven REST surface at
-
-    /api/v3 with browsable docs at /api/v3/ on each instance and a generated
-
-    OpenAPI schema at /api/v3/schema/. Derived from public docs at
-
-    https://docs.goauthentik.io/developer-docs/api/.
-
-    '
-  version: '3'
+  title: authentik Policies API
+  version: 2026.11.0-rc1
+  description: Making authentication simple.
   contact:
-    name: authentik developer docs
-    url: https://docs.goauthentik.io/developer-docs/api/
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+  x-source-url: https://api.goauthentik.io/schema.yml
+  x-last-validated: '2026-09-04'
 servers:
-- url: https://{authentik_host}/api/v3
-  description: authentik instance API root
-  variables:
-    authentik_host:
-      default: authentik.company
-      description: Hostname of your authentik deployment
-security:
-- tokenAuth: []
-- sessionAuth: []
+- url: /api/v3
 tags:
-- name: Policies
-  description: Policies and policy bindings.
+- name: policies
 paths:
   /policies/all/:
     get:
+      operationId: policies_all_list
+      description: Policy Viewset
+      parameters:
+      - in: query
+        name: bindings__isnull
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: promptstage__isnull
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - Policies
-      summary: List policies
-      operationId: policiesAllList
+      - policies
+      security:
+      - authentik: []
       responses:
         '200':
-          description: Policies returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/all/{policy_uuid}/:
+    get:
+      operationId: policies_all_retrieve
+      description: Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_all_destroy
+      description: Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/all/{policy_uuid}/test/:
+    post:
+      operationId: policies_all_test_create
+      description: Test policy
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyTestRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyTestResult'
+          description: ''
+        '400':
+          description: Invalid parameters
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/all/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/all/cache_clear/:
+    post:
+      operationId: policies_all_cache_clear_create
+      description: Clear policy cache
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully cleared cache
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/all/cache_info/:
+    get:
+      operationId: policies_all_cache_info_retrieve
+      description: Info about cached policies
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cache'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/all/types/:
+    get:
+      operationId: policies_all_types_list
+      description: Get all creatable types
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeCreate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /policies/bindings/:
     get:
+      operationId: policies_bindings_list
+      description: PolicyBinding Viewset
+      parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: order
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: policy
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: policy__isnull
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: target_in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: timeout
+        schema:
+          type: integer
       tags:
-      - Policies
-      summary: List policy bindings
-      operationId: policiesBindingsList
+      - policies
+      security:
+      - authentik: []
       responses:
         '200':
-          description: Policy bindings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPolicyBindingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_bindings_create
+      description: PolicyBinding Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/bindings/{policy_binding_uuid}/:
+    get:
+      operationId: policies_bindings_retrieve
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy Binding.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_bindings_update
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy Binding.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_bindings_partial_update
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy Binding.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPolicyBindingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_bindings_destroy
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy Binding.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/bindings/{policy_binding_uuid}/used_by/:
+    get:
+      operationId: policies_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Policy Binding.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/dummy/:
+    get:
+      operationId: policies_dummy_list
+      description: Dummy Viewset
+      parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: result
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: wait_max
+        schema:
+          type: integer
+      - in: query
+        name: wait_min
+        schema:
+          type: integer
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDummyPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_dummy_create
+      description: Dummy Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DummyPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DummyPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/dummy/{policy_uuid}/:
+    get:
+      operationId: policies_dummy_retrieve
+      description: Dummy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Dummy Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DummyPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_dummy_update
+      description: Dummy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Dummy Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DummyPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DummyPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_dummy_partial_update
+      description: Dummy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Dummy Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDummyPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DummyPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_dummy_destroy
+      description: Dummy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Dummy Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/dummy/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_dummy_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Dummy Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/event_matcher/:
+    get:
+      operationId: policies_event_matcher_list
+      description: Event Matcher Policy Viewset
+      parameters:
+      - in: query
+        name: action
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
+          description: 'Match created events with this action type. When left empty, all action types will be matched.
+
+
+            '
+      - in: query
+        name: app
+        schema:
+          type: string
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: model
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: query
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEventMatcherPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_event_matcher_create
+      description: Event Matcher Policy Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventMatcherPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventMatcherPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/event_matcher/{policy_uuid}/:
+    get:
+      operationId: policies_event_matcher_retrieve
+      description: Event Matcher Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event Matcher Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventMatcherPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_event_matcher_update
+      description: Event Matcher Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event Matcher Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventMatcherPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventMatcherPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_event_matcher_partial_update
+      description: Event Matcher Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event Matcher Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEventMatcherPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventMatcherPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_event_matcher_destroy
+      description: Event Matcher Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event Matcher Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/event_matcher/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_event_matcher_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Event Matcher Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/expression/:
+    get:
+      operationId: policies_expression_list
+      description: Source Viewset
+      parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedExpressionPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_expression_create
+      description: Source Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpressionPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/expression/{policy_uuid}/:
+    get:
+      operationId: policies_expression_retrieve
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_expression_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpressionPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_expression_partial_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExpressionPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_expression_destroy
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/expression/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_expression_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/geoip/:
+    get:
+      operationId: policies_geoip_list
+      description: GeoIP Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGeoIPPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_geoip_create
+      description: GeoIP Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoIPPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/geoip/{policy_uuid}/:
+    get:
+      operationId: policies_geoip_retrieve
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_geoip_update
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoIPPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_geoip_partial_update
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGeoIPPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_geoip_destroy
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/geoip/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_geoip_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/geoip_iso3166/:
+    get:
+      operationId: policies_geoip_iso3166_list
+      description: Get all countries in ISO-3166-1
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetailedCountry'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/password/:
+    get:
+      operationId: policies_password_list
+      description: Password Policy Viewset
+      parameters:
+      - in: query
+        name: amount_digits
+        schema:
+          type: integer
+      - in: query
+        name: amount_lowercase
+        schema:
+          type: integer
+      - in: query
+        name: amount_symbols
+        schema:
+          type: integer
+      - in: query
+        name: amount_uppercase
+        schema:
+          type: integer
+      - in: query
+        name: check_have_i_been_pwned
+        schema:
+          type: boolean
+      - in: query
+        name: check_static_rules
+        schema:
+          type: boolean
+      - in: query
+        name: check_zxcvbn
+        schema:
+          type: boolean
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: error_message
+        schema:
+          type: string
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: hibp_allowed_count
+        schema:
+          type: integer
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: length_min
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: password_field
+        schema:
+          type: string
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: symbol_charset
+        schema:
+          type: string
+      - in: query
+        name: zxcvbn_score_threshold
+        schema:
+          type: integer
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPasswordPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_password_create
+      description: Password Policy Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/password/{policy_uuid}/:
+    get:
+      operationId: policies_password_retrieve
+      description: Password Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_password_update
+      description: Password Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_password_partial_update
+      description: Password Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPasswordPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_password_destroy
+      description: Password Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/password/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_password_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/password_expiry/:
+    get:
+      operationId: policies_password_expiry_list
+      description: Password Expiry Viewset
+      parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: days
+        schema:
+          type: integer
+      - in: query
+        name: deny_only
+        schema:
+          type: boolean
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPasswordExpiryPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_password_expiry_create
+      description: Password Expiry Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordExpiryPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/password_expiry/{policy_uuid}/:
+    get:
+      operationId: policies_password_expiry_retrieve
+      description: Password Expiry Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Expiry Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordExpiryPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_password_expiry_update
+      description: Password Expiry Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Expiry Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordExpiryPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordExpiryPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_password_expiry_partial_update
+      description: Password Expiry Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Expiry Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPasswordExpiryPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordExpiryPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_password_expiry_destroy
+      description: Password Expiry Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Expiry Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/password_expiry/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_password_expiry_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Expiry Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/reputation/:
+    get:
+      operationId: policies_reputation_list
+      description: Reputation Policy Viewset
+      parameters:
+      - in: query
+        name: check_ip
+        schema:
+          type: boolean
+      - in: query
+        name: check_username
+        schema:
+          type: boolean
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: threshold
+        schema:
+          type: integer
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReputationPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_reputation_create
+      description: Reputation Policy Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReputationPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReputationPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/reputation/{policy_uuid}/:
+    get:
+      operationId: policies_reputation_retrieve
+      description: Reputation Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReputationPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_reputation_update
+      description: Reputation Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReputationPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReputationPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_reputation_partial_update
+      description: Reputation Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReputationPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReputationPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_reputation_destroy
+      description: Reputation Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/reputation/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_reputation_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/reputation/scores/:
+    get:
+      operationId: policies_reputation_scores_list
+      description: Reputation Viewset
+      parameters:
+      - in: query
+        name: identifier
+        schema:
+          type: string
+      - in: query
+        name: identifier_in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: ip
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: score
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReputationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/reputation/scores/{reputation_uuid}/:
+    get:
+      operationId: policies_reputation_scores_retrieve
+      description: Reputation Viewset
+      parameters:
+      - in: path
+        name: reputation_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Score.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reputation'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_reputation_scores_destroy
+      description: Reputation Viewset
+      parameters:
+      - in: path
+        name: reputation_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Score.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/reputation/scores/{reputation_uuid}/used_by/:
+    get:
+      operationId: policies_reputation_scores_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: reputation_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Reputation Score.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/unique_password/:
+    get:
+      operationId: policies_unique_password_list
+      description: Password Uniqueness Policy Viewset
+      parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: execution_logging
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: num_historical_passwords
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: password_field
+        schema:
+          type: string
+      - in: query
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUniquePasswordPolicyList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: policies_unique_password_create
+      description: Password Uniqueness Policy Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniquePasswordPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniquePasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/unique_password/{policy_uuid}/:
+    get:
+      operationId: policies_unique_password_retrieve
+      description: Password Uniqueness Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Uniqueness Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniquePasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: policies_unique_password_update
+      description: Password Uniqueness Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Uniqueness Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniquePasswordPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniquePasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: policies_unique_password_partial_update
+      description: Password Uniqueness Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Uniqueness Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUniquePasswordPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniquePasswordPolicy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: policies_unique_password_destroy
+      description: Password Uniqueness Policy Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Uniqueness Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /policies/unique_password/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_unique_password_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Password Uniqueness Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
 components:
+  schemas:
+    PatchedUniquePasswordPolicyRequest:
+      type: object
+      description: Password Uniqueness Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        password_field:
+          type: string
+          minLength: 1
+          description: Field key to check, field keys defined in Prompt stages are available.
+        num_historical_passwords:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Number of passwords to check against.
+    UniquePasswordPolicyRequest:
+      type: object
+      description: Password Uniqueness Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        password_field:
+          type: string
+          minLength: 1
+          description: Field key to check, field keys defined in Prompt stages are available.
+        num_historical_passwords:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Number of passwords to check against.
+      required:
+      - name
+    GeoIPPolicyRequest:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        check_history_distance:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        check_impossible_travel:
+          type: boolean
+        impossible_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - countries
+      - name
+    EventActions:
+      enum:
+      - login
+      - login_failed
+      - logout
+      - user_write
+      - user_offboarded
+      - suspicious_request
+      - password_set
+      - secret_view
+      - secret_rotate
+      - invitation_used
+      - authorize_application
+      - source_linked
+      - impersonation_started
+      - impersonation_ended
+      - flow_execution
+      - policy_execution
+      - policy_exception
+      - property_mapping_exception
+      - system_task_execution
+      - system_task_exception
+      - system_exception
+      - configuration_error
+      - configuration_warning
+      - model_created
+      - model_updated
+      - model_deleted
+      - email_sent
+      - update_available
+      - export_ready
+      - review_initiated
+      - review_overdue
+      - review_attested
+      - review_completed
+      - access_request_created
+      - access_request_approved
+      - access_request_denied
+      - access_request_revoked
+      - custom_
+      type: string
+    PolicyBinding:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy binding uuid
+        policy:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user:
+          type:
+          - integer
+          - 'null'
+        policy_obj:
+          allOf:
+          - $ref: '#/components/schemas/Policy'
+          readOnly: true
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        expiring:
+          type: boolean
+          readOnly: true
+      required:
+      - expires
+      - expiring
+      - group_obj
+      - order
+      - pk
+      - policy_obj
+      - target
+      - user_obj
+    DummyPolicy:
+      type: object
+      description: Dummy Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        result:
+          type: boolean
+        wait_min:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        wait_max:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedExpressionPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpressionPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    EventMatcherPolicy:
+      type: object
+      description: Event Matcher Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        action:
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
+          description: Match created events with this action type. When left empty, all action types will be matched.
+        client_ip:
+          type:
+          - string
+          - 'null'
+          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
+        app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
+          description: Match events created by selected application. When left empty, all applications are matched.
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+        query:
+          type:
+          - string
+          - 'null'
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedReputationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reputation'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ModelEnum:
+      enum:
+      - authentik_tenants.domain
+      - authentik_core.group
+      - authentik_core.user
+      - authentik_core.application
+      - authentik_core.applicationentitlement
+      - authentik_core.token
+      - authentik_core.objectattribute
+      - authentik_core.actor
+      - authentik_crypto.certificatekeypair
+      - authentik_endpoints.deviceuserbinding
+      - authentik_endpoints.deviceaccessgroup
+      - authentik_endpoints.endpointstage
+      - authentik_endpoints_connectors_agent.agentconnector
+      - authentik_endpoints_connectors_agent.agentdeviceuserbinding
+      - authentik_endpoints_connectors_agent.enrollmenttoken
+      - authentik_enterprise.license
+      - authentik_events.event
+      - authentik_events.notificationtransport
+      - authentik_events.notification
+      - authentik_events.notificationrule
+      - authentik_events.notificationwebhookmapping
+      - authentik_flows.flow
+      - authentik_flows.flowstagebinding
+      - authentik_outposts.dockerserviceconnection
+      - authentik_outposts.kubernetesserviceconnection
+      - authentik_outposts.outpost
+      - authentik_policies_dummy.dummypolicy
+      - authentik_policies_event_matcher.eventmatcherpolicy
+      - authentik_policies_expiry.passwordexpirypolicy
+      - authentik_policies_expression.expressionpolicy
+      - authentik_policies_geoip.geoippolicy
+      - authentik_policies_password.passwordpolicy
+      - authentik_policies_reputation.reputationpolicy
+      - authentik_policies.policybinding
+      - authentik_providers_ldap.ldapprovider
+      - authentik_providers_oauth2.scopemapping
+      - authentik_providers_oauth2.oauth2provider
+      - authentik_providers_oauth2.oauth2dynamicclientregistration
+      - authentik_providers_proxy.proxyprovider
+      - authentik_providers_rac.racprovider
+      - authentik_providers_rac.endpoint
+      - authentik_providers_rac.racpropertymapping
+      - authentik_providers_radius.radiusprovider
+      - authentik_providers_radius.radiusproviderpropertymapping
+      - authentik_providers_saml.samlprovider
+      - authentik_providers_saml.samlpropertymapping
+      - authentik_providers_scim.scimprovider
+      - authentik_providers_scim.scimmapping
+      - authentik_rbac.role
+      - authentik_rbac.initialpermissions
+      - authentik_sources_kerberos.kerberossource
+      - authentik_sources_kerberos.kerberossourcepropertymapping
+      - authentik_sources_kerberos.userkerberossourceconnection
+      - authentik_sources_kerberos.groupkerberossourceconnection
+      - authentik_sources_ldap.ldapsource
+      - authentik_sources_ldap.ldapsourcepropertymapping
+      - authentik_sources_ldap.userldapsourceconnection
+      - authentik_sources_ldap.groupldapsourceconnection
+      - authentik_sources_oauth.oauthsource
+      - authentik_sources_oauth.oauthsourcepropertymapping
+      - authentik_sources_oauth.useroauthsourceconnection
+      - authentik_sources_oauth.groupoauthsourceconnection
+      - authentik_sources_plex.plexsource
+      - authentik_sources_plex.plexsourcepropertymapping
+      - authentik_sources_plex.userplexsourceconnection
+      - authentik_sources_plex.groupplexsourceconnection
+      - authentik_sources_saml.samlsource
+      - authentik_sources_saml.samlsourcepropertymapping
+      - authentik_sources_saml.usersamlsourceconnection
+      - authentik_sources_saml.groupsamlsourceconnection
+      - authentik_sources_scim.scimsource
+      - authentik_sources_scim.scimsourcepropertymapping
+      - authentik_sources_telegram.telegramsource
+      - authentik_sources_telegram.telegramsourcepropertymapping
+      - authentik_sources_telegram.usertelegramsourceconnection
+      - authentik_sources_telegram.grouptelegramsourceconnection
+      - authentik_stages_authenticator_duo.authenticatorduostage
+      - authentik_stages_authenticator_duo.duodevice
+      - authentik_stages_authenticator_email.authenticatoremailstage
+      - authentik_stages_authenticator_email.emaildevice
+      - authentik_stages_authenticator_sms.authenticatorsmsstage
+      - authentik_stages_authenticator_sms.smsdevice
+      - authentik_stages_authenticator_static.authenticatorstaticstage
+      - authentik_stages_authenticator_static.staticdevice
+      - authentik_stages_authenticator_totp.authenticatortotpstage
+      - authentik_stages_authenticator_totp.totpdevice
+      - authentik_stages_authenticator_validate.authenticatorvalidatestage
+      - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
+      - authentik_stages_authenticator_webauthn.webauthndevice
+      - authentik_stages_captcha.captchastage
+      - authentik_stages_consent.consentstage
+      - authentik_stages_deny.denystage
+      - authentik_stages_dummy.dummystage
+      - authentik_stages_email.emailstage
+      - authentik_stages_identification.identificationstage
+      - authentik_stages_invitation.invitationstage
+      - authentik_stages_invitation.invitation
+      - authentik_stages_password.passwordstage
+      - authentik_stages_prompt.prompt
+      - authentik_stages_prompt.promptstage
+      - authentik_stages_redirect.redirectstage
+      - authentik_stages_user_delete.userdeletestage
+      - authentik_stages_user_login.userloginstage
+      - authentik_stages_user_logout.userlogoutstage
+      - authentik_stages_user_write.userwritestage
+      - authentik_tasks_schedules.schedule
+      - authentik_brands.brand
+      - authentik_blueprints.blueprintinstance
+      - authentik_agents.agent
+      - authentik_endpoints_connectors_fleet.fleetconnector
+      - authentik_endpoints_connectors_google_chrome.googlechromeconnector
+      - authentik_lifecycle.lifecyclerule
+      - authentik_lifecycle.lifecycleiteration
+      - authentik_lifecycle.review
+      - authentik_lifecycle.useroffboarding
+      - authentik_policies_unique_password.uniquepasswordpolicy
+      - authentik_providers_google_workspace.googleworkspaceprovider
+      - authentik_providers_google_workspace.googleworkspaceprovidermapping
+      - authentik_providers_microsoft_entra.microsoftentraprovider
+      - authentik_providers_microsoft_entra.microsoftentraprovidermapping
+      - authentik_providers_ssf.ssfprovider
+      - authentik_providers_ws_federation.wsfederationprovider
+      - authentik_reports.dataexport
+      - authentik_requests.requestrulechildbinding
+      - authentik_requests.requestrulebinding
+      - authentik_requests.requestrule
+      - authentik_requests.grantrequest
+      - authentik_stages_account_lockdown.accountlockdownstage
+      - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
+      - authentik_stages_mtls.mutualtlsstage
+      - authentik_stages_source.sourcestage
+      type: string
+    DetailedCountry:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        name:
+          type: string
+      required:
+      - code
+      - name
+    PaginatedPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedPasswordPolicyRequest:
+      type: object
+      description: Password Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        password_field:
+          type: string
+          minLength: 1
+          description: Field key to check, field keys defined in Prompt stages are available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_uppercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_lowercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_symbols:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        length_min:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        symbol_charset:
+          type: string
+          minLength: 1
+        error_message:
+          type: string
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy will fail.
+    PasswordPolicyRequest:
+      type: object
+      description: Password Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        password_field:
+          type: string
+          minLength: 1
+          description: Field key to check, field keys defined in Prompt stages are available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_uppercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_lowercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_symbols:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        length_min:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        symbol_charset:
+          type: string
+          minLength: 1
+        error_message:
+          type: string
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy will fail.
+      required:
+      - name
+    PatchedGeoIPPolicyRequest:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        check_history_distance:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        check_impossible_travel:
+          type: boolean
+        impossible_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+    PaginatedGeoIPPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoIPPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedDummyPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DummyPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    PaginatedUniquePasswordPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UniquePasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PolicyBindingRequest:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        policy:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user:
+          type:
+          - integer
+          - 'null'
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+      required:
+      - order
+      - target
+    PasswordPolicy:
+      type: object
+      description: Password Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        password_field:
+          type: string
+          description: Field key to check, field keys defined in Prompt stages are available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_uppercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_lowercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_symbols:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        length_min:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        symbol_charset:
+          type: string
+        error_message:
+          type: string
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy will fail.
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedDummyPolicyRequest:
+      type: object
+      description: Dummy Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        result:
+          type: boolean
+        wait_min:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        wait_max:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+    PaginatedPasswordExpiryPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PasswordExpiryPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedPasswordPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Reputation:
+      type: object
+      description: Reputation Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Reputation uuid
+        identifier:
+          type: string
+        ip:
+          type: string
+        ip_geo_data:
+          type: object
+          additionalProperties: {}
+        ip_asn_data:
+          type: object
+          additionalProperties: {}
+        score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - identifier
+      - ip
+      - updated
+    AppEnum:
+      enum:
+      - authentik.commands
+      - authentik.tenants
+      - authentik.tasks
+      - authentik.admin
+      - authentik.api
+      - authentik.core
+      - authentik.crypto
+      - authentik.endpoints
+      - authentik.endpoints.connectors.agent
+      - authentik.enterprise
+      - authentik.events
+      - authentik.admin.files
+      - authentik.flows
+      - authentik.outposts
+      - authentik.policies.dummy
+      - authentik.policies.event_matcher
+      - authentik.policies.expiry
+      - authentik.policies.expression
+      - authentik.policies.geoip
+      - authentik.policies.password
+      - authentik.policies.reputation
+      - authentik.policies
+      - authentik.providers.ldap
+      - authentik.providers.oauth2
+      - authentik.providers.proxy
+      - authentik.providers.rac
+      - authentik.providers.radius
+      - authentik.providers.saml
+      - authentik.providers.scim
+      - authentik.rbac
+      - authentik.recovery
+      - authentik.sources.kerberos
+      - authentik.sources.ldap
+      - authentik.sources.oauth
+      - authentik.sources.plex
+      - authentik.sources.saml
+      - authentik.sources.scim
+      - authentik.sources.telegram
+      - authentik.stages.authenticator
+      - authentik.stages.authenticator_duo
+      - authentik.stages.authenticator_email
+      - authentik.stages.authenticator_sms
+      - authentik.stages.authenticator_static
+      - authentik.stages.authenticator_totp
+      - authentik.stages.authenticator_validate
+      - authentik.stages.authenticator_webauthn
+      - authentik.stages.captcha
+      - authentik.stages.consent
+      - authentik.stages.deny
+      - authentik.stages.dummy
+      - authentik.stages.email
+      - authentik.stages.identification
+      - authentik.stages.invitation
+      - authentik.stages.password
+      - authentik.stages.prompt
+      - authentik.stages.redirect
+      - authentik.stages.user_delete
+      - authentik.stages.user_login
+      - authentik.stages.user_logout
+      - authentik.stages.user_write
+      - authentik.tasks.schedules
+      - authentik.brands
+      - authentik.blueprints
+      - authentik.enterprise.agents
+      - authentik.enterprise.audit
+      - authentik.enterprise.endpoints.connectors.agent
+      - authentik.enterprise.endpoints.connectors.fleet
+      - authentik.enterprise.endpoints.connectors.google_chrome
+      - authentik.enterprise.lifecycle
+      - authentik.enterprise.policies.unique_password
+      - authentik.enterprise.providers.google_workspace
+      - authentik.enterprise.providers.microsoft_entra
+      - authentik.enterprise.providers.radius
+      - authentik.enterprise.providers.scim
+      - authentik.enterprise.providers.ssf
+      - authentik.enterprise.providers.ws_federation
+      - authentik.enterprise.reports
+      - authentik.enterprise.requests
+      - authentik.enterprise.stages.account_lockdown
+      - authentik.enterprise.stages.authenticator_endpoint_gdtc
+      - authentik.enterprise.stages.mtls
+      - authentik.enterprise.stages.source
+      type: string
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PaginatedPolicyBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ExpressionPolicyRequest:
+      type: object
+      description: Group Membership Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    Cache:
+      type: object
+      description: Generic cache stats for an object
+      properties:
+        count:
+          type: integer
+          readOnly: true
+      required:
+      - count
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    ExpressionPolicy:
+      type: object
+      description: Group Membership Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        expression:
+          type: string
+      required:
+      - bound_to
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PasswordExpiryPolicyRequest:
+      type: object
+      description: Password Expiry Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        days:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deny_only:
+          type: boolean
+      required:
+      - days
+      - name
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    PaginatedReputationPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReputationPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    CountryCodeEnum:
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - CD
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - KP
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - KR
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - UM
+      - US
+      - UY
+      - UZ
+      - VU
+      - VA
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      type: string
+    ReputationPolicyRequest:
+      type: object
+      description: Reputation Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        check_ip:
+          type: boolean
+        check_username:
+          type: boolean
+        threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - name
+    UniquePasswordPolicy:
+      type: object
+      description: Password Uniqueness Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        password_field:
+          type: string
+          description: Field key to check, field keys defined in Prompt stages are available.
+        num_historical_passwords:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Number of passwords to check against.
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    PatchedReputationPolicyRequest:
+      type: object
+      description: Reputation Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        check_ip:
+          type: boolean
+        check_username:
+          type: boolean
+        threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+    DummyPolicyRequest:
+      type: object
+      description: Dummy Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        result:
+          type: boolean
+        wait_min:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        wait_max:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - name
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    ReputationPolicy:
+      type: object
+      description: Reputation Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        check_ip:
+          type: boolean
+        check_username:
+          type: boolean
+        threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PasswordExpiryPolicy:
+      type: object
+      description: Password Expiry Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        days:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deny_only:
+          type: boolean
+      required:
+      - bound_to
+      - component
+      - days
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedEventMatcherPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventMatcherPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PolicyTestResult:
+      type: object
+      description: result of a policy test
+      properties:
+        passing:
+          type: boolean
+        messages:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        log_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+      required:
+      - log_messages
+      - messages
+      - passing
+    GeoIPPolicy:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        countries_obj:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                minLength: 2
+                maxLength: 2
+              name:
+                type: string
+            required:
+            - code
+            - name
+          readOnly: true
+        check_history_distance:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        check_impossible_travel:
+          type: boolean
+        impossible_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - bound_to
+      - component
+      - countries
+      - countries_obj
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedExpressionPolicyRequest:
+      type: object
+      description: Group Membership Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        expression:
+          type: string
+          minLength: 1
+    PatchedPasswordExpiryPolicyRequest:
+      type: object
+      description: Password Expiry Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        days:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deny_only:
+          type: boolean
+    EventMatcherPolicyRequest:
+      type: object
+      description: Event Matcher Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        action:
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
+          description: Match created events with this action type. When left empty, all action types will be matched.
+        client_ip:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
+        app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
+          description: Match events created by selected application. When left empty, all applications are matched.
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+        query:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+      required:
+      - name
+    Policy:
+      type: object
+      description: Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    PatchedPolicyBindingRequest:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        policy:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user:
+          type:
+          - integer
+          - 'null'
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PatchedEventMatcherPolicyRequest:
+      type: object
+      description: Event Matcher Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        action:
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
+          description: Match created events with this action type. When left empty, all action types will be matched.
+        client_ip:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
+        app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
+          description: Match events created by selected application. When left empty, all applications are matched.
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+        query:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+    PolicyTestRequest:
+      type: object
+      description: Test policy execution for a user with context
+      properties:
+        user:
+          type: integer
+        context:
+          type: object
+          additionalProperties: {}
+      required:
+      - user
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
-    tokenAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: 'authentik token authentication. Use header
-
-        `Authorization: Bearer <token>` with a token created in the
-
-        Tokens & App Passwords section.
-
-        '
-    sessionAuth:
-      type: apiKey
-      in: cookie
-      name: authentik_session
-      description: Browser session cookie for interactive use.
+    authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
+      type: http
+      scheme: bearer
