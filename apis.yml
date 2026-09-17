@@ -69,8 +69,9 @@ specificationVersion: '0.23'
 apis:
 - aid: authentik:authentik-core-api
   name: Authentik Core API
-  description: Users, groups, applications, tokens, brands, application entitlements and authenticated
-    sessions — the identity records and the objects users see.
+  description: >-
+    Users, groups, applications, tokens, brands, application entitlements and authenticated sessions —
+    the identity records and the objects users see.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -94,8 +95,8 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-crypto-api
   name: Authentik Crypto API
-  description: Certificate-key pairs used to sign SAML assertions and OIDC ID tokens, and to validate
-    webhook receivers.
+  description: >-
+    Certificate-key pairs used to sign SAML assertions and OIDC ID tokens, and to validate webhook receivers.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -119,8 +120,9 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-events-api
   name: Authentik Events API
-  description: Audit events, notification rules and notification transports — including the webhook and
-    Slack transports that push authentik events to external receivers.
+  description: >-
+    Audit events, notification rules and notification transports — including the webhook and Slack transports
+    that push authentik events to external receivers.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -146,8 +148,9 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-flows-api
   name: Authentik Flows API
-  description: Flow instances, flow bindings and the flow executor that drives authentication, enrollment,
-    recovery and unenrollment.
+  description: >-
+    Flow instances, flow bindings and the flow executor that drives authentication, enrollment, recovery
+    and unenrollment.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -171,8 +174,9 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-policies-api
   name: Authentik Policies API
-  description: Policies and policy bindings — expression, event matcher, GeoIP, password, password expiry,
-    reputation and unique-password types.
+  description: >-
+    Policies and policy bindings — expression, event matcher, GeoIP, password, password expiry, reputation
+    and unique-password types.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -196,8 +200,9 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-providers-api
   name: Authentik Providers API
-  description: 'Protocol providers: OAuth2/OIDC, SAML, SCIM, LDAP, RADIUS, Proxy, RAC, WS-Fed, Google
-    Workspace, Microsoft Entra and the Shared Signals Framework backchannel.'
+  description: >-
+    Protocol providers: OAuth2/OIDC, SAML, SCIM, LDAP, RADIUS, Proxy, RAC, WS-Fed, Google Workspace, Microsoft
+    Entra and the Shared Signals Framework backchannel.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -221,8 +226,8 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-rbac-api
   name: Authentik RBAC API
-  description: Role-based access control — roles, global and object-level permissions, and initial permission
-    sets.
+  description: >-
+    Role-based access control — roles, global and object-level permissions, and initial permission sets.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -270,8 +275,9 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-sources-api
   name: Authentik Sources API
-  description: External identity sources — LDAP, OAuth, SAML, SCIM, Kerberos, Plex and Telegram — plus
-    their user and group connections.
+  description: >-
+    External identity sources — LDAP, OAuth, SAML, SCIM, Kerberos, Plex and Telegram — plus their user
+    and group connections.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -295,8 +301,9 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-stages-api
   name: Authentik Stages API
-  description: 'Flow stages: identification, password, consent, prompt, email, captcha, mTLS, redirect,
-    user write/login/logout/delete, account lockdown and every authenticator setup and validation stage.'
+  description: >-
+    Flow stages: identification, password, consent, prompt, email, captcha, mTLS, redirect, user write/login/logout/delete,
+    account lockdown and every authenticator setup and validation stage.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -320,8 +327,9 @@ apis:
     url: https://docs.goauthentik.io
 - aid: authentik:authentik-admin-api
   name: Authentik Admin API
-  description: Instance administration — installed apps, models, version, system information, workers
-    and the file storage backend.
+  description: >-
+    Instance administration — installed apps, models, version, system information, workers and the file
+    storage backend.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -345,8 +353,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-agents-api
   name: Authentik Agents API
-  description: Agent accounts — service accounts that act on behalf of a parent user when calling the
-    authentik API, with expiring tokens and audited delegation.
+  description: >-
+    Agent accounts — service accounts that act on behalf of a parent user when calling the authentik API,
+    with expiring tokens and audited delegation.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -370,8 +379,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-authenticators-api
   name: Authentik Authenticators API
-  description: Authenticator device management for TOTP, static, WebAuthn, SMS, email, Duo and endpoint
-    devices, from both the admin and end-user perspectives.
+  description: >-
+    Authenticator device management for TOTP, static, WebAuthn, SMS, email, Duo and endpoint devices,
+    from both the admin and end-user perspectives.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -395,9 +405,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-endpoints-api
   name: Authentik Endpoints API
-  description: Endpoint device management — the authentik Agent connectors, device enrollment tokens,
-    device bindings, device access groups, Fleet and Google Chrome device-trust connectors, and platform
-    SSO registration.
+  description: >-
+    Endpoint device management — the authentik Agent connectors, device enrollment tokens, device bindings,
+    device access groups, Fleet and Google Chrome device-trust connectors, and platform SSO registration.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags: []
@@ -420,8 +430,8 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-enterprise-api
   name: Authentik Enterprise API
-  description: Enterprise licensing — license installation, summary and forecast for a licensed authentik
-    deployment.
+  description: >-
+    Enterprise licensing — license installation, summary and forecast for a licensed authentik deployment.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -445,8 +455,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-lifecycle-api
   name: Authentik Lifecycle API
-  description: Identity lifecycle operations, including scheduled user offboarding with session and token
-    revocation and a cancellable pending state.
+  description: >-
+    Identity lifecycle operations, including scheduled user offboarding with session and token revocation
+    and a cancellable pending state.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -470,8 +481,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-managed-api
   name: Authentik Managed API
-  description: Blueprints — the YAML templates that declare authentik configuration as code, and the blueprint
-    instances that apply them.
+  description: >-
+    Blueprints — the YAML templates that declare authentik configuration as code, and the blueprint instances
+    that apply them.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -493,35 +505,11 @@ apis:
     url: https://pypi.org/project/authentik-client/
   - type: GitHubRepository
     url: https://github.com/goauthentik/authentik
-- aid: authentik:authentik-oauth2-api
-  name: Authentik OAuth2 API
-  description: 'Issued OAuth2 artefacts: access tokens, refresh tokens and authorization codes granted
-    by authentik as an identity provider.'
-  humanURL: https://api.goauthentik.io/
-  baseURL: https://{authentik_host}/api/v3
-  tags:
-  - Authentication
-  tags_raw:
-  - oauth2
-  properties:
-  - type: OpenAPI
-    url: openapi/authentik-oauth2-api-openapi.yml
-  - type: Overlay
-    url: overlays/authentik-oauth2-api-overlay.yaml
-  - type: Documentation
-    url: https://docs.goauthentik.io
-  - type: APIReference
-    url: https://api.goauthentik.io/
-  - type: SDKs
-    url: https://www.npmjs.com/package/@goauthentik/api
-  - type: SDKs
-    url: https://pypi.org/project/authentik-client/
-  - type: GitHubRepository
-    url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-outposts-api
   name: Authentik Outposts API
-  description: Outpost instances and service connections (Docker, Kubernetes) — the deployable components
-    that run the proxy, LDAP and RADIUS providers.
+  description: >-
+    Outpost instances and service connections (Docker, Kubernetes) — the deployable components that run
+    the proxy, LDAP and RADIUS providers.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -545,8 +533,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-propertymappings-api
   name: Authentik Property Mappings API
-  description: Property mappings — the expressions that shape claims, attributes and payloads for every
-    provider and source type, plus notification webhook bodies.
+  description: >-
+    Property mappings — the expressions that shape claims, attributes and payloads for every provider
+    and source type, plus notification webhook bodies.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -568,8 +557,8 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-rac-api
   name: Authentik RAC API
-  description: Remote Access Control — browser-based RDP, SSH and VNC endpoints and their single-use connection
-    tokens.
+  description: >-
+    Remote Access Control — browser-based RDP, SSH and VNC endpoints and their single-use connection tokens.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -615,8 +604,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-requests-api
   name: Authentik Requests API
-  description: Privileged access management — access request rules, rule bindings, grant requests, reviewer
-    workflows and grant revocation.
+  description: >-
+    Privileged access management — access request rules, rule bindings, grant requests, reviewer workflows
+    and grant revocation.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -664,8 +654,9 @@ apis:
     url: https://github.com/goauthentik/authentik
 - aid: authentik:authentik-ssf-api
   name: Authentik SSF API
-  description: OpenID Shared Signals Framework streams — the SSF stream surface a receiving application
-    manages on authentik as transmitter of Security Event Tokens.
+  description: >-
+    OpenID Shared Signals Framework streams — the SSF stream surface a receiving application manages on
+    authentik as transmitter of Security Event Tokens.
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
@@ -733,7 +724,29 @@ apis:
     url: https://pypi.org/project/authentik-client/
   - type: GitHubRepository
     url: https://github.com/goauthentik/authentik
+- aid: authentik:authentik-oauth2-api
+  name: Authentik Oauth2 API
+  description: The oauth2 API from Authentik — 9 operation(s) for oauth2.
+  humanURL: https://api.goauthentik.io/
+  baseURL: https://{authentik_host}/api/v3
+  tags:
+  - oauth2
+  properties:
+  - type: OpenAPI
+    url: openapi/authentik-oauth2-api-openapi.yml
+  - type: Documentation
+    url: https://docs.goauthentik.io
+  - type: APIReference
+    url: https://api.goauthentik.io/
+  - type: SDKs
+    url: https://www.npmjs.com/package/@goauthentik/api
+  - type: SDKs
+    url: https://pypi.org/project/authentik-client/
+  - type: GitHubRepository
+    url: https://github.com/goauthentik/authentik
 common:
+- type: Overlay
+  url: overlays/authentik-oauth2-api-overlay.yaml
 - type: IssueTracker
   url: https://github.com/goauthentik/authentik/issues
 - type: SecurityPolicy
