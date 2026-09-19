@@ -154,6 +154,8 @@ apis:
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
+  - Flow
+  tags_raw:
   - Flows
   properties:
   - type: OpenAPI
@@ -730,6 +732,8 @@ apis:
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
+  - Authentication
+  tags_raw:
   - oauth2
   properties:
   - type: OpenAPI
