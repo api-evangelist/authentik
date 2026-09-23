@@ -52,6 +52,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac connection tokens list
+      x-summary-source: derived
   /rac/connection_tokens/{connection_token_uuid}/:
     get:
       operationId: rac_connection_tokens_retrieve
@@ -79,6 +81,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac connection tokens retrieve
+      x-summary-source: derived
     put:
       operationId: rac_connection_tokens_update
       description: ConnectionToken Viewset
@@ -111,6 +115,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac connection tokens update
+      x-summary-source: derived
     patch:
       operationId: rac_connection_tokens_partial_update
       description: ConnectionToken Viewset
@@ -142,6 +148,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac connection tokens partial update
+      x-summary-source: derived
     delete:
       operationId: rac_connection_tokens_destroy
       description: ConnectionToken Viewset
@@ -164,6 +172,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac connection tokens destroy
+      x-summary-source: derived
   /rac/connection_tokens/{connection_token_uuid}/used_by/:
     get:
       operationId: rac_connection_tokens_used_by_list
@@ -193,6 +203,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac connection tokens used by list
+      x-summary-source: derived
   /rac/endpoints/:
     get:
       operationId: rac_endpoints_list
@@ -226,6 +238,8 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac endpoints list
+      x-summary-source: derived
     post:
       operationId: rac_endpoints_create
       description: Endpoint Viewset
@@ -250,6 +264,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac endpoints create
+      x-summary-source: derived
   /rac/endpoints/{pbm_uuid}/:
     get:
       operationId: rac_endpoints_retrieve
@@ -277,6 +293,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac endpoints retrieve
+      x-summary-source: derived
     put:
       operationId: rac_endpoints_update
       description: Endpoint Viewset
@@ -309,6 +327,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac endpoints update
+      x-summary-source: derived
     patch:
       operationId: rac_endpoints_partial_update
       description: Endpoint Viewset
@@ -340,6 +360,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac endpoints partial update
+      x-summary-source: derived
     delete:
       operationId: rac_endpoints_destroy
       description: Endpoint Viewset
@@ -362,6 +384,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac endpoints destroy
+      x-summary-source: derived
   /rac/endpoints/{pbm_uuid}/used_by/:
     get:
       operationId: rac_endpoints_used_by_list
@@ -391,8 +415,124 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rac endpoints used by list
+      x-summary-source: derived
 components:
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   schemas:
+    PaginatedEndpointList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Endpoint'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ConnectionTokenRequest:
+      type: object
+      description: ConnectionToken Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
+        provider:
+          type: integer
+        endpoint:
+          type: string
+          format: uuid
+      required:
+      - endpoint
+      - provider
+    PatchedEndpointRequest:
+      type: object
+      description: Endpoint Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        provider:
+          type: integer
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+          minLength: 1
+        settings:
+          type: object
+          additionalProperties: {}
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    EndpointAuthModeEnum:
+      enum:
+      - static
+      - prompt
+      type: string
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    ProtocolEnum:
+      enum:
+      - rdp
+      - vnc
+      - ssh
+      type: string
     PatchedConnectionTokenRequest:
       type: object
       description: ConnectionToken Serializer
@@ -406,37 +546,6 @@ components:
         endpoint:
           type: string
           format: uuid
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    ProtocolEnum:
-      enum:
-      - rdp
-      - vnc
-      - ssh
-      type: string
     Endpoint:
       type: object
       description: Endpoint Serializer
@@ -489,81 +598,16 @@ components:
       - protocol
       - provider
       - provider_obj
-    EndpointAuthModeEnum:
-      enum:
-      - static
-      - prompt
-      type: string
-    PaginatedConnectionTokenList:
+    GenericError:
       type: object
+      description: Generic API Error
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConnectionToken'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    ConnectionTokenRequest:
-      type: object
-      description: ConnectionToken Serializer
-      properties:
-        pk:
+        detail:
           type: string
-          format: uuid
-          title: Connection token uuid
-        provider:
-          type: integer
-        endpoint:
-          type: string
-          format: uuid
-      required:
-      - endpoint
-      - provider
-    PatchedEndpointRequest:
-      type: object
-      description: Endpoint Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        provider:
-          type: integer
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
-          type: string
-          minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
         code:
           type: string
-      additionalProperties: {}
+      required:
+      - detail
     UsedByActionEnum:
       enum:
       - cascade
@@ -572,9 +616,6 @@ components:
       - set_default
       - left_dangling
       type: string
-    Autocomplete:
-      type: object
-      additionalProperties: {}
     EndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -609,21 +650,6 @@ components:
       - name
       - protocol
       - provider
-    PaginatedEndpointList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Endpoint'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -665,6 +691,49 @@ components:
       - pk
       - uid
       - username
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    PaginatedConnectionTokenList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionToken'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
     RACProvider:
       type: object
       description: RACProvider Serializer
@@ -757,36 +826,6 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
     ConnectionToken:
       type: object
       description: ConnectionToken Serializer
@@ -819,48 +858,35 @@ components:
       - provider_obj
       - user
   parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
     QuerySearch:
       in: query
       name: search
       schema:
         type: string
       description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
     QueryPaginationPage:
       in: query
       name: page
       schema:
         type: integer
       description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
   securitySchemes:
     authentik:
       type: http

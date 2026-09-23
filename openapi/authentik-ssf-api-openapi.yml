@@ -51,6 +51,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Ssf streams list
+      x-summary-source: derived
   /ssf/streams/{uuid}/:
     get:
       operationId: ssf_streams_retrieve
@@ -78,6 +80,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Ssf streams retrieve
+      x-summary-source: derived
     delete:
       operationId: ssf_streams_destroy
       description: SSFStream Viewset
@@ -100,33 +104,17 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Ssf streams destroy
+      x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
   schemas:
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
     SSFStream:
       type: object
       description: SSFStream Serializer
@@ -209,20 +197,6 @@ components:
       - identifier
       - pk
       - user_obj
-    Role:
-      type: object
-      description: Role serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
     SSFProvider:
       type: object
       description: SSFProvider Serializer
@@ -286,6 +260,96 @@ components:
       - token_obj
       - verbose_name
       - verbose_name_plural
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PaginatedSSFStreamList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SSFStream'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    EventsRequestedEnum:
+      enum:
+      - https://schemas.openid.net/secevent/caep/event-type/session-revoked
+      - https://schemas.openid.net/secevent/caep/event-type/token-claims-change
+      - https://schemas.openid.net/secevent/caep/event-type/credential-change
+      - https://schemas.openid.net/secevent/caep/event-type/assurance-level-change
+      - https://schemas.openid.net/secevent/caep/event-type/device-compliance-change
+      - https://schemas.openid.net/secevent/caep/event-type/session-established
+      - https://schemas.openid.net/secevent/caep/event-type/session-presented
+      - https://schemas.openid.net/secevent/caep/event-type/risk-level-change
+      - https://schemas.openid.net/secevent/ssf/event-type/verification
+      type: string
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    IntentEnum:
+      enum:
+      - verification
+      - api
+      - recovery
+      - app_password
+      type: string
+    SSFStreamStatusEnum:
+      enum:
+      - enabled
+      - paused
+      - disabled
+      - disabled_deleted
+      type: string
+    Autocomplete:
+      type: object
+      additionalProperties: {}
     Provider:
       type: object
       description: Provider Serializer
@@ -370,17 +434,12 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    EventsRequestedEnum:
+    DeliveryMethodEnum:
       enum:
-      - https://schemas.openid.net/secevent/caep/event-type/session-revoked
-      - https://schemas.openid.net/secevent/caep/event-type/token-claims-change
-      - https://schemas.openid.net/secevent/caep/event-type/credential-change
-      - https://schemas.openid.net/secevent/caep/event-type/assurance-level-change
-      - https://schemas.openid.net/secevent/caep/event-type/device-compliance-change
-      - https://schemas.openid.net/secevent/caep/event-type/session-established
-      - https://schemas.openid.net/secevent/caep/event-type/session-presented
-      - https://schemas.openid.net/secevent/caep/event-type/risk-level-change
-      - https://schemas.openid.net/secevent/ssf/event-type/verification
+      - https://schemas.openid.net/secevent/risc/delivery-method/push
+      - https://schemas.openid.net/secevent/risc/delivery-method/poll
+      - urn:ietf:rfc:8935
+      - urn:ietf:rfc:8936
       type: string
     Pagination:
       type: object
@@ -407,20 +466,6 @@ components:
       - previous
       - start_index
       - total_pages
-    IntentEnum:
-      enum:
-      - verification
-      - api
-      - recovery
-      - app_password
-      type: string
-    UserTypeEnum:
-      enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
-      type: string
     User:
       type: object
       description: User Serializer
@@ -519,97 +564,58 @@ components:
       - uid
       - username
       - uuid
-    ValidationError:
+    Role:
       type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    PaginatedSSFStreamList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SSFStream'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    SSFStreamStatusEnum:
-      enum:
-      - enabled
-      - paused
-      - disabled
-      - disabled_deleted
-      type: string
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    DeliveryMethodEnum:
-      enum:
-      - https://schemas.openid.net/secevent/risc/delivery-method/push
-      - https://schemas.openid.net/secevent/risc/delivery-method/poll
-      - urn:ietf:rfc:8935
-      - urn:ietf:rfc:8936
-      type: string
-    PartialGroup:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
+      description: Role serializer
       properties:
         pk:
           type: string
           format: uuid
           readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
+          title: Uuid
         name:
           type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
       required:
       - name
-      - num_pk
       - pk
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

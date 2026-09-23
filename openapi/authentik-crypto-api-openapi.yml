@@ -13,7 +13,7 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: crypto
+- name: Crypto
 paths:
   /crypto/certificatekeypairs/:
     get:
@@ -42,7 +42,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - crypto
+      - Crypto
       security:
       - authentik: []
       responses:
@@ -56,11 +56,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs list
+      x-summary-source: derived
     post:
       operationId: crypto_certificatekeypairs_create
       description: CertificateKeyPair Viewset
       tags:
-      - crypto
+      - Crypto
       requestBody:
         content:
           application/json:
@@ -80,6 +82,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs create
+      x-summary-source: derived
   /crypto/certificatekeypairs/{kp_uuid}/:
     get:
       operationId: crypto_certificatekeypairs_retrieve
@@ -93,7 +97,7 @@ paths:
         description: A UUID string identifying this Certificate-Key Pair.
         required: true
       tags:
-      - crypto
+      - Crypto
       security:
       - authentik: []
       responses:
@@ -107,6 +111,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs retrieve
+      x-summary-source: derived
     put:
       operationId: crypto_certificatekeypairs_update
       description: CertificateKeyPair Viewset
@@ -119,7 +125,7 @@ paths:
         description: A UUID string identifying this Certificate-Key Pair.
         required: true
       tags:
-      - crypto
+      - Crypto
       requestBody:
         content:
           application/json:
@@ -139,6 +145,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs update
+      x-summary-source: derived
     patch:
       operationId: crypto_certificatekeypairs_partial_update
       description: CertificateKeyPair Viewset
@@ -151,7 +159,7 @@ paths:
         description: A UUID string identifying this Certificate-Key Pair.
         required: true
       tags:
-      - crypto
+      - Crypto
       requestBody:
         content:
           application/json:
@@ -170,6 +178,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs partial update
+      x-summary-source: derived
     delete:
       operationId: crypto_certificatekeypairs_destroy
       description: CertificateKeyPair Viewset
@@ -182,7 +192,7 @@ paths:
         description: A UUID string identifying this Certificate-Key Pair.
         required: true
       tags:
-      - crypto
+      - Crypto
       security:
       - authentik: []
       responses:
@@ -192,6 +202,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs destroy
+      x-summary-source: derived
   /crypto/certificatekeypairs/{kp_uuid}/used_by/:
     get:
       operationId: crypto_certificatekeypairs_used_by_list
@@ -205,7 +217,7 @@ paths:
         description: A UUID string identifying this Certificate-Key Pair.
         required: true
       tags:
-      - crypto
+      - Crypto
       security:
       - authentik: []
       responses:
@@ -221,6 +233,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs used by list
+      x-summary-source: derived
   /crypto/certificatekeypairs/{kp_uuid}/view_certificate/:
     get:
       operationId: crypto_certificatekeypairs_view_certificate_retrieve
@@ -238,7 +252,7 @@ paths:
         description: A UUID string identifying this Certificate-Key Pair.
         required: true
       tags:
-      - crypto
+      - Crypto
       security:
       - authentik: []
       responses:
@@ -252,6 +266,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs view certificate retrieve
+      x-summary-source: derived
   /crypto/certificatekeypairs/{kp_uuid}/view_private_key/:
     get:
       operationId: crypto_certificatekeypairs_view_private_key_retrieve
@@ -269,7 +285,7 @@ paths:
         description: A UUID string identifying this Certificate-Key Pair.
         required: true
       tags:
-      - crypto
+      - Crypto
       security:
       - authentik: []
       responses:
@@ -283,12 +299,14 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs view private key retrieve
+      x-summary-source: derived
   /crypto/certificatekeypairs/generate/:
     post:
       operationId: crypto_certificatekeypairs_generate_create
       description: Generate a new, self-signed certificate-key pair
       tags:
-      - crypto
+      - Crypto
       requestBody:
         content:
           application/json:
@@ -308,37 +326,22 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Crypto certificatekeypairs generate create
+      x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   schemas:
     AlgEnum:
       enum:
@@ -419,6 +422,117 @@ components:
       - pk
       - private_key_available
       - private_key_download_url
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    CertificateKeyPairKeyTypeEnum:
+      enum:
+      - rsa
+      - ec
+      - dsa
+      - ed25519
+      - ed448
+      type: string
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    KeyTypeEnum:
+      type: string
+      enum:
+      - dsa
+      - ec
+      - ed25519
+      - ed448
+      - rsa
+    CertificateData:
+      type: object
+      description: Get CertificateKeyPair's data
+      properties:
+        data:
+          type: string
+          readOnly: true
+      required:
+      - data
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    CertificateKeyPairRequest:
+      type: object
+      description: CertificateKeyPair Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        certificate_data:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: PEM-encoded Certificate data
+        key_data:
+          type: string
+          writeOnly: true
+          description: Optional Private Key. If this is set, you can use this keypair for encryption.
+      required:
+      - certificate_data
+      - name
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    PaginatedCertificateKeyPairList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateKeyPair'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     Pagination:
       type: object
       properties:
@@ -444,133 +558,6 @@ components:
       - previous
       - start_index
       - total_pages
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    CertificateData:
-      type: object
-      description: Get CertificateKeyPair's data
-      properties:
-        data:
-          type: string
-          readOnly: true
-      required:
-      - data
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    CertificateKeyPairRequest:
-      type: object
-      description: CertificateKeyPair Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        certificate_data:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: PEM-encoded Certificate data
-        key_data:
-          type: string
-          writeOnly: true
-          description: Optional Private Key. If this is set, you can use this keypair for encryption.
-      required:
-      - certificate_data
-      - name
-    KeyTypeEnum:
-      type: string
-      enum:
-      - dsa
-      - ec
-      - ed25519
-      - ed448
-      - rsa
-    CertificateKeyPairKeyTypeEnum:
-      enum:
-      - rsa
-      - ec
-      - dsa
-      - ed25519
-      - ed448
-      type: string
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    PaginatedCertificateKeyPairList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/CertificateKeyPair'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    PatchedCertificateKeyPairRequest:
-      type: object
-      description: CertificateKeyPair Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        certificate_data:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: PEM-encoded Certificate data
-        key_data:
-          type: string
-          writeOnly: true
-          description: Optional Private Key. If this is set, you can use this keypair for encryption.
     CertificateGenerationRequest:
       type: object
       description: Certificate generation parameters
@@ -589,19 +576,52 @@ components:
       required:
       - common_name
       - validity_days
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
+    PatchedCertificateKeyPairRequest:
+      type: object
+      description: CertificateKeyPair Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        certificate_data:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: PEM-encoded Certificate data
+        key_data:
+          type: string
+          writeOnly: true
+          description: Optional Private Key. If this is set, you can use this keypair for encryption.
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

@@ -13,7 +13,7 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: authenticators
+- name: Authenticators
 paths:
   /authenticators/admin/all/:
     get:
@@ -25,7 +25,7 @@ paths:
         schema:
           type: integer
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -41,6 +41,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin all list
+      x-summary-source: derived
   /authenticators/admin/duo/:
     get:
       operationId: authenticators_admin_duo_list
@@ -52,7 +54,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -66,11 +68,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin duo list
+      x-summary-source: derived
     post:
       operationId: authenticators_admin_duo_create
       description: Viewset for Duo authenticator devices (for admins)
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -90,6 +94,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin duo create
+      x-summary-source: derived
   /authenticators/admin/duo/{id}/:
     get:
       operationId: authenticators_admin_duo_retrieve
@@ -102,7 +108,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -116,6 +122,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin duo retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_admin_duo_update
       description: Viewset for Duo authenticator devices (for admins)
@@ -127,7 +135,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -147,6 +155,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin duo update
+      x-summary-source: derived
     patch:
       operationId: authenticators_admin_duo_partial_update
       description: Viewset for Duo authenticator devices (for admins)
@@ -158,7 +168,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -177,6 +187,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin duo partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_admin_duo_destroy
       description: Viewset for Duo authenticator devices (for admins)
@@ -188,7 +200,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -198,6 +210,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin duo destroy
+      x-summary-source: derived
   /authenticators/admin/email/:
     get:
       operationId: authenticators_admin_email_list
@@ -209,7 +223,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -223,11 +237,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin email list
+      x-summary-source: derived
     post:
       operationId: authenticators_admin_email_create
       description: Viewset for email authenticator devices (for admins)
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -247,6 +263,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin email create
+      x-summary-source: derived
   /authenticators/admin/email/{id}/:
     get:
       operationId: authenticators_admin_email_retrieve
@@ -259,7 +277,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -273,6 +291,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin email retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_admin_email_update
       description: Viewset for email authenticator devices (for admins)
@@ -284,7 +304,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -304,6 +324,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin email update
+      x-summary-source: derived
     patch:
       operationId: authenticators_admin_email_partial_update
       description: Viewset for email authenticator devices (for admins)
@@ -315,7 +337,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -334,6 +356,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin email partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_admin_email_destroy
       description: Viewset for email authenticator devices (for admins)
@@ -345,7 +369,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -355,6 +379,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin email destroy
+      x-summary-source: derived
   /authenticators/admin/endpoint/:
     get:
       operationId: authenticators_admin_endpoint_list
@@ -366,7 +392,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -380,11 +406,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin endpoint list
+      x-summary-source: derived
     post:
       operationId: authenticators_admin_endpoint_create
       description: Viewset for Endpoint authenticator devices (for admins)
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -404,6 +432,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin endpoint create
+      x-summary-source: derived
   /authenticators/admin/endpoint/{uuid}/:
     get:
       operationId: authenticators_admin_endpoint_retrieve
@@ -417,7 +447,7 @@ paths:
         description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -431,6 +461,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin endpoint retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_admin_endpoint_update
       description: Viewset for Endpoint authenticator devices (for admins)
@@ -443,7 +475,7 @@ paths:
         description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -463,6 +495,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin endpoint update
+      x-summary-source: derived
     patch:
       operationId: authenticators_admin_endpoint_partial_update
       description: Viewset for Endpoint authenticator devices (for admins)
@@ -475,7 +509,7 @@ paths:
         description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -494,6 +528,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin endpoint partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_admin_endpoint_destroy
       description: Viewset for Endpoint authenticator devices (for admins)
@@ -506,7 +542,7 @@ paths:
         description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -516,6 +552,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin endpoint destroy
+      x-summary-source: derived
   /authenticators/admin/sms/:
     get:
       operationId: authenticators_admin_sms_list
@@ -527,7 +565,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -541,11 +579,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin sms list
+      x-summary-source: derived
     post:
       operationId: authenticators_admin_sms_create
       description: Viewset for sms authenticator devices (for admins)
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -565,6 +605,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin sms create
+      x-summary-source: derived
   /authenticators/admin/sms/{id}/:
     get:
       operationId: authenticators_admin_sms_retrieve
@@ -577,7 +619,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -591,6 +633,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin sms retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_admin_sms_update
       description: Viewset for sms authenticator devices (for admins)
@@ -602,7 +646,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -622,6 +666,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin sms update
+      x-summary-source: derived
     patch:
       operationId: authenticators_admin_sms_partial_update
       description: Viewset for sms authenticator devices (for admins)
@@ -633,7 +679,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -652,6 +698,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin sms partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_admin_sms_destroy
       description: Viewset for sms authenticator devices (for admins)
@@ -663,7 +711,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -673,6 +721,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin sms destroy
+      x-summary-source: derived
   /authenticators/admin/static/:
     get:
       operationId: authenticators_admin_static_list
@@ -684,7 +734,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -698,11 +748,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin static list
+      x-summary-source: derived
     post:
       operationId: authenticators_admin_static_create
       description: Viewset for static authenticator devices (for admins)
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -722,6 +774,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin static create
+      x-summary-source: derived
   /authenticators/admin/static/{id}/:
     get:
       operationId: authenticators_admin_static_retrieve
@@ -734,7 +788,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -748,6 +802,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin static retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_admin_static_update
       description: Viewset for static authenticator devices (for admins)
@@ -759,7 +815,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -779,6 +835,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin static update
+      x-summary-source: derived
     patch:
       operationId: authenticators_admin_static_partial_update
       description: Viewset for static authenticator devices (for admins)
@@ -790,7 +848,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -809,6 +867,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin static partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_admin_static_destroy
       description: Viewset for static authenticator devices (for admins)
@@ -820,7 +880,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -830,6 +890,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin static destroy
+      x-summary-source: derived
   /authenticators/admin/totp/:
     get:
       operationId: authenticators_admin_totp_list
@@ -841,7 +903,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -855,11 +917,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin totp list
+      x-summary-source: derived
     post:
       operationId: authenticators_admin_totp_create
       description: Viewset for totp authenticator devices (for admins)
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -879,6 +943,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin totp create
+      x-summary-source: derived
   /authenticators/admin/totp/{id}/:
     get:
       operationId: authenticators_admin_totp_retrieve
@@ -891,7 +957,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -905,6 +971,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin totp retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_admin_totp_update
       description: Viewset for totp authenticator devices (for admins)
@@ -916,7 +984,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -936,6 +1004,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin totp update
+      x-summary-source: derived
     patch:
       operationId: authenticators_admin_totp_partial_update
       description: Viewset for totp authenticator devices (for admins)
@@ -947,7 +1017,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -966,6 +1036,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin totp partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_admin_totp_destroy
       description: Viewset for totp authenticator devices (for admins)
@@ -977,7 +1049,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -987,6 +1059,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin totp destroy
+      x-summary-source: derived
   /authenticators/admin/webauthn/:
     get:
       operationId: authenticators_admin_webauthn_list
@@ -998,7 +1072,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1012,11 +1086,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin webauthn list
+      x-summary-source: derived
     post:
       operationId: authenticators_admin_webauthn_create
       description: Viewset for WebAuthn authenticator devices (for admins)
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1036,6 +1112,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin webauthn create
+      x-summary-source: derived
   /authenticators/admin/webauthn/{id}/:
     get:
       operationId: authenticators_admin_webauthn_retrieve
@@ -1048,7 +1126,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1062,6 +1140,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin webauthn retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_admin_webauthn_update
       description: Viewset for WebAuthn authenticator devices (for admins)
@@ -1073,7 +1153,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1093,6 +1173,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin webauthn update
+      x-summary-source: derived
     patch:
       operationId: authenticators_admin_webauthn_partial_update
       description: Viewset for WebAuthn authenticator devices (for admins)
@@ -1104,7 +1186,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1123,6 +1205,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin webauthn partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_admin_webauthn_destroy
       description: Viewset for WebAuthn authenticator devices (for admins)
@@ -1134,7 +1218,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1144,12 +1228,14 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators admin webauthn destroy
+      x-summary-source: derived
   /authenticators/all/:
     get:
       operationId: authenticators_all_list
       description: Get all devices for current user
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1165,6 +1251,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators all list
+      x-summary-source: derived
   /authenticators/duo/:
     get:
       operationId: authenticators_duo_list
@@ -1176,7 +1264,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1190,6 +1278,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators duo list
+      x-summary-source: derived
   /authenticators/duo/{id}/:
     get:
       operationId: authenticators_duo_retrieve
@@ -1202,7 +1292,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1216,6 +1306,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators duo retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_duo_update
       description: Viewset for Duo authenticator devices
@@ -1227,7 +1319,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1247,6 +1339,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators duo update
+      x-summary-source: derived
     patch:
       operationId: authenticators_duo_partial_update
       description: Viewset for Duo authenticator devices
@@ -1258,7 +1352,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1277,6 +1371,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators duo partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_duo_destroy
       description: Viewset for Duo authenticator devices
@@ -1288,7 +1384,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1298,6 +1394,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators duo destroy
+      x-summary-source: derived
   /authenticators/duo/{id}/used_by/:
     get:
       operationId: authenticators_duo_used_by_list
@@ -1310,7 +1408,7 @@ paths:
         description: A unique integer value identifying this Duo Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1326,6 +1424,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators duo used by list
+      x-summary-source: derived
   /authenticators/email/:
     get:
       operationId: authenticators_email_list
@@ -1337,7 +1437,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1351,6 +1451,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators email list
+      x-summary-source: derived
   /authenticators/email/{id}/:
     get:
       operationId: authenticators_email_retrieve
@@ -1363,7 +1465,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1377,6 +1479,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators email retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_email_update
       description: Viewset for email authenticator devices
@@ -1388,7 +1492,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1408,6 +1512,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators email update
+      x-summary-source: derived
     patch:
       operationId: authenticators_email_partial_update
       description: Viewset for email authenticator devices
@@ -1419,7 +1525,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1438,6 +1544,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators email partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_email_destroy
       description: Viewset for email authenticator devices
@@ -1449,7 +1557,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1459,6 +1567,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators email destroy
+      x-summary-source: derived
   /authenticators/email/{id}/used_by/:
     get:
       operationId: authenticators_email_used_by_list
@@ -1471,7 +1581,7 @@ paths:
         description: A unique integer value identifying this Email Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1487,6 +1597,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators email used by list
+      x-summary-source: derived
   /authenticators/endpoint/:
     get:
       operationId: authenticators_endpoint_list
@@ -1498,7 +1610,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1512,6 +1624,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators endpoint list
+      x-summary-source: derived
   /authenticators/endpoint/{uuid}/:
     get:
       operationId: authenticators_endpoint_retrieve
@@ -1525,7 +1639,7 @@ paths:
         description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1539,6 +1653,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators endpoint retrieve
+      x-summary-source: derived
   /authenticators/endpoint/{uuid}/used_by/:
     get:
       operationId: authenticators_endpoint_used_by_list
@@ -1552,7 +1668,7 @@ paths:
         description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1568,6 +1684,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators endpoint used by list
+      x-summary-source: derived
   /authenticators/sms/:
     get:
       operationId: authenticators_sms_list
@@ -1579,7 +1697,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1593,6 +1711,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators sms list
+      x-summary-source: derived
   /authenticators/sms/{id}/:
     get:
       operationId: authenticators_sms_retrieve
@@ -1605,7 +1725,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1619,6 +1739,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators sms retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_sms_update
       description: Viewset for sms authenticator devices
@@ -1630,7 +1752,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1650,6 +1772,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators sms update
+      x-summary-source: derived
     patch:
       operationId: authenticators_sms_partial_update
       description: Viewset for sms authenticator devices
@@ -1661,7 +1785,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1680,6 +1804,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators sms partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_sms_destroy
       description: Viewset for sms authenticator devices
@@ -1691,7 +1817,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1701,6 +1827,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators sms destroy
+      x-summary-source: derived
   /authenticators/sms/{id}/used_by/:
     get:
       operationId: authenticators_sms_used_by_list
@@ -1713,7 +1841,7 @@ paths:
         description: A unique integer value identifying this SMS Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1729,6 +1857,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators sms used by list
+      x-summary-source: derived
   /authenticators/static/:
     get:
       operationId: authenticators_static_list
@@ -1740,7 +1870,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1754,6 +1884,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators static list
+      x-summary-source: derived
   /authenticators/static/{id}/:
     get:
       operationId: authenticators_static_retrieve
@@ -1766,7 +1898,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1780,6 +1912,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators static retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_static_update
       description: Viewset for static authenticator devices
@@ -1791,7 +1925,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1811,6 +1945,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators static update
+      x-summary-source: derived
     patch:
       operationId: authenticators_static_partial_update
       description: Viewset for static authenticator devices
@@ -1822,7 +1958,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1841,6 +1977,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators static partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_static_destroy
       description: Viewset for static authenticator devices
@@ -1852,7 +1990,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1862,6 +2000,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators static destroy
+      x-summary-source: derived
   /authenticators/static/{id}/used_by/:
     get:
       operationId: authenticators_static_used_by_list
@@ -1874,7 +2014,7 @@ paths:
         description: A unique integer value identifying this Static Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1890,6 +2030,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators static used by list
+      x-summary-source: derived
   /authenticators/totp/:
     get:
       operationId: authenticators_totp_list
@@ -1901,7 +2043,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1915,6 +2057,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators totp list
+      x-summary-source: derived
   /authenticators/totp/{id}/:
     get:
       operationId: authenticators_totp_retrieve
@@ -1927,7 +2071,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -1941,6 +2085,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators totp retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_totp_update
       description: Viewset for totp authenticator devices
@@ -1952,7 +2098,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -1972,6 +2118,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators totp update
+      x-summary-source: derived
     patch:
       operationId: authenticators_totp_partial_update
       description: Viewset for totp authenticator devices
@@ -1983,7 +2131,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -2002,6 +2150,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators totp partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_totp_destroy
       description: Viewset for totp authenticator devices
@@ -2013,7 +2163,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -2023,6 +2173,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators totp destroy
+      x-summary-source: derived
   /authenticators/totp/{id}/used_by/:
     get:
       operationId: authenticators_totp_used_by_list
@@ -2035,7 +2187,7 @@ paths:
         description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -2051,6 +2203,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators totp used by list
+      x-summary-source: derived
   /authenticators/webauthn/:
     get:
       operationId: authenticators_webauthn_list
@@ -2062,7 +2216,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -2076,6 +2230,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators webauthn list
+      x-summary-source: derived
   /authenticators/webauthn/{id}/:
     get:
       operationId: authenticators_webauthn_retrieve
@@ -2088,7 +2244,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -2102,6 +2258,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators webauthn retrieve
+      x-summary-source: derived
     put:
       operationId: authenticators_webauthn_update
       description: Viewset for WebAuthn authenticator devices
@@ -2113,7 +2271,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -2133,6 +2291,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators webauthn update
+      x-summary-source: derived
     patch:
       operationId: authenticators_webauthn_partial_update
       description: Viewset for WebAuthn authenticator devices
@@ -2144,7 +2304,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       requestBody:
         content:
           application/json:
@@ -2163,6 +2323,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators webauthn partial update
+      x-summary-source: derived
     delete:
       operationId: authenticators_webauthn_destroy
       description: Viewset for WebAuthn authenticator devices
@@ -2174,7 +2336,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -2184,6 +2346,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators webauthn destroy
+      x-summary-source: derived
   /authenticators/webauthn/{id}/used_by/:
     get:
       operationId: authenticators_webauthn_used_by_list
@@ -2196,7 +2360,7 @@ paths:
         description: A unique integer value identifying this WebAuthn Device.
         required: true
       tags:
-      - authenticators
+      - Authenticators
       security:
       - authentik: []
       responses:
@@ -2212,23 +2376,36 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Authenticators webauthn used by list
+      x-summary-source: derived
 components:
   schemas:
-    PaginatedDuoDeviceList:
+    PatchedWebAuthnDeviceRequest:
       type: object
+      description: Serializer for WebAuthn authenticator devices
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DuoDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+    PatchedSMSDeviceRequest:
+      type: object
+      description: Serializer for sms authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+    PatchedTOTPDeviceRequest:
+      type: object
+      description: Serializer for totp authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
     PatchedEmailDeviceRequest:
       type: object
       description: Serializer for email authenticator devices
@@ -2238,111 +2415,6 @@ components:
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
-    PaginatedStaticDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/StaticDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    WebAuthnDeviceType:
-      type: object
-      description: WebAuthnDeviceType Serializer
-      properties:
-        aaguid:
-          type: string
-          format: uuid
-        description:
-          type: string
-      required:
-      - aaguid
-      - description
-    GoogleEndpointDevice:
-      type: object
-      description: Serializer for Endpoint authenticator devices
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Uuid
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    PatchedWebAuthnDeviceRequest:
-      type: object
-      description: Serializer for WebAuthn authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 200
-    PaginatedGoogleEndpointDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleEndpointDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedTOTPDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TOTPDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    EmailDeviceRequest:
-      type: object
-      description: Serializer for email authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    GoogleEndpointDeviceRequest:
-      type: object
-      description: Serializer for Endpoint authenticator devices
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Uuid
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
     PaginatedSMSDeviceList:
       type: object
       properties:
@@ -2358,166 +2430,6 @@ components:
       - autocomplete
       - pagination
       - results
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    PatchedStaticDeviceRequest:
-      type: object
-      description: Serializer for static authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-    TOTPDevice:
-      type: object
-      description: Serializer for totp authenticator devices
-      properties:
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - name
-      - pk
-      - user
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    WebAuthnDevice:
-      type: object
-      description: Serializer for WebAuthn authenticator devices
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-          maxLength: 200
-        created_on:
-          type: string
-          format: date-time
-          readOnly: true
-        device_type:
-          allOf:
-          - $ref: '#/components/schemas/WebAuthnDeviceType'
-          readOnly: true
-        aaguid:
-          type: string
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - aaguid
-      - created_on
-      - device_type
-      - name
-      - pk
-      - user
-    StaticDevice:
-      type: object
-      description: Serializer for static authenticator devices
-      properties:
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        token_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/StaticDeviceToken'
-          readOnly: true
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - name
-      - pk
-      - token_set
-      - user
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    PaginatedWebAuthnDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    WebAuthnDeviceRequest:
-      type: object
-      description: Serializer for WebAuthn authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 200
-      required:
-      - name
-    Autocomplete:
-      type: object
-      additionalProperties: {}
     StaticDeviceToken:
       type: object
       description: Serializer for static device's tokens
@@ -2527,135 +2439,6 @@ components:
           maxLength: 100
       required:
       - token
-    StaticDeviceRequest:
-      type: object
-      description: Serializer for static authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    PatchedGoogleEndpointDeviceRequest:
-      type: object
-      description: Serializer for Endpoint authenticator devices
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Uuid
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-    PatchedSMSDeviceRequest:
-      type: object
-      description: Serializer for sms authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-    SMSDeviceRequest:
-      type: object
-      description: Serializer for sms authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    PaginatedEmailDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    DuoDevice:
-      type: object
-      description: Serializer for Duo authenticator devices
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - name
-      - pk
-      - user
-    PatchedTOTPDeviceRequest:
-      type: object
-      description: Serializer for totp authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-    PartialUser:
-      type: object
-      description: Partial User Serializer, does not include child relations.
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-      required:
-      - name
-      - pk
-      - uid
-      - username
     EmailDevice:
       type: object
       description: Serializer for email authenticator devices
@@ -2681,15 +2464,96 @@ components:
       - name
       - pk
       - user
-    PatchedDuoDeviceRequest:
+    PaginatedStaticDeviceList:
       type: object
-      description: Serializer for Duo authenticator devices
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedEmailDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedGoogleEndpointDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleEndpointDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    StaticDeviceRequest:
+      type: object
+      description: Serializer for static authenticator devices
       properties:
         name:
           type: string
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
+      required:
+      - name
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    GoogleEndpointDevice:
+      type: object
+      description: Serializer for Endpoint authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
     DuoDeviceRequest:
       type: object
       description: Serializer for Duo authenticator devices
@@ -2701,6 +2565,116 @@ components:
           maxLength: 64
       required:
       - name
+    TOTPDeviceRequest:
+      type: object
+      description: Serializer for totp authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PatchedStaticDeviceRequest:
+      type: object
+      description: Serializer for static authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+    PaginatedWebAuthnDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    EmailDeviceRequest:
+      type: object
+      description: Serializer for email authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    PaginatedTOTPDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TOTPDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PatchedGoogleEndpointDeviceRequest:
+      type: object
+      description: Serializer for Endpoint authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+    PaginatedDuoDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DuoDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     Device:
       type: object
       description: Serializer for authenticator devices
@@ -2766,47 +2740,99 @@ components:
       - type
       - verbose_name
       - verbose_name_plural
-    TOTPDeviceRequest:
+    PatchedDuoDeviceRequest:
       type: object
-      description: Serializer for totp authenticator devices
+      description: Serializer for Duo authenticator devices
       properties:
         name:
           type: string
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
-      required:
-      - name
-    UsedBy:
+    PartialUser:
       type: object
-      description: A list of all objects referencing the queried object
+      description: Partial User Serializer, does not include child relations.
       properties:
-        app:
-          type: string
-        model_name:
-          type: string
         pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
           type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
         name:
           type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
       required:
-      - action
-      - app
-      - model_name
       - name
       - pk
-    GenericError:
+      - uid
+      - username
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Autocomplete:
       type: object
-      description: Generic API Error
+      additionalProperties: {}
+    TOTPDevice:
+      type: object
+      description: Serializer for totp authenticator devices
       properties:
-        detail:
+        name:
           type: string
-        code:
+          description: The human-readable name of this device.
+          maxLength: 64
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - name
+      - pk
+      - user
+    WebAuthnDeviceType:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
           type: string
       required:
-      - detail
+      - aaguid
+      - description
     SMSDevice:
       type: object
       description: Serializer for sms authenticator devices
@@ -2831,49 +2857,189 @@ components:
       - phone_number
       - pk
       - user
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
+    DuoDevice:
+      type: object
+      description: Serializer for Duo authenticator devices
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - name
+      - pk
+      - user
+    SMSDeviceRequest:
+      type: object
+      description: Serializer for sms authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    StaticDevice:
+      type: object
+      description: Serializer for static authenticator devices
+      properties:
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+        token_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticDeviceToken'
+          readOnly: true
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - name
+      - pk
+      - token_set
+      - user
+    WebAuthnDevice:
+      type: object
+      description: Serializer for WebAuthn authenticator devices
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 200
+        created_on:
+          type: string
+          format: date-time
+          readOnly: true
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+        aaguid:
+          type: string
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - aaguid
+      - created_on
+      - device_type
+      - name
+      - pk
+      - user
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    GoogleEndpointDeviceRequest:
+      type: object
+      description: Serializer for Endpoint authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    WebAuthnDeviceRequest:
+      type: object
+      description: Serializer for WebAuthn authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+      required:
+      - name
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

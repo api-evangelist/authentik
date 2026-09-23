@@ -13,7 +13,7 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: tasks
+- name: Tasks
 paths:
   /tasks/schedules/:
     get:
@@ -48,7 +48,7 @@ paths:
           type: boolean
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -62,6 +62,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks schedules list
+      x-summary-source: derived
   /tasks/schedules/{id}/:
     get:
       operationId: tasks_schedules_retrieve
@@ -74,7 +76,7 @@ paths:
         description: A UUID string identifying this Schedule.
         required: true
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -88,6 +90,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks schedules retrieve
+      x-summary-source: derived
     put:
       operationId: tasks_schedules_update
       parameters:
@@ -99,7 +103,7 @@ paths:
         description: A UUID string identifying this Schedule.
         required: true
       tags:
-      - tasks
+      - Tasks
       requestBody:
         content:
           application/json:
@@ -119,6 +123,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks schedules update
+      x-summary-source: derived
     patch:
       operationId: tasks_schedules_partial_update
       parameters:
@@ -130,7 +136,7 @@ paths:
         description: A UUID string identifying this Schedule.
         required: true
       tags:
-      - tasks
+      - Tasks
       requestBody:
         content:
           application/json:
@@ -149,6 +155,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks schedules partial update
+      x-summary-source: derived
   /tasks/schedules/{id}/send/:
     post:
       operationId: tasks_schedules_send_create
@@ -162,7 +170,7 @@ paths:
         description: A UUID string identifying this Schedule.
         required: true
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -176,6 +184,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks schedules send create
+      x-summary-source: derived
   /tasks/tasks/:
     get:
       operationId: tasks_tasks_list
@@ -241,7 +251,7 @@ paths:
 
             '
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -255,6 +265,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks tasks list
+      x-summary-source: derived
   /tasks/tasks/{message_id}/:
     get:
       operationId: tasks_tasks_retrieve
@@ -267,7 +279,7 @@ paths:
         description: A UUID string identifying this Task.
         required: true
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -281,6 +293,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks tasks retrieve
+      x-summary-source: derived
   /tasks/tasks/{message_id}/retry/:
     post:
       operationId: tasks_tasks_retry_create
@@ -294,7 +308,7 @@ paths:
         description: A UUID string identifying this Task.
         required: true
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -306,12 +320,14 @@ paths:
           description: Task not found
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks tasks retry create
+      x-summary-source: derived
   /tasks/tasks/status/:
     get:
       operationId: tasks_tasks_status_retrieve
       description: Global status summary for all tasks
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -325,12 +341,14 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks tasks status retrieve
+      x-summary-source: derived
   /tasks/workers/:
     get:
       operationId: tasks_workers_list
       description: Get currently connected worker count.
       tags:
-      - tasks
+      - Tasks
       security:
       - authentik: []
       responses:
@@ -346,33 +364,156 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Tasks workers list
+      x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
   schemas:
+    TaskAggregatedStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
+    PaginatedTaskList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    GlobalTaskStatus:
+      type: object
+      properties:
+        queued:
+          type: integer
+          readOnly: true
+        consumed:
+          type: integer
+          readOnly: true
+        preprocess:
+          type: integer
+          readOnly: true
+        running:
+          type: integer
+          readOnly: true
+        postprocess:
+          type: integer
+          readOnly: true
+        rejected:
+          type: integer
+          readOnly: true
+        done:
+          type: integer
+          readOnly: true
+        info:
+          type: integer
+          readOnly: true
+        warning:
+          type: integer
+          readOnly: true
+        error:
+          type: integer
+          readOnly: true
+      required:
+      - consumed
+      - done
+      - error
+      - info
+      - postprocess
+      - preprocess
+      - queued
+      - rejected
+      - running
+      - warning
+    PaginatedScheduleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    TaskStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      type: string
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
     Task:
       type: object
       properties:
@@ -445,6 +586,61 @@ components:
       - rel_obj_app_label
       - rel_obj_model
       - uid
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    Worker:
+      type: object
+      properties:
+        worker_id:
+          type: string
+        version:
+          type: string
+        version_matching:
+          type: boolean
+      required:
+      - version
+      - version_matching
+      - worker_id
+    ScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
+      required:
+      - crontab
     Pagination:
       type: object
       properties:
@@ -470,75 +666,6 @@ components:
       - previous
       - start_index
       - total_pages
-    PatchedScheduleRequest:
-      type: object
-      properties:
-        rel_obj_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        crontab:
-          type: string
-          minLength: 1
-          description: When to schedule tasks
-        paused:
-          type: boolean
-          description: Pause this schedule
-    PaginatedTaskList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
-    ScheduleRequest:
-      type: object
-      properties:
-        rel_obj_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        crontab:
-          type: string
-          minLength: 1
-          description: When to schedule tasks
-        paused:
-          type: boolean
-          description: Pause this schedule
-      required:
-      - crontab
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     Schedule:
       type: object
       properties:
@@ -600,73 +727,6 @@ components:
       - rel_obj_app_label
       - rel_obj_model
       - uid
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    Worker:
-      type: object
-      properties:
-        worker_id:
-          type: string
-        version:
-          type: string
-        version_matching:
-          type: boolean
-      required:
-      - version
-      - version_matching
-      - worker_id
-    PaginatedScheduleList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Schedule'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    TaskAggregatedStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
-    LogEvent:
-      type: object
-      description: Single log message with all context logged.
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
     LastTaskStatusEnum:
       enum:
       - waiting_for_dependencies
@@ -681,84 +741,44 @@ components:
       - warning
       - error
       type: string
-    GlobalTaskStatus:
-      type: object
-      properties:
-        queued:
-          type: integer
-          readOnly: true
-        consumed:
-          type: integer
-          readOnly: true
-        preprocess:
-          type: integer
-          readOnly: true
-        running:
-          type: integer
-          readOnly: true
-        postprocess:
-          type: integer
-          readOnly: true
-        rejected:
-          type: integer
-          readOnly: true
-        done:
-          type: integer
-          readOnly: true
-        info:
-          type: integer
-          readOnly: true
-        warning:
-          type: integer
-          readOnly: true
-        error:
-          type: integer
-          readOnly: true
-      required:
-      - consumed
-      - done
-      - error
-      - info
-      - postprocess
-      - preprocess
-      - queued
-      - rejected
-      - running
-      - warning
-    TaskStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      type: string
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

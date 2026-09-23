@@ -1,7 +1,7 @@
 {
   "provider": "authentik",
   "sources": [
-    "authentik-openapi.yml"
+    "_original/authentik-openapi.yml"
   ],
   "outputs": [
     "authentik-admin-api-openapi.yml",
@@ -33,11 +33,12 @@
     "authentik-tenants-api-openapi.yml"
   ],
   "archived": [
-    "archived openapi/authentik-openapi.yml"
+    "deleted 1 superseded output(s) from the previous generation"
   ],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "authentik-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
     "authentik-openapi.yml: declared missing tag: admin",
     "authentik-openapi.yml: declared missing tag: agents",
@@ -66,7 +67,36 @@
     "authentik-openapi.yml: declared missing tag: stages",
     "authentik-openapi.yml: declared missing tag: tasks",
     "authentik-openapi.yml: declared missing tag: tenants",
-    "apis.yml register: written (+17 apis, 27 total)"
+    "superseded outputs removed: authentik-o-auth2-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 27 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "authentik-admin-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-agents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-authenticators-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-core-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-crypto-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-endpoints-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-enterprise-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-flows-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-lifecycle-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-managed-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-o-auth2-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-outposts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-policies-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-propertymappings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-providers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-rac-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-rbac-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-reports-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-requests-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-root-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-schema-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-sources-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-ssf-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-stages-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-tasks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-tenants-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

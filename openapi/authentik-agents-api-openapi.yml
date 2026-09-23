@@ -13,7 +13,7 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: agents
+- name: Agents
 paths:
   /agents/agents/:
     get:
@@ -33,7 +33,7 @@ paths:
           type: integer
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - agents
+      - Agents
       security:
       - authentik: []
       responses:
@@ -47,6 +47,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Agents agents list
+      x-summary-source: derived
     post:
       operationId: agents_agents_create
       description: 'Admin-provisioned delegate identities. An admin creates a Agent for a given
@@ -55,7 +57,7 @@ paths:
 
         PolicyBindings pointed at whatever it needs.'
       tags:
-      - agents
+      - Agents
       requestBody:
         content:
           application/json:
@@ -74,6 +76,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Agents agents create
+      x-summary-source: derived
   /agents/agents/{id}/:
     get:
       operationId: agents_agents_retrieve
@@ -90,7 +94,7 @@ paths:
         description: A unique integer value identifying this Agent.
         required: true
       tags:
-      - agents
+      - Agents
       security:
       - authentik: []
       responses:
@@ -104,6 +108,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Agents agents retrieve
+      x-summary-source: derived
     put:
       operationId: agents_agents_update
       description: 'Admin-provisioned delegate identities. An admin creates a Agent for a given
@@ -119,7 +125,7 @@ paths:
         description: A unique integer value identifying this Agent.
         required: true
       tags:
-      - agents
+      - Agents
       requestBody:
         content:
           application/json:
@@ -139,6 +145,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Agents agents update
+      x-summary-source: derived
     patch:
       operationId: agents_agents_partial_update
       description: 'Admin-provisioned delegate identities. An admin creates a Agent for a given
@@ -154,7 +162,7 @@ paths:
         description: A unique integer value identifying this Agent.
         required: true
       tags:
-      - agents
+      - Agents
       requestBody:
         content:
           application/json:
@@ -173,6 +181,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Agents agents partial update
+      x-summary-source: derived
     delete:
       operationId: agents_agents_destroy
       description: 'Admin-provisioned delegate identities. An admin creates a Agent for a given
@@ -188,7 +198,7 @@ paths:
         description: A unique integer value identifying this Agent.
         required: true
       tags:
-      - agents
+      - Agents
       security:
       - authentik: []
       responses:
@@ -198,81 +208,10 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Agents agents destroy
+      x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
   schemas:
-    AgentCreateRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        parent:
-          type: integer
-        label:
-          type: string
-        expiring:
-          type: boolean
-          default: false
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        policy_behavior:
-          allOf:
-          - $ref: '#/components/schemas/PolicyBehaviorEnum'
-          default: mirror
-    PaginatedAgentList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Agent'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PolicyBehaviorEnum:
       enum:
       - mirror
@@ -290,6 +229,46 @@ components:
         code:
           type: string
       additionalProperties: {}
+    PatchedAgentRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
     AgentCreated:
       type: object
       description: Response returned once when an agent is created, carrying the one-time API token.
@@ -304,6 +283,31 @@ components:
       required:
       - agent
       - token
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
     AgentRequest:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -347,56 +351,6 @@ components:
       required:
       - name
       - username
-    PatchedAgentRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        username:
-          type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          minLength: 1
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        expiring:
-          type: boolean
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -438,31 +392,44 @@ components:
       - pk
       - uid
       - username
-    Pagination:
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    PaginatedAgentList:
       type: object
       properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agent'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
+      - autocomplete
+      - pagination
+      - results
+    AgentCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        parent:
+          type: integer
+        label:
+          type: string
+        expiring:
+          type: boolean
+          default: false
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          default: mirror
     Agent:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -535,9 +502,54 @@ components:
       - uid
       - username
       - uuid
-    Autocomplete:
+    GenericError:
       type: object
-      additionalProperties: {}
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

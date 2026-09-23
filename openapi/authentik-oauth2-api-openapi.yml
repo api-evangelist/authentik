@@ -13,7 +13,7 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: oauth2
+- name: OAuth2
 paths:
   /oauth2/access_tokens/:
     get:
@@ -33,7 +33,7 @@ paths:
         schema:
           type: integer
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -47,6 +47,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 access tokens list
+      x-summary-source: derived
   /oauth2/access_tokens/{id}/:
     get:
       operationId: oauth2_access_tokens_retrieve
@@ -59,7 +61,7 @@ paths:
         description: A unique integer value identifying this OAuth2 Access Token.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -73,6 +75,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 access tokens retrieve
+      x-summary-source: derived
     delete:
       operationId: oauth2_access_tokens_destroy
       description: AccessToken Viewset
@@ -84,7 +88,7 @@ paths:
         description: A unique integer value identifying this OAuth2 Access Token.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -94,6 +98,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 access tokens destroy
+      x-summary-source: derived
   /oauth2/access_tokens/{id}/used_by/:
     get:
       operationId: oauth2_access_tokens_used_by_list
@@ -106,7 +112,7 @@ paths:
         description: A unique integer value identifying this OAuth2 Access Token.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -122,6 +128,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 access tokens used by list
+      x-summary-source: derived
   /oauth2/authorization_codes/:
     get:
       operationId: oauth2_authorization_codes_list
@@ -140,7 +148,7 @@ paths:
         schema:
           type: integer
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -154,6 +162,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 authorization codes list
+      x-summary-source: derived
   /oauth2/authorization_codes/{id}/:
     get:
       operationId: oauth2_authorization_codes_retrieve
@@ -166,7 +176,7 @@ paths:
         description: A unique integer value identifying this Authorization Code.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -180,6 +190,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 authorization codes retrieve
+      x-summary-source: derived
     delete:
       operationId: oauth2_authorization_codes_destroy
       description: AuthorizationCode Viewset
@@ -191,7 +203,7 @@ paths:
         description: A unique integer value identifying this Authorization Code.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -201,6 +213,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 authorization codes destroy
+      x-summary-source: derived
   /oauth2/authorization_codes/{id}/used_by/:
     get:
       operationId: oauth2_authorization_codes_used_by_list
@@ -213,7 +227,7 @@ paths:
         description: A unique integer value identifying this Authorization Code.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -229,6 +243,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 authorization codes used by list
+      x-summary-source: derived
   /oauth2/refresh_tokens/:
     get:
       operationId: oauth2_refresh_tokens_list
@@ -247,7 +263,7 @@ paths:
         schema:
           type: integer
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -261,6 +277,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 refresh tokens list
+      x-summary-source: derived
   /oauth2/refresh_tokens/{id}/:
     get:
       operationId: oauth2_refresh_tokens_retrieve
@@ -273,7 +291,7 @@ paths:
         description: A unique integer value identifying this OAuth2 Refresh Token.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -287,6 +305,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 refresh tokens retrieve
+      x-summary-source: derived
     delete:
       operationId: oauth2_refresh_tokens_destroy
       description: RefreshToken Viewset
@@ -298,7 +318,7 @@ paths:
         description: A unique integer value identifying this OAuth2 Refresh Token.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -308,6 +328,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 refresh tokens destroy
+      x-summary-source: derived
   /oauth2/refresh_tokens/{id}/used_by/:
     get:
       operationId: oauth2_refresh_tokens_used_by_list
@@ -320,7 +342,7 @@ paths:
         description: A unique integer value identifying this OAuth2 Refresh Token.
         required: true
       tags:
-      - oauth2
+      - OAuth2
       security:
       - authentik: []
       responses:
@@ -336,34 +358,18 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Oauth2 refresh tokens used by list
+      x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
   schemas:
-    PaginatedTokenModelList:
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
+    PaginatedExpiringBaseGrantModelList:
       type: object
       properties:
         pagination:
@@ -371,27 +377,159 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/TokenModel'
+            $ref: '#/components/schemas/ExpiringBaseGrantModel'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    Role:
+    ExpiringBaseGrantModel:
       type: object
-      description: Role serializer
+      description: Serializer for BaseGrantModel and ExpiringBaseGrant
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          $ref: '#/components/schemas/Provider'
+        user:
+          $ref: '#/components/schemas/User'
+        is_expired:
+          type: boolean
+          description: Check if token is expired yet.
+          readOnly: true
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        scope:
+          type: array
+          items:
+            type: string
+      required:
+      - is_expired
+      - pk
+      - provider
+      - scope
+      - user
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    TokenModel:
+      type: object
+      description: Serializer for BaseGrantModel and RefreshToken
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          $ref: '#/components/schemas/Provider'
+        user:
+          $ref: '#/components/schemas/User'
+        is_expired:
+          type: boolean
+          description: Check if token is expired yet.
+          readOnly: true
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        scope:
+          type: array
+          items:
+            type: string
+        id_token:
+          type: string
+          description: Get the token's id_token as JSON String
+          readOnly: true
+        revoked:
+          type: boolean
+      required:
+      - id_token
+      - is_expired
+      - pk
+      - provider
+      - scope
+      - user
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
       properties:
         pk:
           type: string
           format: uuid
           readOnly: true
-          title: Uuid
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
         name:
           type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - name
+      - num_pk
       - pk
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Autocomplete:
+      type: object
+      additionalProperties: {}
     Provider:
       type: object
       description: Provider Serializer
@@ -501,24 +639,6 @@ components:
       - previous
       - start_index
       - total_pages
-    UserTypeEnum:
-      enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
-      type: string
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     User:
       type: object
       description: User Serializer
@@ -617,49 +737,21 @@ components:
       - uid
       - username
       - uuid
-    ExpiringBaseGrantModel:
+    Role:
       type: object
-      description: Serializer for BaseGrantModel and ExpiringBaseGrant
+      description: Role serializer
       properties:
         pk:
-          type: integer
+          type: string
+          format: uuid
           readOnly: true
-          title: ID
-        provider:
-          $ref: '#/components/schemas/Provider'
-        user:
-          $ref: '#/components/schemas/User'
-        is_expired:
-          type: boolean
-          description: Check if token is expired yet.
-          readOnly: true
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        scope:
-          type: array
-          items:
-            type: string
+          title: Uuid
+        name:
+          type: string
       required:
-      - is_expired
+      - name
       - pk
-      - provider
-      - scope
-      - user
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    PaginatedExpiringBaseGrantModelList:
+    PaginatedTokenModelList:
       type: object
       properties:
         pagination:
@@ -667,119 +759,51 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ExpiringBaseGrantModel'
+            $ref: '#/components/schemas/TokenModel'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    PartialGroup:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - pk
-    TokenModel:
-      type: object
-      description: Serializer for BaseGrantModel and RefreshToken
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        provider:
-          $ref: '#/components/schemas/Provider'
-        user:
-          $ref: '#/components/schemas/User'
-        is_expired:
-          type: boolean
-          description: Check if token is expired yet.
-          readOnly: true
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        scope:
-          type: array
-          items:
-            type: string
-        id_token:
-          type: string
-          description: Get the token's id_token as JSON String
-          readOnly: true
-        revoked:
-          type: boolean
-      required:
-      - id_token
-      - is_expired
-      - pk
-      - provider
-      - scope
-      - user
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

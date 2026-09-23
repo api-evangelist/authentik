@@ -13,7 +13,7 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: schema
+- name: Schema
 paths:
   /schema/:
     get:
@@ -34,7 +34,7 @@ paths:
         schema:
           $ref: '#/components/schemas/LangEnum'
       tags:
-      - schema
+      - Schema
       security:
       - authentik: []
       - {}
@@ -62,8 +62,21 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Schema retrieve
+      x-summary-source: derived
 components:
   schemas:
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     LangEnum:
       type: string
       enum:
@@ -166,22 +179,6 @@ components:
       - vi
       - zh-hans
       - zh-hant
-    FormatEnum:
-      type: string
-      enum:
-      - json
-      - yaml
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     GenericError:
       type: object
       description: Generic API Error
@@ -192,6 +189,11 @@ components:
           type: string
       required:
       - detail
+    FormatEnum:
+      type: string
+      enum:
+      - json
+      - yaml
   responses:
     ValidationErrorResponse:
       content:

@@ -13,14 +13,14 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: root
+- name: Root
 paths:
   /root/config/:
     get:
       operationId: root_config_retrieve
       description: Retrieve public configuration options
       tags:
-      - root
+      - Root
       security:
       - authentik: []
       - {}
@@ -35,20 +35,10 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Root config retrieve
+      x-summary-source: derived
 components:
   schemas:
-    CapabilitiesEnum:
-      enum:
-      - can_save_media
-      - can_save_reports
-      - can_geo_ip
-      - can_asn
-      - can_impersonate
-      - can_debug
-      - is_enterprise
-      - can_request
-      - can_agent_self_service
-      type: string
     ErrorReportingConfig:
       type: object
       description: Config for error reporting
@@ -75,6 +65,17 @@ components:
       - send_pii
       - sentry_dsn
       - traces_sample_rate
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -97,17 +98,18 @@ components:
       - cache_timeout_policies
       - capabilities
       - error_reporting
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
+    CapabilitiesEnum:
+      enum:
+      - can_save_media
+      - can_save_reports
+      - can_geo_ip
+      - can_asn
+      - can_impersonate
+      - can_debug
+      - is_enterprise
+      - can_request
+      - can_agent_self_service
+      type: string
     GenericError:
       type: object
       description: Generic API Error

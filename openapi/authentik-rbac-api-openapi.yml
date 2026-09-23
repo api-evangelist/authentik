@@ -13,7 +13,7 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: rbac
+- name: RBAC
 paths:
   /rbac/initial_permissions/:
     get:
@@ -26,7 +26,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -40,11 +40,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac initial permissions list
+      x-summary-source: derived
     post:
       operationId: rbac_initial_permissions_create
       description: InitialPermissions viewset
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -64,6 +66,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac initial permissions create
+      x-summary-source: derived
   /rbac/initial_permissions/{id}/:
     get:
       operationId: rbac_initial_permissions_retrieve
@@ -76,7 +80,7 @@ paths:
         description: A unique integer value identifying this Initial Permissions.
         required: true
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -90,6 +94,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac initial permissions retrieve
+      x-summary-source: derived
     put:
       operationId: rbac_initial_permissions_update
       description: InitialPermissions viewset
@@ -101,7 +107,7 @@ paths:
         description: A unique integer value identifying this Initial Permissions.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -121,6 +127,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac initial permissions update
+      x-summary-source: derived
     patch:
       operationId: rbac_initial_permissions_partial_update
       description: InitialPermissions viewset
@@ -132,7 +140,7 @@ paths:
         description: A unique integer value identifying this Initial Permissions.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -151,6 +159,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac initial permissions partial update
+      x-summary-source: derived
     delete:
       operationId: rbac_initial_permissions_destroy
       description: InitialPermissions viewset
@@ -162,7 +172,7 @@ paths:
         description: A unique integer value identifying this Initial Permissions.
         required: true
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -172,6 +182,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac initial permissions destroy
+      x-summary-source: derived
   /rbac/initial_permissions/{id}/used_by/:
     get:
       operationId: rbac_initial_permissions_used_by_list
@@ -184,7 +196,7 @@ paths:
         description: A unique integer value identifying this Initial Permissions.
         required: true
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -200,6 +212,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac initial permissions used by list
+      x-summary-source: derived
   /rbac/permissions/:
     get:
       operationId: rbac_permissions_list
@@ -226,7 +240,7 @@ paths:
           type: string
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -240,6 +254,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac permissions list
+      x-summary-source: derived
   /rbac/permissions/{id}/:
     get:
       operationId: rbac_permissions_retrieve
@@ -252,7 +268,7 @@ paths:
         description: A unique integer value identifying this permission.
         required: true
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -266,6 +282,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac permissions retrieve
+      x-summary-source: derived
   /rbac/permissions/assigned_by_roles/:
     get:
       operationId: rbac_permissions_assigned_by_roles_list
@@ -285,7 +303,7 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -299,6 +317,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac permissions assigned by roles list
+      x-summary-source: derived
   /rbac/permissions/assigned_by_roles/{uuid}/assign/:
     post:
       operationId: rbac_permissions_assigned_by_roles_assign
@@ -314,7 +334,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -336,6 +356,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac permissions assigned by roles assign
+      x-summary-source: derived
   /rbac/permissions/assigned_by_roles/{uuid}/unassign/:
     patch:
       operationId: rbac_permissions_assigned_by_roles_unassign_partial_update
@@ -351,7 +373,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -366,6 +388,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac permissions assigned by roles unassign partial update
+      x-summary-source: derived
   /rbac/permissions/roles/:
     get:
       operationId: rbac_permissions_roles_list
@@ -381,7 +405,7 @@ paths:
           type: string
           format: uuid
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -395,6 +419,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac permissions roles list
+      x-summary-source: derived
   /rbac/roles/:
     get:
       operationId: rbac_roles_list
@@ -432,7 +458,7 @@ paths:
         schema:
           type: integer
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -446,11 +472,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles list
+      x-summary-source: derived
     post:
       operationId: rbac_roles_create
       description: Role viewset
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -470,6 +498,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles create
+      x-summary-source: derived
   /rbac/roles/{uuid}/:
     get:
       operationId: rbac_roles_retrieve
@@ -483,7 +513,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -497,6 +527,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles retrieve
+      x-summary-source: derived
     put:
       operationId: rbac_roles_update
       description: Role viewset
@@ -509,7 +541,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -529,6 +561,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles update
+      x-summary-source: derived
     patch:
       operationId: rbac_roles_partial_update
       description: Role viewset
@@ -541,7 +575,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -560,6 +594,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles partial update
+      x-summary-source: derived
     delete:
       operationId: rbac_roles_destroy
       description: Role viewset
@@ -572,7 +608,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -582,6 +618,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles destroy
+      x-summary-source: derived
   /rbac/roles/{uuid}/add_user/:
     post:
       operationId: rbac_roles_add_user_create
@@ -595,7 +633,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -613,6 +651,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles add user create
+      x-summary-source: derived
   /rbac/roles/{uuid}/remove_user/:
     post:
       operationId: rbac_roles_remove_user_create
@@ -626,7 +666,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       requestBody:
         content:
           application/json:
@@ -644,6 +684,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles remove user create
+      x-summary-source: derived
   /rbac/roles/{uuid}/used_by/:
     get:
       operationId: rbac_roles_used_by_list
@@ -657,7 +699,7 @@ paths:
         description: A UUID string identifying this Role.
         required: true
       tags:
-      - rbac
+      - RBAC
       security:
       - authentik: []
       responses:
@@ -673,38 +715,74 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Rbac roles used by list
+      x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   schemas:
+    Permission:
+      type: object
+      description: Global permission
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        codename:
+          type: string
+          maxLength: 100
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        app_label_verbose:
+          type: string
+          description: Human-readable app label
+          readOnly: true
+        model_verbose:
+          type: string
+          description: Human-readable model name
+          readOnly: true
+      required:
+      - app_label
+      - app_label_verbose
+      - codename
+      - id
+      - model
+      - model_verbose
+      - name
+    PatchedInitialPermissionsRequest:
+      type: object
+      description: InitialPermissions serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        role:
+          type: string
+          format: uuid
+        permissions:
+          type: array
+          items:
+            type: integer
     UserAccountSerializerForRoleRequest:
       type: object
       description: Account adding/removing operations
@@ -713,30 +791,7 @@ components:
           type: integer
       required:
       - pk
-    Role:
-      type: object
-      description: Role serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
-    RoleRequest:
-      type: object
-      description: Role serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-      required:
-      - name
-    PaginatedExtraRoleObjectPermissionList:
+    PaginatedRoleList:
       type: object
       properties:
         pagination:
@@ -744,13 +799,73 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ExtraRoleObjectPermission'
+            $ref: '#/components/schemas/Role'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    RoleObjectPermission:
+      type: object
+      description: Role-bound object level permission
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        codename:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        object_pk:
+          type: string
+        name:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - codename
+      - id
+      - model
+      - name
+      - object_pk
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     ModelEnum:
       enum:
       - authentik_tenants.domain
@@ -885,52 +1000,6 @@ components:
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
       type: string
-    PermissionAssignRequest:
-      type: object
-      description: Request to assign a new permission
-      properties:
-        permissions:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        model:
-          $ref: '#/components/schemas/ModelEnum'
-        object_pk:
-          type: string
-          minLength: 1
-      required:
-      - permissions
-    PaginatedInitialPermissionsList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/InitialPermissions'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedInitialPermissionsRequest:
-      type: object
-      description: InitialPermissions serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 150
-        role:
-          type: string
-          format: uuid
-        permissions:
-          type: array
-          items:
-            type: integer
     PaginatedPermissionList:
       type: object
       properties:
@@ -946,72 +1015,54 @@ components:
       - autocomplete
       - pagination
       - results
-    PermissionAssignResult:
+    GenericError:
       type: object
-      description: Result from assigning permissions to a user/role
+      description: Generic API Error
       properties:
-        id:
+        detail:
+          type: string
+        code:
           type: string
       required:
-      - id
-    Pagination:
+      - detail
+    PaginatedInitialPermissionsList:
       type: object
       properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InitialPermissions'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    RoleModelPermission:
+      - autocomplete
+      - pagination
+      - results
+    PatchedPermissionAssignRequest:
       type: object
-      description: Role-bound object level permission
+      description: Request to assign a new permission
       properties:
-        id:
-          type: integer
-          readOnly: true
-        codename:
-          type: string
-          readOnly: true
+        permissions:
+          type: array
+          items:
+            type: string
+            minLength: 1
         model:
+          $ref: '#/components/schemas/ModelEnum'
+        object_pk:
           type: string
-          title: Python model class name
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - codename
-      - id
-      - model
-      - name
-    PatchedRoleRequest:
+          minLength: 1
+    RoleRequest:
       type: object
       description: Role serializer
       properties:
         name:
           type: string
           minLength: 1
+      required:
+      - name
     InitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer
@@ -1030,21 +1081,34 @@ components:
       required:
       - name
       - role
-    PaginatedRoleList:
+    InitialPermissions:
       type: object
+      description: InitialPermissions serializer
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 150
+        role:
+          type: string
+          format: uuid
+        permissions:
           type: array
           items:
-            $ref: '#/components/schemas/Role'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+            type: integer
+        permissions_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+          readOnly: true
       required:
-      - autocomplete
-      - pagination
-      - results
+      - name
+      - permissions_obj
+      - pk
+      - role
     PaginatedRoleAssignedObjectPermissionList:
       type: object
       properties:
@@ -1060,17 +1124,6 @@ components:
       - autocomplete
       - pagination
       - results
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     UsedByActionEnum:
       enum:
       - cascade
@@ -1079,6 +1132,14 @@ components:
       - set_default
       - left_dangling
       type: string
+    PermissionAssignResult:
+      type: object
+      description: Result from assigning permissions to a user/role
+      properties:
+        id:
+          type: string
+      required:
+      - id
     Autocomplete:
       type: object
       additionalProperties: {}
@@ -1105,6 +1166,46 @@ components:
       - name
       - object_permissions
       - role_pk
+    PaginatedExtraRoleObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraRoleObjectPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
     ExtraRoleObjectPermission:
       type: object
       description: Role permission with additional object-related data
@@ -1155,21 +1256,21 @@ components:
       - name
       - object_description
       - object_pk
-    PatchedPermissionAssignRequest:
+    Role:
       type: object
-      description: Request to assign a new permission
+      description: Role serializer
       properties:
-        permissions:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        model:
-          $ref: '#/components/schemas/ModelEnum'
-        object_pk:
+        pk:
           type: string
-          minLength: 1
-    RoleObjectPermission:
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+      required:
+      - name
+      - pk
+    RoleModelPermission:
       type: object
       description: Role-bound object level permission
       properties:
@@ -1186,8 +1287,6 @@ components:
         app_label:
           type: string
           readOnly: true
-        object_pk:
-          type: string
         name:
           type: string
           readOnly: true
@@ -1197,114 +1296,59 @@ components:
       - id
       - model
       - name
-      - object_pk
-    InitialPermissions:
+    PatchedRoleRequest:
       type: object
-      description: InitialPermissions serializer
+      description: Role serializer
       properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
         name:
           type: string
-          maxLength: 150
-        role:
-          type: string
-          format: uuid
+          minLength: 1
+    PermissionAssignRequest:
+      type: object
+      description: Request to assign a new permission
+      properties:
         permissions:
           type: array
           items:
-            type: integer
-        permissions_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-          readOnly: true
-      required:
-      - name
-      - permissions_obj
-      - pk
-      - role
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    Permission:
-      type: object
-      description: Global permission
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 255
-        codename:
-          type: string
-          maxLength: 100
+            type: string
+            minLength: 1
         model:
+          $ref: '#/components/schemas/ModelEnum'
+        object_pk:
           type: string
-          title: Python model class name
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        app_label_verbose:
-          type: string
-          description: Human-readable app label
-          readOnly: true
-        model_verbose:
-          type: string
-          description: Human-readable model name
-          readOnly: true
+          minLength: 1
       required:
-      - app_label
-      - app_label_verbose
-      - codename
-      - id
-      - model
-      - model_verbose
-      - name
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
+      - permissions
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

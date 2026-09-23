@@ -13,14 +13,14 @@ info:
 servers:
 - url: /api/v3
 tags:
-- name: admin
+- name: Admin
 paths:
   /admin/apps/:
     get:
       operationId: admin_apps_list
       description: Read-only view list all installed apps
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -36,6 +36,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin apps list
+      x-summary-source: derived
   /admin/file/:
     get:
       operationId: admin_file_list
@@ -55,7 +57,7 @@ paths:
           default: media
           minLength: 1
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -71,11 +73,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin file list
+      x-summary-source: derived
     post:
       operationId: admin_file_create
       description: Upload file to storage backend.
       tags:
-      - admin
+      - Admin
       requestBody:
         content:
           multipart/form-data:
@@ -91,6 +95,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin file create
+      x-summary-source: derived
     delete:
       operationId: admin_file_destroy
       description: Delete file from storage backend.
@@ -104,7 +110,7 @@ paths:
           default: media
           minLength: 1
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -114,13 +120,15 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin file destroy
+      x-summary-source: derived
   /admin/file/used_by/:
     get:
       operationId: admin_file_used_by_list
       parameters:
       - $ref: '#/components/parameters/QueryName'
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -136,6 +144,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin file used by list
+      x-summary-source: derived
   /admin/models/:
     get:
       operationId: admin_models_list
@@ -148,7 +158,7 @@ paths:
           - boolean
           - 'null'
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -164,12 +174,14 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin models list
+      x-summary-source: derived
   /admin/settings/:
     get:
       operationId: admin_settings_retrieve
       description: Settings view
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -183,11 +195,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin settings retrieve
+      x-summary-source: derived
     put:
       operationId: admin_settings_update
       description: Settings view
       tags:
-      - admin
+      - Admin
       requestBody:
         content:
           application/json:
@@ -207,11 +221,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin settings update
+      x-summary-source: derived
     patch:
       operationId: admin_settings_partial_update
       description: Settings view
       tags:
-      - admin
+      - Admin
       requestBody:
         content:
           application/json:
@@ -230,12 +246,14 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin settings partial update
+      x-summary-source: derived
   /admin/system/:
     get:
       operationId: admin_system_retrieve
       description: Get system information.
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -249,11 +267,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin system retrieve
+      x-summary-source: derived
     post:
       operationId: admin_system_create
       description: Get system information.
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -267,12 +287,14 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin system create
+      x-summary-source: derived
   /admin/version/:
     get:
       operationId: admin_version_retrieve
       description: Get running and latest version.
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -286,6 +308,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin version retrieve
+      x-summary-source: derived
   /admin/version/history/:
     get:
       operationId: admin_version_history_list
@@ -302,7 +326,7 @@ paths:
         schema:
           type: string
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -318,6 +342,8 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin version history list
+      x-summary-source: derived
   /admin/version/history/{id}/:
     get:
       operationId: admin_version_history_retrieve
@@ -330,7 +356,7 @@ paths:
         description: A unique integer value identifying this Version history.
         required: true
       tags:
-      - admin
+      - Admin
       security:
       - authentik: []
       responses:
@@ -344,8 +370,75 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+      summary: Admin version history retrieve
+      x-summary-source: derived
 components:
   schemas:
+    App:
+      type: object
+      description: Serialize Application info
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - name
+    VersionHistory:
+      type: object
+      description: VersionHistory Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        build:
+          type: string
+      required:
+      - build
+      - id
+      - timestamp
+      - version
+    Version:
+      type: object
+      description: Get running and latest version.
+      properties:
+        version_current:
+          type: string
+          description: Get current version
+          readOnly: true
+        version_latest:
+          type: string
+          description: Get latest version from cache
+          readOnly: true
+        version_latest_valid:
+          type: boolean
+          description: Check if latest version is valid
+          readOnly: true
+        build_hash:
+          type: string
+          description: Get build hash, if version is not latest or released
+          readOnly: true
+        outdated:
+          type: boolean
+          description: Check if we're running the latest version
+          readOnly: true
+        outpost_outdated:
+          type: boolean
+          description: Check if any outpost is outdated/has a version mismatch
+          readOnly: true
+      required:
+      - build_hash
+      - outdated
+      - outpost_outdated
+      - version_current
+      - version_latest
+      - version_latest_valid
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -429,50 +522,26 @@ components:
           - flows_continuous_login
       required:
       - flags
-    App:
+    UsedBy:
       type: object
-      description: Serialize Application info
+      description: A list of all objects referencing the queried object
       properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
         name:
           type: string
-        label:
-          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
       required:
-      - label
+      - action
+      - app
+      - model_name
       - name
-    UsageEnum:
-      enum:
-      - media
-      type: string
-    ThemedUrls:
-      type: object
-      description: Themed URLs - maps theme names to URLs for light and dark themes
-      properties:
-        light:
-          type:
-          - string
-          - 'null'
-        dark:
-          type:
-          - string
-          - 'null'
-    FileList:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        name:
-          type: string
-        mime_type:
-          type: string
-        url:
-          type: string
-        themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-      required:
-      - mime_type
-      - name
-      - url
+      - pk
     ValidationError:
       type: object
       description: Validation Error
@@ -484,56 +553,27 @@ components:
         code:
           type: string
       additionalProperties: {}
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    Version:
+    FileUploadRequest:
       type: object
-      description: Get running and latest version.
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        version_current:
+        file:
           type: string
-          description: Get current version
-          readOnly: true
-        version_latest:
+          format: binary
+        name:
           type: string
-          description: Get latest version from cache
-          readOnly: true
-        version_latest_valid:
-          type: boolean
-          description: Check if latest version is valid
-          readOnly: true
-        build_hash:
+        usage:
           type: string
-          description: Get build hash, if version is not latest or released
-          readOnly: true
-        outdated:
-          type: boolean
-          description: Check if we're running the latest version
-          readOnly: true
-        outpost_outdated:
-          type: boolean
-          description: Check if any outpost is outdated/has a version mismatch
-          readOnly: true
+          minLength: 1
+          default: media
       required:
-      - build_hash
-      - outdated
-      - outpost_outdated
-      - version_current
-      - version_latest
-      - version_latest_valid
-    PatchedSettingsRequest:
+      - file
+    Settings:
       type: object
       description: Settings Serializer
       properties:
         avatars:
           type: string
-          minLength: 1
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
@@ -551,7 +591,6 @@ components:
           description: Enable the ability for users to change their username.
         event_retention:
           type: string
-          minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
         reputation_lower_limit:
           type: integer
@@ -575,7 +614,6 @@ components:
           description: Require administrators to provide a reason for impersonating a user.
         default_token_duration:
           type: string
-          minLength: 1
           description: Default token duration
         default_token_length:
           type: integer
@@ -608,25 +646,8 @@ components:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-    VersionHistory:
-      type: object
-      description: VersionHistory Serializer
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        timestamp:
-          type: string
-          format: date-time
-        version:
-          type: string
-        build:
-          type: string
       required:
-      - build
-      - id
-      - timestamp
-      - version
+      - flags
     GenericError:
       type: object
       description: Generic API Error
@@ -637,6 +658,18 @@ components:
           type: string
       required:
       - detail
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    UsageEnum:
+      enum:
+      - media
+      type: string
     SystemInfo:
       type: object
       description: Get system information.
@@ -718,47 +751,13 @@ components:
       - http_is_secure
       - runtime
       - server_time
-    FileUploadRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        file:
-          type: string
-          format: binary
-        name:
-          type: string
-        usage:
-          type: string
-          minLength: 1
-          default: media
-      required:
-      - file
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    Settings:
+    PatchedSettingsRequest:
       type: object
       description: Settings Serializer
       properties:
         avatars:
           type: string
+          minLength: 1
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
@@ -776,6 +775,7 @@ components:
           description: Enable the ability for users to change their username.
         event_retention:
           type: string
+          minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
         reputation_lower_limit:
           type: integer
@@ -799,6 +799,7 @@ components:
           description: Require administrators to provide a reason for impersonating a user.
         default_token_duration:
           type: string
+          minLength: 1
           description: Default token duration
         default_token_length:
           type: integer
@@ -831,39 +832,66 @@ components:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
+    FileList:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        name:
+          type: string
+        mime_type:
+          type: string
+        url:
+          type: string
+        themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
       required:
-      - flags
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
+      - mime_type
+      - name
+      - url
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type:
+          - string
+          - 'null'
+        dark:
+          type:
+          - string
+          - 'null'
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
   securitySchemes:
     authentik:
       type: http
