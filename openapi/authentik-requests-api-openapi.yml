@@ -902,266 +902,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedRequestRuleBindingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RequestRuleBinding'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GrantRequestCreateRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        pbms:
-          type: array
-          items:
-            type: string
-            format: uuid
-        expiry:
-          type: string
-          description: Optional override for how long the grant should last once approved. Clamped to the granting rule binding(s)' expiry_granted_max.
-      required:
-      - pbms
-    PatchedRequestRuleBindingRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        rule:
-          type: string
-          format: uuid
-        target:
-          type: string
-          format: uuid
-        expiry_pending:
-          type: string
-          minLength: 1
-          description: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
-        expiry_granted_max:
-          type: string
-          minLength: 1
-          description: The maximum duration a grant approved against this binding can last.
-    RelatedTarget:
-      type: object
-      description: Simplified related target object
-      properties:
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        pbm_uuid:
-          type: string
-          readOnly: true
-        label:
-          type: string
-          readOnly: true
-      required:
-      - label
-      - meta_model_name
-      - pbm_uuid
-      - verbose_name
-      - verbose_name_plural
-    PatchedRequestRuleRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        name:
-          type: string
-          minLength: 1
-        notification_transports:
-          type: array
-          items:
-            type: string
-            format: uuid
-        notification_mode:
-          $ref: '#/components/schemas/NotificationModeEnum'
-        min_reviewers:
-          type: integer
-          maximum: 32767
-          minimum: 0
-        min_reviewers_is_per_group:
-          type: boolean
-        request_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-    PatchedRequestRuleChildBindingRequest:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        binding:
-          type: string
-          format: uuid
-        target:
-          type: string
-          format: uuid
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    NotificationModeEnum:
-      enum:
-      - all
-      - direct
-      - random_min_reviewers
-      type: string
-    PolicyEngineMode:
-      enum:
-      - all
-      - any
-      type: string
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    AgentGrantRequestCreated:
-      type: object
-      description: 'Response to an agent''s access request: the request it created, plus the URL to hand to
-
-        the human it acts for. An agent has no browser, so it cannot run the approval itself --
-
-        `fulfill_url` is what its owner opens to approve or deny.'
-      properties:
-        grant_request:
-          allOf:
-          - $ref: '#/components/schemas/GrantRequest'
-          readOnly: true
-        fulfill_url:
-          type: string
-          readOnly: true
-      required:
-      - fulfill_url
-      - grant_request
-    RequestRuleChildBinding:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        binding:
-          type: string
-          format: uuid
-        target:
-          type: string
-          format: uuid
-      required:
-      - binding
-      - target
-    RequestRuleBinding:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        pbm_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        rule:
-          type: string
-          format: uuid
-        rule_obj:
-          allOf:
-          - $ref: '#/components/schemas/RequestRule'
-          readOnly: true
-        target:
-          type: string
-          format: uuid
-        related:
-          type: array
-          items:
-            type: string
-            format: uuid
-          readOnly: true
-        related_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/RelatedTarget'
-          readOnly: true
-        expiry_pending:
-          type: string
-          description: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
-        expiry_granted_max:
-          type: string
-          description: The maximum duration a grant approved against this binding can last.
-      required:
-      - pbm_uuid
-      - related
-      - related_obj
-      - rule
-      - rule_obj
-      - target
     RequestRuleRequest:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -1196,154 +936,6 @@ components:
           format: uuid
       required:
       - name
-    PatchedGrantRequestFulfillRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        data:
-          type: object
-          additionalProperties: {}
-        status:
-          $ref: '#/components/schemas/RequestStatus'
-    RequestableTarget:
-      type: object
-      description: 'Generic representation of a single request target: whatever was actually
-
-        requested (an Application, an Application Entitlement, ...), always paired with the
-
-        parent it belongs to, so the UI/audit trail has that context even when the
-
-        request itself was scoped narrower than the whole app.'
-      properties:
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        pbm_uuid:
-          type: string
-          readOnly: true
-        label:
-          type: string
-          readOnly: true
-        parent:
-          allOf:
-          - $ref: '#/components/schemas/Application'
-          readOnly: true
-      required:
-      - label
-      - meta_model_name
-      - parent
-      - pbm_uuid
-      - verbose_name
-      - verbose_name_plural
-    RequestStatus:
-      enum:
-      - created
-      - approved
-      - denied
-      - revoked
-      type: string
-    AgentGrantRequestCreateRequest:
-      type: object
-      description: 'Body for an agent requesting access for itself. Deliberately narrower than
-
-        `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
-
-        derived from the granting rules and capped by the agent''s own lifetime.'
-      properties:
-        pbms:
-          type: array
-          items:
-            type: string
-            format: uuid
-      required:
-      - pbms
-    GrantRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        requester_data:
-          type: object
-          additionalProperties: {}
-        fulfiller_data:
-          type: object
-          additionalProperties: {}
-        revoked_by:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        agent_owner:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        is_active:
-          type: boolean
-          readOnly: true
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        status:
-          allOf:
-          - $ref: '#/components/schemas/RequestStatus'
-          readOnly: true
-        targets:
-          type: array
-          items:
-            type: string
-            format: uuid
-          readOnly: true
-        target_objs:
-          type: array
-          items:
-            $ref: '#/components/schemas/RequestableTarget'
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-      required:
-      - agent_owner
-      - created
-      - created_by
-      - is_active
-      - revoked_by
-      - status
-      - target_objs
-      - targets
-    PaginatedGrantRequestList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GrantRequest'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -1385,25 +977,105 @@ components:
       - pk
       - uid
       - username
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    Autocomplete:
+    PatchedRequestRuleRequest:
       type: object
-      additionalProperties: {}
-    Link:
-      type: object
-      description: Returns a single link
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
       properties:
-        link:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        request_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    RequestRuleChildBinding:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+      required:
+      - binding
+      - target
+    PaginatedRequestRuleChildBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRuleChildBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
           type: string
       required:
-      - link
+      - detail
+    AgentGrantRequestCreateRequest:
+      type: object
+      description: 'Body for an agent requesting access for itself. Deliberately narrower than
+
+        `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
+
+        derived from the granting rules and capped by the agent''s own lifetime.'
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - pbms
+    PatchedRequestRuleChildBindingRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
     Provider:
       type: object
       description: Provider Serializer
@@ -1488,7 +1160,7 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    PaginatedRequestRuleChildBindingList:
+    PaginatedGrantRequestList:
       type: object
       properties:
         pagination:
@@ -1496,13 +1168,56 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/RequestRuleChildBinding'
+            $ref: '#/components/schemas/GrantRequest'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Link:
+      type: object
+      description: Returns a single link
+      properties:
+        link:
+          type: string
+      required:
+      - link
+    RequestStatus:
+      enum:
+      - created
+      - approved
+      - denied
+      - revoked
+      type: string
     RequestRuleChildBindingRequest:
       type: object
       properties:
@@ -1600,7 +1315,7 @@ components:
       - pk
       - provider_obj
       - slug
-    PaginatedRequestRuleList:
+    PaginatedRequestRuleBindingList:
       type: object
       properties:
         pagination:
@@ -1608,13 +1323,77 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/RequestRule'
+            $ref: '#/components/schemas/RequestRuleBinding'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
+    RequestableTarget:
+      type: object
+      description: 'Generic representation of a single request target: whatever was actually
+
+        requested (an Application, an Application Entitlement, ...), always paired with the
+
+        parent it belongs to, so the UI/audit trail has that context even when the
+
+        request itself was scoped narrower than the whole app.'
+      properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/Application'
+          readOnly: true
+      required:
+      - label
+      - meta_model_name
+      - parent
+      - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    GrantRequestCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+        expiry:
+          type: string
+          description: Optional override for how long the grant should last once approved. Clamped to the granting rule binding(s)' expiry_granted_max.
+      required:
+      - pbms
     RequestRuleBindingRequest:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -1643,6 +1422,73 @@ components:
       required:
       - rule
       - target
+    RequestRuleBinding:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        rule_obj:
+          allOf:
+          - $ref: '#/components/schemas/RequestRule'
+          readOnly: true
+        target:
+          type: string
+          format: uuid
+        related:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        related_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedTarget'
+          readOnly: true
+        expiry_pending:
+          type: string
+          description: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          description: The maximum duration a grant approved against this binding can last.
+      required:
+      - pbm_uuid
+      - related
+      - related_obj
+      - rule
+      - rule_obj
+      - target
+    AgentGrantRequestCreated:
+      type: object
+      description: 'Response to an agent''s access request: the request it created, plus the URL to hand to
+
+        the human it acts for. An agent has no browser, so it cannot run the approval itself --
+
+        `fulfill_url` is what its owner opens to approve or deny.'
+      properties:
+        grant_request:
+          allOf:
+          - $ref: '#/components/schemas/GrantRequest'
+          readOnly: true
+        fulfill_url:
+          type: string
+          readOnly: true
+      required:
+      - fulfill_url
+      - grant_request
     Pagination:
       type: object
       properties:
@@ -1668,18 +1514,137 @@ components:
       - previous
       - start_index
       - total_pages
-    ThemedUrls:
+    PatchedRequestRuleBindingRequest:
       type: object
-      description: Themed URLs - maps theme names to URLs for light and dark themes
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
       properties:
-        light:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+        expiry_pending:
+          type: string
+          minLength: 1
+          description: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          minLength: 1
+          description: The maximum duration a grant approved against this binding can last.
+    PatchedGrantRequestFulfillRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+    GrantRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        requester_data:
+          type: object
+          additionalProperties: {}
+        fulfiller_data:
+          type: object
+          additionalProperties: {}
+        revoked_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        agent_owner:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        is_active:
+          type: boolean
+          readOnly: true
+        expires:
           type:
           - string
           - 'null'
-        dark:
-          type:
-          - string
-          - 'null'
+          format: date-time
+        status:
+          allOf:
+          - $ref: '#/components/schemas/RequestStatus'
+          readOnly: true
+        targets:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        target_objs:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestableTarget'
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - agent_owner
+      - created
+      - created_by
+      - is_active
+      - revoked_by
+      - status
+      - target_objs
+      - targets
+    RelatedTarget:
+      type: object
+      description: Simplified related target object
+      properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+      required:
+      - label
+      - meta_model_name
+      - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
+    NotificationModeEnum:
+      enum:
+      - all
+      - direct
+      - random_min_reviewers
+      type: string
     RequestRule:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -1725,49 +1690,84 @@ components:
       - name
       - pbm_uuid
       - targets
-  responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
+    PaginatedRequestRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PolicyEngineMode:
+      enum:
+      - all
+      - any
+      type: string
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type:
+          - string
+          - 'null'
+        dark:
+          type:
+          - string
+          - 'null'
+    Autocomplete:
+      type: object
+      additionalProperties: {}
   parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
     QueryPaginationOrdering:
       in: query
       name: ordering
       schema:
         type: string
       description: Which field to use when ordering the results.
-    QueryPaginationPage:
+    QuerySearch:
       in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryName:
-      in: query
-      name: name
+      name: search
       schema:
         type: string
+      description: A search term.
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

@@ -718,79 +718,76 @@ paths:
       summary: Rbac roles used by list
       x-summary-source: derived
 components:
-  responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
   schemas:
-    Permission:
+    RoleAssignedObjectPermission:
       type: object
-      description: Global permission
+      description: Roles assigned object permission serializer
       properties:
-        id:
-          type: integer
+        role_pk:
+          type: string
           readOnly: true
         name:
           type: string
-          maxLength: 255
-        codename:
-          type: string
-          maxLength: 100
-        model:
-          type: string
-          title: Python model class name
           readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        app_label_verbose:
-          type: string
-          description: Human-readable app label
-          readOnly: true
-        model_verbose:
-          type: string
-          description: Human-readable model name
-          readOnly: true
+        object_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleObjectPermission'
+        model_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleModelPermission'
       required:
-      - app_label
-      - app_label_verbose
-      - codename
-      - id
-      - model
-      - model_verbose
+      - model_permissions
       - name
-    PatchedInitialPermissionsRequest:
+      - object_permissions
+      - role_pk
+    PermissionAssignRequest:
       type: object
-      description: InitialPermissions serializer
+      description: Request to assign a new permission
       properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 150
-        role:
-          type: string
-          format: uuid
         permissions:
           type: array
           items:
-            type: integer
-    UserAccountSerializerForRoleRequest:
-      type: object
-      description: Account adding/removing operations
-      properties:
-        pk:
-          type: integer
+            type: string
+            minLength: 1
+        model:
+          $ref: '#/components/schemas/ModelEnum'
+        object_pk:
+          type: string
+          minLength: 1
       required:
-      - pk
+      - permissions
     PaginatedRoleList:
       type: object
       properties:
@@ -800,6 +797,85 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Role'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedInitialPermissionsList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InitialPermissions'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedRoleRequest:
+      type: object
+      description: Role serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    PaginatedExtraRoleObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraRoleObjectPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PatchedPermissionAssignRequest:
+      type: object
+      description: Request to assign a new permission
+      properties:
+        permissions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        model:
+          $ref: '#/components/schemas/ModelEnum'
+        object_pk:
+          type: string
+          minLength: 1
+    PaginatedPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -826,46 +902,14 @@ components:
       - model_name
       - name
       - pk
-    RoleObjectPermission:
-      type: object
-      description: Role-bound object level permission
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        codename:
-          type: string
-          readOnly: true
-        model:
-          type: string
-          title: Python model class name
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        object_pk:
-          type: string
-        name:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - codename
-      - id
-      - model
-      - name
-      - object_pk
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
     ModelEnum:
       enum:
       - authentik_tenants.domain
@@ -1000,87 +1044,54 @@ components:
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
       type: string
-    PaginatedPermissionList:
+    RoleObjectPermission:
       type: object
+      description: Role-bound object level permission
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
+        id:
+          type: integer
+          readOnly: true
+        codename:
           type: string
-        code:
+          readOnly: true
+        model:
           type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        object_pk:
+          type: string
+        name:
+          type: string
+          readOnly: true
       required:
-      - detail
-    PaginatedInitialPermissionsList:
+      - app_label
+      - codename
+      - id
+      - model
+      - name
+      - object_pk
+    ValidationError:
       type: object
+      description: Validation Error
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/InitialPermissions'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedPermissionAssignRequest:
-      type: object
-      description: Request to assign a new permission
-      properties:
-        permissions:
+        non_field_errors:
           type: array
           items:
             type: string
-            minLength: 1
-        model:
-          $ref: '#/components/schemas/ModelEnum'
-        object_pk:
+        code:
           type: string
-          minLength: 1
-    RoleRequest:
+      additionalProperties: {}
+    UserAccountSerializerForRoleRequest:
       type: object
-      description: Role serializer
+      description: Account adding/removing operations
       properties:
-        name:
-          type: string
-          minLength: 1
+        pk:
+          type: integer
       required:
-      - name
-    InitialPermissionsRequest:
-      type: object
-      description: InitialPermissions serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 150
-        role:
-          type: string
-          format: uuid
-        permissions:
-          type: array
-          items:
-            type: integer
-      required:
-      - name
-      - role
+      - pk
     InitialPermissions:
       type: object
       description: InitialPermissions serializer
@@ -1109,78 +1120,82 @@ components:
       - permissions_obj
       - pk
       - role
-    PaginatedRoleAssignedObjectPermissionList:
+    Role:
       type: object
+      description: Role serializer
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleAssignedObjectPermission'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    PermissionAssignResult:
-      type: object
-      description: Result from assigning permissions to a user/role
-      properties:
-        id:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
           type: string
       required:
-      - id
-    Autocomplete:
+      - name
+      - pk
+    RoleModelPermission:
       type: object
-      additionalProperties: {}
-    RoleAssignedObjectPermission:
-      type: object
-      description: Roles assigned object permission serializer
+      description: Role-bound object level permission
       properties:
-        role_pk:
+        id:
+          type: integer
+          readOnly: true
+        codename:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
           type: string
           readOnly: true
         name:
           type: string
           readOnly: true
-        object_permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleObjectPermission'
-        model_permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleModelPermission'
       required:
-      - model_permissions
+      - app_label
+      - codename
+      - id
+      - model
       - name
-      - object_permissions
-      - role_pk
-    PaginatedExtraRoleObjectPermissionList:
+    Permission:
       type: object
+      description: Global permission
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraRoleObjectPermission'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        codename:
+          type: string
+          maxLength: 100
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        app_label_verbose:
+          type: string
+          description: Human-readable app label
+          readOnly: true
+        model_verbose:
+          type: string
+          description: Human-readable model name
+          readOnly: true
       required:
-      - autocomplete
-      - pagination
-      - results
+      - app_label
+      - app_label_verbose
+      - codename
+      - id
+      - model
+      - model_verbose
+      - name
     Pagination:
       type: object
       properties:
@@ -1256,99 +1271,84 @@ components:
       - name
       - object_description
       - object_pk
-    Role:
-      type: object
-      description: Role serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
-    RoleModelPermission:
-      type: object
-      description: Role-bound object level permission
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        codename:
-          type: string
-          readOnly: true
-        model:
-          type: string
-          title: Python model class name
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - codename
-      - id
-      - model
-      - name
-    PatchedRoleRequest:
+    RoleRequest:
       type: object
       description: Role serializer
       properties:
         name:
           type: string
           minLength: 1
-    PermissionAssignRequest:
+      required:
+      - name
+    PermissionAssignResult:
       type: object
-      description: Request to assign a new permission
+      description: Result from assigning permissions to a user/role
       properties:
+        id:
+          type: string
+      required:
+      - id
+    InitialPermissionsRequest:
+      type: object
+      description: InitialPermissions serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        role:
+          type: string
+          format: uuid
         permissions:
           type: array
           items:
-            type: string
-            minLength: 1
-        model:
-          $ref: '#/components/schemas/ModelEnum'
-        object_pk:
+            type: integer
+      required:
+      - name
+      - role
+    PatchedInitialPermissionsRequest:
+      type: object
+      description: InitialPermissions serializer
+      properties:
+        name:
           type: string
           minLength: 1
+          maxLength: 150
+        role:
+          type: string
+          format: uuid
+        permissions:
+          type: array
+          items:
+            type: integer
+    PaginatedRoleAssignedObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleAssignedObjectPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - permissions
-  parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
+      - autocomplete
+      - pagination
+      - results
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

@@ -212,12 +212,62 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PolicyBehaviorEnum:
-      enum:
-      - mirror
-      - copy
-      - none
-      type: string
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    PaginatedAgentList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agent'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     ValidationError:
       type: object
       description: Validation Error
@@ -283,31 +333,6 @@ components:
       required:
       - agent
       - token
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
     AgentRequest:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -351,85 +376,6 @@ components:
       required:
       - name
       - username
-    PartialUser:
-      type: object
-      description: Partial User Serializer, does not include child relations.
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-      required:
-      - name
-      - pk
-      - uid
-      - username
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    PaginatedAgentList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Agent'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    AgentCreateRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        parent:
-          type: integer
-        label:
-          type: string
-        expiring:
-          type: boolean
-          default: false
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        policy_behavior:
-          allOf:
-          - $ref: '#/components/schemas/PolicyBehaviorEnum'
-          default: mirror
     Agent:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -502,6 +448,57 @@ components:
       - uid
       - username
       - uuid
+    PolicyBehaviorEnum:
+      enum:
+      - mirror
+      - copy
+      - none
+      type: string
+    AgentCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        parent:
+          type: integer
+        label:
+          type: string
+        expiring:
+          type: boolean
+          default: false
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          default: mirror
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
     GenericError:
       type: object
       description: Generic API Error
@@ -512,18 +509,21 @@ components:
           type: string
       required:
       - detail
+    Autocomplete:
+      type: object
+      additionalProperties: {}
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
       description: ''
   parameters:
     QueryPaginationOrdering:
@@ -538,18 +538,18 @@ components:
       schema:
         type: integer
       description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
     QuerySearch:
       in: query
       name: search
       schema:
         type: string
       description: A search term.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

@@ -107,185 +107,39 @@ paths:
       summary: Ssf streams destroy
       x-summary-source: derived
 components:
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
   schemas:
-    UserTypeEnum:
+    IntentEnum:
       enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
+      - verification
+      - api
+      - recovery
+      - app_password
       type: string
-    SSFStream:
-      type: object
-      description: SSFStream Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        status:
-          $ref: '#/components/schemas/SSFStreamStatusEnum'
-        provider:
-          type: integer
-        provider_obj:
-          allOf:
-          - $ref: '#/components/schemas/SSFProvider'
-          readOnly: true
-        delivery_method:
-          $ref: '#/components/schemas/DeliveryMethodEnum'
-        endpoint_url:
-          type:
-          - string
-          - 'null'
-        events_requested:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventsRequestedEnum'
-        format:
-          type: string
-        aud:
-          type: array
-          items:
-            type: string
-        iss:
-          type: string
-      required:
-      - delivery_method
-      - format
-      - iss
-      - pk
-      - provider
-      - provider_obj
-    Token:
-      type: object
-      description: Token Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Token uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        identifier:
-          type: string
-          maxLength: 255
-          pattern: ^[-a-zA-Z0-9_]+$
-        intent:
-          $ref: '#/components/schemas/IntentEnum'
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/User'
-          readOnly: true
-        description:
-          type: string
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        expiring:
-          type: boolean
-      required:
-      - identifier
-      - pk
-      - user_obj
-    SSFProvider:
-      type: object
-      description: SSFProvider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        signing_key:
-          type: string
-          format: uuid
-          description: Key used to sign the SSF Events.
-        token_obj:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          readOnly: true
-        oidc_auth_providers:
-          type: array
-          items:
-            type: integer
-        oidc_auth_providers_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/Provider'
-          readOnly: true
-        ssf_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        event_retention:
-          type: string
-        push_verify_certificates:
-          type: boolean
-      required:
-      - component
-      - meta_model_name
-      - name
-      - oidc_auth_providers_obj
-      - pk
-      - signing_key
-      - ssf_url
-      - token_obj
-      - verbose_name
-      - verbose_name_plural
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    PaginatedSSFStreamList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SSFStream'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     GenericError:
       type: object
       description: Generic API Error
@@ -296,60 +150,13 @@ components:
           type: string
       required:
       - detail
-    EventsRequestedEnum:
+    UserTypeEnum:
       enum:
-      - https://schemas.openid.net/secevent/caep/event-type/session-revoked
-      - https://schemas.openid.net/secevent/caep/event-type/token-claims-change
-      - https://schemas.openid.net/secevent/caep/event-type/credential-change
-      - https://schemas.openid.net/secevent/caep/event-type/assurance-level-change
-      - https://schemas.openid.net/secevent/caep/event-type/device-compliance-change
-      - https://schemas.openid.net/secevent/caep/event-type/session-established
-      - https://schemas.openid.net/secevent/caep/event-type/session-presented
-      - https://schemas.openid.net/secevent/caep/event-type/risk-level-change
-      - https://schemas.openid.net/secevent/ssf/event-type/verification
+      - internal
+      - external
+      - service_account
+      - internal_service_account
       type: string
-    PartialGroup:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - pk
-    IntentEnum:
-      enum:
-      - verification
-      - api
-      - recovery
-      - app_password
-      type: string
-    SSFStreamStatusEnum:
-      enum:
-      - enabled
-      - paused
-      - disabled
-      - disabled_deleted
-      type: string
-    Autocomplete:
-      type: object
-      additionalProperties: {}
     Provider:
       type: object
       description: Provider Serializer
@@ -434,38 +241,53 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    DeliveryMethodEnum:
-      enum:
-      - https://schemas.openid.net/secevent/risc/delivery-method/push
-      - https://schemas.openid.net/secevent/risc/delivery-method/poll
-      - urn:ietf:rfc:8935
-      - urn:ietf:rfc:8936
-      type: string
-    Pagination:
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    PaginatedSSFStreamList:
       type: object
       properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SSFStream'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
+      - autocomplete
+      - pagination
+      - results
+    SSFStreamStatusEnum:
+      enum:
+      - enabled
+      - paused
+      - disabled
+      - disabled_deleted
+      type: string
     User:
       type: object
       description: User Serializer
@@ -564,6 +386,17 @@ components:
       - uid
       - username
       - uuid
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     Role:
       type: object
       description: Role serializer
@@ -578,44 +411,211 @@ components:
       required:
       - name
       - pk
+    EventsRequestedEnum:
+      enum:
+      - https://schemas.openid.net/secevent/caep/event-type/session-revoked
+      - https://schemas.openid.net/secevent/caep/event-type/token-claims-change
+      - https://schemas.openid.net/secevent/caep/event-type/credential-change
+      - https://schemas.openid.net/secevent/caep/event-type/assurance-level-change
+      - https://schemas.openid.net/secevent/caep/event-type/device-compliance-change
+      - https://schemas.openid.net/secevent/caep/event-type/session-established
+      - https://schemas.openid.net/secevent/caep/event-type/session-presented
+      - https://schemas.openid.net/secevent/caep/event-type/risk-level-change
+      - https://schemas.openid.net/secevent/ssf/event-type/verification
+      type: string
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    SSFStream:
+      type: object
+      description: SSFStream Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        status:
+          $ref: '#/components/schemas/SSFStreamStatusEnum'
+        provider:
+          type: integer
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/SSFProvider'
+          readOnly: true
+        delivery_method:
+          $ref: '#/components/schemas/DeliveryMethodEnum'
+        endpoint_url:
+          type:
+          - string
+          - 'null'
+        events_requested:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventsRequestedEnum'
+        format:
+          type: string
+        aud:
+          type: array
+          items:
+            type: string
+        iss:
+          type: string
+      required:
+      - delivery_method
+      - format
+      - iss
+      - pk
+      - provider
+      - provider_obj
+    SSFProvider:
+      type: object
+      description: SSFProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        signing_key:
+          type: string
+          format: uuid
+          description: Key used to sign the SSF Events.
+        token_obj:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          readOnly: true
+        oidc_auth_providers:
+          type: array
+          items:
+            type: integer
+        oidc_auth_providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
+        ssf_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        event_retention:
+          type: string
+        push_verify_certificates:
+          type: boolean
+      required:
+      - component
+      - meta_model_name
+      - name
+      - oidc_auth_providers_obj
+      - pk
+      - signing_key
+      - ssf_url
+      - token_obj
+      - verbose_name
+      - verbose_name_plural
+    DeliveryMethodEnum:
+      enum:
+      - https://schemas.openid.net/secevent/risc/delivery-method/push
+      - https://schemas.openid.net/secevent/risc/delivery-method/poll
+      - urn:ietf:rfc:8935
+      - urn:ietf:rfc:8936
+      type: string
+    Token:
+      type: object
+      description: Token Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Token uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        identifier:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        intent:
+          $ref: '#/components/schemas/IntentEnum'
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        description:
+          type: string
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        expiring:
+          type: boolean
+      required:
+      - identifier
+      - pk
+      - user_obj
+    Autocomplete:
+      type: object
+      additionalProperties: {}
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
       description: ''
-  parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

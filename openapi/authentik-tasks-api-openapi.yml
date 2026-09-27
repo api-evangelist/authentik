@@ -367,36 +367,32 @@ paths:
       summary: Tasks workers list
       x-summary-source: derived
 components:
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
   schemas:
-    TaskAggregatedStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
-    PaginatedTaskList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PatchedScheduleRequest:
       type: object
       properties:
@@ -412,87 +408,28 @@ components:
         paused:
           type: boolean
           description: Pause this schedule
-    ValidationError:
+    LogEvent:
       type: object
-      description: Validation Error
+      description: Single log message with all context logged.
       properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
+        timestamp:
           type: string
-      additionalProperties: {}
-    GlobalTaskStatus:
-      type: object
-      properties:
-        queued:
-          type: integer
-          readOnly: true
-        consumed:
-          type: integer
-          readOnly: true
-        preprocess:
-          type: integer
-          readOnly: true
-        running:
-          type: integer
-          readOnly: true
-        postprocess:
-          type: integer
-          readOnly: true
-        rejected:
-          type: integer
-          readOnly: true
-        done:
-          type: integer
-          readOnly: true
-        info:
-          type: integer
-          readOnly: true
-        warning:
-          type: integer
-          readOnly: true
-        error:
-          type: integer
-          readOnly: true
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
-      - consumed
-      - done
-      - error
-      - info
-      - postprocess
-      - preprocess
-      - queued
-      - rejected
-      - running
-      - warning
-    PaginatedScheduleList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Schedule'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    TaskStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      type: string
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
     GenericError:
       type: object
       description: Generic API Error
@@ -503,17 +440,36 @@ components:
           type: string
       required:
       - detail
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
+    Worker:
+      type: object
+      properties:
+        worker_id:
+          type: string
+        version:
+          type: string
+        version_matching:
+          type: boolean
+      required:
+      - version
+      - version_matching
+      - worker_id
+    ScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
+      required:
+      - crontab
     Task:
       type: object
       properties:
@@ -586,61 +542,112 @@ components:
       - rel_obj_app_label
       - rel_obj_model
       - uid
-    Autocomplete:
+    TaskAggregatedStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+    ValidationError:
       type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
       additionalProperties: {}
-    LogEvent:
-      type: object
-      description: Single log message with all context logged.
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
-    Worker:
+    PaginatedTaskList:
       type: object
       properties:
-        worker_id:
-          type: string
-        version:
-          type: string
-        version_matching:
-          type: boolean
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - version
-      - version_matching
-      - worker_id
-    ScheduleRequest:
+      - autocomplete
+      - pagination
+      - results
+    TaskStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      type: string
+    GlobalTaskStatus:
       type: object
       properties:
-        rel_obj_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        crontab:
-          type: string
-          minLength: 1
-          description: When to schedule tasks
-        paused:
-          type: boolean
-          description: Pause this schedule
+        queued:
+          type: integer
+          readOnly: true
+        consumed:
+          type: integer
+          readOnly: true
+        preprocess:
+          type: integer
+          readOnly: true
+        running:
+          type: integer
+          readOnly: true
+        postprocess:
+          type: integer
+          readOnly: true
+        rejected:
+          type: integer
+          readOnly: true
+        done:
+          type: integer
+          readOnly: true
+        info:
+          type: integer
+          readOnly: true
+        warning:
+          type: integer
+          readOnly: true
+        error:
+          type: integer
+          readOnly: true
       required:
-      - crontab
+      - consumed
+      - done
+      - error
+      - info
+      - postprocess
+      - preprocess
+      - queued
+      - rejected
+      - running
+      - warning
     Pagination:
       type: object
       properties:
@@ -666,6 +673,21 @@ components:
       - previous
       - start_index
       - total_pages
+    PaginatedScheduleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     Schedule:
       type: object
       properties:
@@ -741,44 +763,22 @@ components:
       - warning
       - error
       type: string
+    Autocomplete:
+      type: object
+      additionalProperties: {}
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
       description: ''
-  parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

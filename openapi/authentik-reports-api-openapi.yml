@@ -93,96 +93,16 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    DataExport:
+    GenericError:
       type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
+      description: Generic API Error
       properties:
-        id:
+        detail:
           type: string
-          format: uuid
-          readOnly: true
-        requested_by:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        requested_on:
-          type: string
-          format: date-time
-          readOnly: true
-        content_type:
-          allOf:
-          - $ref: '#/components/schemas/ContentType'
-          readOnly: true
-        query_params:
-          type: object
-          additionalProperties: {}
-        file_url:
-          type: string
-          readOnly: true
-        completed:
-          type: boolean
-          readOnly: true
-      required:
-      - completed
-      - content_type
-      - file_url
-      - id
-      - query_params
-      - requested_by
-      - requested_on
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
         code:
           type: string
-      additionalProperties: {}
-    PaginatedDataExportList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataExport'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
       required:
-      - autocomplete
-      - pagination
-      - results
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
+      - detail
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -224,19 +144,99 @@ components:
       - pk
       - uid
       - username
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
     Autocomplete:
       type: object
       additionalProperties: {}
-    GenericError:
+    DataExport:
       type: object
-      description: Generic API Error
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
       properties:
-        detail:
+        id:
           type: string
-        code:
+          format: uuid
+          readOnly: true
+        requested_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        requested_on:
           type: string
+          format: date-time
+          readOnly: true
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        query_params:
+          type: object
+          additionalProperties: {}
+        file_url:
+          type: string
+          readOnly: true
+        completed:
+          type: boolean
+          readOnly: true
       required:
-      - detail
+      - completed
+      - content_type
+      - file_url
+      - id
+      - query_params
+      - requested_by
+      - requested_on
+    PaginatedDataExportList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataExport'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     ContentType:
       type: object
       properties:
@@ -262,17 +262,17 @@ components:
       - model
       - verbose_name_plural
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
       description: ''
   parameters:
     QueryPaginationOrdering:
@@ -287,18 +287,18 @@ components:
       schema:
         type: integer
       description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
     QuerySearch:
       in: query
       name: search
       schema:
         type: string
       description: A search term.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

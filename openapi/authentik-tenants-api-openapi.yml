@@ -398,6 +398,31 @@ paths:
       summary: Tenants tenants create recovery key create
       x-summary-source: derived
 components:
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
   schemas:
     Domain:
       type: object
@@ -418,58 +443,6 @@ components:
       - domain
       - id
       - tenant
-    PatchedTenantRequest:
-      type: object
-      description: Tenant Serializer
-      properties:
-        schema_name:
-          type: string
-          minLength: 1
-          maxLength: 63
-        name:
-          type: string
-          minLength: 1
-        ready:
-          type: boolean
-    TenantRecoveryKeyResponse:
-      type: object
-      description: Tenant recovery key creation response serializer
-      properties:
-        expiry:
-          type: string
-          format: date-time
-        url:
-          type: string
-      required:
-      - expiry
-      - url
-    TenantRequest:
-      type: object
-      description: Tenant Serializer
-      properties:
-        schema_name:
-          type: string
-          minLength: 1
-          maxLength: 63
-        name:
-          type: string
-          minLength: 1
-        ready:
-          type: boolean
-      required:
-      - name
-      - schema_name
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     TenantRecoveryKeyRequestRequest:
       type: object
       description: Tenant recovery key creation request serializer
@@ -492,21 +465,6 @@ components:
           type: string
       required:
       - detail
-    PaginatedDomainList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Domain'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     TenantAdminGroupRequestRequest:
       type: object
       description: Tenant admin group creation request serializer
@@ -516,6 +474,31 @@ components:
           minLength: 1
       required:
       - user
+    TenantRecoveryKeyResponse:
+      type: object
+      description: Tenant recovery key creation response serializer
+      properties:
+        expiry:
+          type: string
+          format: date-time
+        url:
+          type: string
+      required:
+      - expiry
+      - url
+    PatchedDomainRequest:
+      type: object
+      description: Domain Serializer
+      properties:
+        domain:
+          type: string
+          minLength: 1
+          maxLength: 253
+        is_primary:
+          type: boolean
+        tenant:
+          type: string
+          format: uuid
     Tenant:
       type: object
       description: Tenant Serializer
@@ -535,22 +518,45 @@ components:
       - name
       - schema_name
       - tenant_uuid
-    Autocomplete:
+    ValidationError:
       type: object
-      additionalProperties: {}
-    PatchedDomainRequest:
-      type: object
-      description: Domain Serializer
+      description: Validation Error
       properties:
-        domain:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PaginatedTenantList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedTenantRequest:
+      type: object
+      description: Tenant Serializer
+      properties:
+        schema_name:
           type: string
           minLength: 1
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
+          maxLength: 63
+        name:
           type: string
-          format: uuid
+          minLength: 1
+        ready:
+          type: boolean
     Pagination:
       type: object
       properties:
@@ -592,7 +598,7 @@ components:
       required:
       - domain
       - tenant
-    PaginatedTenantList:
+    PaginatedDomainList:
       type: object
       properties:
         pagination:
@@ -600,51 +606,45 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Tenant'
+            $ref: '#/components/schemas/Domain'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
+    TenantRequest:
+      type: object
+      description: Tenant Serializer
+      properties:
+        schema_name:
+          type: string
+          minLength: 1
+          maxLength: 63
+        name:
+          type: string
+          minLength: 1
+        ready:
+          type: boolean
+      required:
+      - name
+      - schema_name
+    Autocomplete:
+      type: object
+      additionalProperties: {}
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
       description: ''
-  parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

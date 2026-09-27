@@ -32,9 +32,7 @@
     "authentik-tasks-api-openapi.yml",
     "authentik-tenants-api-openapi.yml"
   ],
-  "archived": [
-    "deleted 1 superseded output(s) from the previous generation"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
@@ -67,8 +65,7 @@
     "authentik-openapi.yml: declared missing tag: stages",
     "authentik-openapi.yml: declared missing tag: tasks",
     "authentik-openapi.yml: declared missing tag: tenants",
-    "superseded outputs removed: authentik-o-auth2-api-openapi.yml",
-    "apis.yml register: written (+1 apis, 27 total)"
+    "apis.yml register: already-registered"
   ],
   "skipped": [
     "authentik-admin-api-openapi.yml: previously refined output, superseded by openapi/_original/",
@@ -82,7 +79,7 @@
     "authentik-flows-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "authentik-lifecycle-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "authentik-managed-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "authentik-o-auth2-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "authentik-oauth2-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "authentik-outposts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "authentik-policies-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "authentik-propertymappings-api-openapi.yml: previously refined output, superseded by openapi/_original/",

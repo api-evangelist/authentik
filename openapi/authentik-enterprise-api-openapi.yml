@@ -289,50 +289,64 @@ paths:
       summary: Enterprise license summary retrieve
       x-summary-source: derived
 components:
-  responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
   parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
     QueryPaginationOrdering:
       in: query
       name: ordering
       schema:
         type: string
       description: Which field to use when ordering the results.
-    QueryPaginationPage:
+    QuerySearch:
       in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryName:
-      in: query
-      name: name
+      name: search
       schema:
         type: string
+      description: A search term.
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
   schemas:
+    LicenseSummaryStatusEnum:
+      enum:
+      - unlicensed
+      - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
+    PatchedLicenseRequest:
+      type: object
+      description: License Serializer
+      properties:
+        key:
+          type: string
+          minLength: 1
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object
@@ -353,17 +367,6 @@ components:
       - model_name
       - name
       - pk
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     License:
       type: object
       description: License Serializer
@@ -394,30 +397,6 @@ components:
       - key
       - license_uuid
       - name
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    LicenseRequest:
-      type: object
-      description: License Serializer
-      properties:
-        key:
-          type: string
-          minLength: 1
-      required:
-      - key
-    LicenseFlagsEnum:
-      enum:
-      - trial
-      - non_production
-      type: string
     LicenseSummary:
       type: object
       description: Serializer for license status
@@ -441,23 +420,6 @@ components:
       - latest_valid
       - license_flags
       - status
-    PatchedLicenseRequest:
-      type: object
-      description: License Serializer
-      properties:
-        key:
-          type: string
-          minLength: 1
-    LicenseSummaryStatusEnum:
-      enum:
-      - unlicensed
-      - valid
-      - expired
-      - expiry_soon
-      - limit_exceeded_admin
-      - limit_exceeded_user
-      - read_only
-      type: string
     UsedByActionEnum:
       enum:
       - cascade
@@ -466,41 +428,31 @@ components:
       - set_default
       - left_dangling
       type: string
-    Autocomplete:
+    LicenseFlagsEnum:
+      enum:
+      - trial
+      - non_production
+      type: string
+    ValidationError:
       type: object
-      additionalProperties: {}
-    LicenseForecast:
-      type: object
-      description: Serializer for license forecast
+      description: Validation Error
       properties:
-        internal_users:
-          type: integer
-        external_users:
-          type: integer
-        forecasted_internal_users:
-          type: integer
-        forecasted_external_users:
-          type: integer
-      required:
-      - external_users
-      - forecasted_external_users
-      - forecasted_internal_users
-      - internal_users
-    PaginatedLicenseList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        non_field_errors:
           type: array
           items:
-            $ref: '#/components/schemas/License'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    LicenseRequest:
+      type: object
+      description: License Serializer
+      properties:
+        key:
+          type: string
+          minLength: 1
       required:
-      - autocomplete
-      - pagination
-      - results
+      - key
     Pagination:
       type: object
       properties:
@@ -533,6 +485,54 @@ components:
           type: string
       required:
       - install_id
+    LicenseForecast:
+      type: object
+      description: Serializer for license forecast
+      properties:
+        internal_users:
+          type: integer
+        external_users:
+          type: integer
+        forecasted_internal_users:
+          type: integer
+        forecasted_external_users:
+          type: integer
+      required:
+      - external_users
+      - forecasted_external_users
+      - forecasted_internal_users
+      - internal_users
+    PaginatedLicenseList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

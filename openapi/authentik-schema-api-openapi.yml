@@ -65,7 +65,25 @@ paths:
       summary: Schema retrieve
       x-summary-source: derived
 components:
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   schemas:
+    FormatEnum:
+      type: string
+      enum:
+      - json
+      - yaml
     ValidationError:
       type: object
       description: Validation Error
@@ -189,24 +207,6 @@ components:
           type: string
       required:
       - detail
-    FormatEnum:
-      type: string
-      enum:
-      - json
-      - yaml
-  responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
   securitySchemes:
     authentik:
       type: http

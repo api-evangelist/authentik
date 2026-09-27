@@ -12,6 +12,10 @@ description: 'Authentik is an open source identity provider from Authentik Secur
 type: Index
 deliveryModel:
   model: unknown
+  license_evidence:
+    repo: goauthentik/authentik
+    spdx: NOASSERTION
+    stars: 25714
   open_source: unknown
   commercial: true
   callable_host: false
@@ -21,7 +25,7 @@ deliveryModel:
   - openapi
   - pricing
   - repository-unlicensed
-  generated: '2026-08-28'
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: freemium
@@ -47,7 +51,7 @@ tags:
 - Authorization
 - Identity Provider
 - LDAP
-- Open-Source
+- Open Source
 - OpenID Connect
 - SAML
 - SCIM
@@ -65,6 +69,7 @@ tags_raw:
 - SCIM
 - Self-Hosted
 - Identity Federation
+- Open-Source
 url: https://raw.githubusercontent.com/api-evangelist/authentik/refs/heads/main/apis.yml
 created: '2026-03-25'
 modified: '2026-09-16'
