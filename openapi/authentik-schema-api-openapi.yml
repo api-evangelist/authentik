@@ -65,36 +65,7 @@ paths:
       summary: Schema retrieve
       x-summary-source: derived
 components:
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
   schemas:
-    FormatEnum:
-      type: string
-      enum:
-      - json
-      - yaml
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     LangEnum:
       type: string
       enum:
@@ -197,6 +168,22 @@ components:
       - vi
       - zh-hans
       - zh-hant
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    FormatEnum:
+      type: string
+      enum:
+      - json
+      - yaml
     GenericError:
       type: object
       description: Generic API Error
@@ -207,6 +194,19 @@ components:
           type: string
       required:
       - detail
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

@@ -2380,78 +2380,26 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PartialUser:
+    DuoDevice:
       type: object
-      description: Partial User Serializer, does not include child relations.
+      description: Serializer for Duo authenticator devices
       properties:
         pk:
           type: integer
           readOnly: true
           title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
         name:
           type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - name
       - pk
-      - uid
-      - username
-    PatchedTOTPDeviceRequest:
-      type: object
-      description: Serializer for totp authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-    EmailDeviceRequest:
-      type: object
-      description: Serializer for email authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    DuoDeviceRequest:
-      type: object
-      description: Serializer for Duo authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
+      - user
     StaticDeviceToken:
       type: object
       description: Serializer for static device's tokens
@@ -2461,26 +2409,6 @@ components:
           maxLength: 100
       required:
       - token
-    TOTPDevice:
-      type: object
-      description: Serializer for totp authenticator devices
-      properties:
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - name
-      - pk
-      - user
     StaticDevice:
       type: object
       description: Serializer for static authenticator devices
@@ -2507,121 +2435,9 @@ components:
       - pk
       - token_set
       - user
-    DuoDevice:
+    EmailDeviceRequest:
       type: object
-      description: Serializer for Duo authenticator devices
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - name
-      - pk
-      - user
-    PaginatedDuoDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DuoDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    GoogleEndpointDevice:
-      type: object
-      description: Serializer for Endpoint authenticator devices
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Uuid
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    PatchedGoogleEndpointDeviceRequest:
-      type: object
-      description: Serializer for Endpoint authenticator devices
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Uuid
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-    WebAuthnDeviceType:
-      type: object
-      description: WebAuthnDeviceType Serializer
-      properties:
-        aaguid:
-          type: string
-          format: uuid
-        description:
-          type: string
-      required:
-      - aaguid
-      - description
-    TOTPDeviceRequest:
-      type: object
-      description: Serializer for totp authenticator devices
+      description: Serializer for email authenticator devices
       properties:
         name:
           type: string
@@ -2630,123 +2446,6 @@ components:
           maxLength: 64
       required:
       - name
-    StaticDeviceRequest:
-      type: object
-      description: Serializer for static authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    PaginatedSMSDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SMSDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GoogleEndpointDeviceRequest:
-      type: object
-      description: Serializer for Endpoint authenticator devices
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Uuid
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
-    WebAuthnDevice:
-      type: object
-      description: Serializer for WebAuthn authenticator devices
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-          maxLength: 200
-        created_on:
-          type: string
-          format: date-time
-          readOnly: true
-        device_type:
-          allOf:
-          - $ref: '#/components/schemas/WebAuthnDeviceType'
-          readOnly: true
-        aaguid:
-          type: string
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - aaguid
-      - created_on
-      - device_type
-      - name
-      - pk
-      - user
-    SMSDevice:
-      type: object
-      description: Serializer for sms authenticator devices
-      properties:
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        phone_number:
-          type: string
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - name
-      - phone_number
-      - pk
-      - user
-    PatchedWebAuthnDeviceRequest:
-      type: object
-      description: Serializer for WebAuthn authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 200
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     SMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -2758,9 +2457,34 @@ components:
           maxLength: 64
       required:
       - name
-    EmailDevice:
+    GenericError:
       type: object
-      description: Serializer for email authenticator devices
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PaginatedTOTPDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TOTPDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    TOTPDevice:
+      type: object
+      description: Serializer for totp authenticator devices
       properties:
         name:
           type: string
@@ -2770,53 +2494,22 @@ components:
           type: integer
           readOnly: true
           title: ID
-        email:
-          type: string
-          format: email
-          readOnly: true
         user:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
-      - email
       - name
       - pk
       - user
-    PaginatedGoogleEndpointDeviceList:
+    PatchedGoogleEndpointDeviceRequest:
       type: object
+      description: Serializer for Endpoint authenticator devices
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleEndpointDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedStaticDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/StaticDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedDuoDeviceRequest:
-      type: object
-      description: Serializer for Duo authenticator devices
-      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
         name:
           type: string
           minLength: 1
@@ -2847,39 +2540,97 @@ components:
       - previous
       - start_index
       - total_pages
-    PaginatedWebAuthnDeviceList:
+    GoogleEndpointDeviceRequest:
       type: object
+      description: Serializer for Endpoint authenticator devices
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
       required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedTOTPDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TOTPDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
+      - name
     PatchedEmailDeviceRequest:
       type: object
       description: Serializer for email authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+    WebAuthnDeviceType:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+      required:
+      - aaguid
+      - description
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    TOTPDeviceRequest:
+      type: object
+      description: Serializer for totp authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    WebAuthnDeviceRequest:
+      type: object
+      description: Serializer for WebAuthn authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+      required:
+      - name
+    StaticDeviceRequest:
+      type: object
+      description: Serializer for static authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    PatchedSMSDeviceRequest:
+      type: object
+      description: Serializer for sms authenticator devices
       properties:
         name:
           type: string
@@ -2951,7 +2702,76 @@ components:
       - type
       - verbose_name
       - verbose_name_plural
-    WebAuthnDeviceRequest:
+    PaginatedSMSDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SMSDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedDuoDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DuoDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    PatchedTOTPDeviceRequest:
+      type: object
+      description: Serializer for totp authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+    DuoDeviceRequest:
+      type: object
+      description: Serializer for Duo authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
       properties:
@@ -2959,8 +2779,83 @@ components:
           type: string
           minLength: 1
           maxLength: 200
+    PaginatedWebAuthnDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GoogleEndpointDevice:
+      type: object
+      description: Serializer for Endpoint authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
       required:
       - name
+    PaginatedGoogleEndpointDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleEndpointDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    WebAuthnDevice:
+      type: object
+      description: Serializer for WebAuthn authenticator devices
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 200
+        created_on:
+          type: string
+          format: date-time
+          readOnly: true
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+        aaguid:
+          type: string
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - aaguid
+      - created_on
+      - device_type
+      - name
+      - pk
+      - user
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -2970,15 +2865,98 @@ components:
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
-    PatchedSMSDeviceRequest:
+    PaginatedStaticDeviceList:
       type: object
-      description: Serializer for sms authenticator devices
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedDuoDeviceRequest:
+      type: object
+      description: Serializer for Duo authenticator devices
       properties:
         name:
           type: string
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
+    SMSDevice:
+      type: object
+      description: Serializer for sms authenticator devices
+      properties:
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        phone_number:
+          type: string
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - name
+      - phone_number
+      - pk
+      - user
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    Autocomplete:
+      type: object
+      additionalProperties: {}
     PaginatedEmailDeviceList:
       type: object
       properties:
@@ -2994,39 +2972,31 @@ components:
       - autocomplete
       - pagination
       - results
-    Autocomplete:
+    EmailDevice:
       type: object
-      additionalProperties: {}
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
+      description: Serializer for email authenticator devices
+      properties:
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        email:
+          type: string
+          format: email
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - email
+      - name
+      - pk
+      - user
   responses:
     GenericErrorResponse:
       content:
@@ -3040,6 +3010,36 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+  parameters:
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

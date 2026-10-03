@@ -367,79 +367,7 @@ paths:
       summary: Tasks workers list
       x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
   schemas:
-    PatchedScheduleRequest:
-      type: object
-      properties:
-        rel_obj_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        crontab:
-          type: string
-          minLength: 1
-          description: When to schedule tasks
-        paused:
-          type: boolean
-          description: Pause this schedule
-    LogEvent:
-      type: object
-      description: Single log message with all context logged.
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
     Worker:
       type: object
       properties:
@@ -453,23 +381,64 @@ components:
       - version
       - version_matching
       - worker_id
-    ScheduleRequest:
+    LastTaskStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
+    GlobalTaskStatus:
       type: object
       properties:
-        rel_obj_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        crontab:
-          type: string
-          minLength: 1
-          description: When to schedule tasks
-        paused:
-          type: boolean
-          description: Pause this schedule
+        queued:
+          type: integer
+          readOnly: true
+        consumed:
+          type: integer
+          readOnly: true
+        preprocess:
+          type: integer
+          readOnly: true
+        running:
+          type: integer
+          readOnly: true
+        postprocess:
+          type: integer
+          readOnly: true
+        rejected:
+          type: integer
+          readOnly: true
+        done:
+          type: integer
+          readOnly: true
+        info:
+          type: integer
+          readOnly: true
+        warning:
+          type: integer
+          readOnly: true
+        error:
+          type: integer
+          readOnly: true
       required:
-      - crontab
+      - consumed
+      - done
+      - error
+      - info
+      - postprocess
+      - preprocess
+      - queued
+      - rejected
+      - running
+      - warning
     Task:
       type: object
       properties:
@@ -542,6 +511,21 @@ components:
       - rel_obj_app_label
       - rel_obj_model
       - uid
+    PatchedScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
     TaskAggregatedStatusEnum:
       enum:
       - waiting_for_dependencies
@@ -556,43 +540,6 @@ components:
       - warning
       - error
       type: string
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    PaginatedTaskList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     TaskStatusEnum:
       enum:
       - waiting_for_dependencies
@@ -604,50 +551,27 @@ components:
       - rejected
       - done
       type: string
-    GlobalTaskStatus:
-      type: object
-      properties:
-        queued:
-          type: integer
-          readOnly: true
-        consumed:
-          type: integer
-          readOnly: true
-        preprocess:
-          type: integer
-          readOnly: true
-        running:
-          type: integer
-          readOnly: true
-        postprocess:
-          type: integer
-          readOnly: true
-        rejected:
-          type: integer
-          readOnly: true
-        done:
-          type: integer
-          readOnly: true
-        info:
-          type: integer
-          readOnly: true
-        warning:
-          type: integer
-          readOnly: true
-        error:
-          type: integer
-          readOnly: true
-      required:
-      - consumed
-      - done
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
       - error
-      - info
-      - postprocess
-      - preprocess
-      - queued
-      - rejected
-      - running
+      - warn
       - warning
+      - info
+      - debug
+      - notset
+      type: string
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     Pagination:
       type: object
       properties:
@@ -673,6 +597,21 @@ components:
       - previous
       - start_index
       - total_pages
+    PaginatedTaskList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedScheduleList:
       type: object
       properties:
@@ -688,6 +627,17 @@ components:
       - autocomplete
       - pagination
       - results
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     Schedule:
       type: object
       properties:
@@ -749,20 +699,45 @@ components:
       - rel_obj_app_label
       - rel_obj_model
       - uid
-    LastTaskStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
+    ScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
+      required:
+      - crontab
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
     Autocomplete:
       type: object
       additionalProperties: {}
@@ -779,6 +754,31 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+  parameters:
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

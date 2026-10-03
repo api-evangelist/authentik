@@ -212,6 +212,45 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    AgentCreated:
+      type: object
+      description: Response returned once when an agent is created, carrying the one-time API token.
+      properties:
+        agent:
+          allOf:
+          - $ref: '#/components/schemas/Agent'
+          readOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - agent
+      - token
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -253,6 +292,16 @@ components:
       - pk
       - uid
       - username
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     PaginatedAgentList:
       type: object
       properties:
@@ -268,6 +317,12 @@ components:
       - autocomplete
       - pagination
       - results
+    PolicyBehaviorEnum:
+      enum:
+      - mirror
+      - copy
+      - none
+      type: string
     ValidationError:
       type: object
       description: Validation Error
@@ -279,60 +334,26 @@ components:
         code:
           type: string
       additionalProperties: {}
-    PatchedAgentRequest:
+    AgentCreateRequest:
       type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        username:
+        parent:
+          type: integer
+        label:
           type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          minLength: 1
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
         expiring:
           type: boolean
+          default: false
         expires:
           type:
           - string
           - 'null'
           format: date-time
-    AgentCreated:
-      type: object
-      description: Response returned once when an agent is created, carrying the one-time API token.
-      properties:
-        agent:
+        policy_behavior:
           allOf:
-          - $ref: '#/components/schemas/Agent'
-          readOnly: true
-        token:
-          type: string
-          readOnly: true
-      required:
-      - agent
-      - token
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          default: mirror
     AgentRequest:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -448,108 +469,87 @@ components:
       - uid
       - username
       - uuid
-    PolicyBehaviorEnum:
-      enum:
-      - mirror
-      - copy
-      - none
-      type: string
-    AgentCreateRequest:
+    Autocomplete:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
+      additionalProperties: {}
+    PatchedAgentRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
       properties:
-        parent:
-          type: integer
-        label:
+        username:
           type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
         expiring:
           type: boolean
-          default: false
         expires:
           type:
           - string
           - 'null'
           format: date-time
-        policy_behavior:
-          allOf:
-          - $ref: '#/components/schemas/PolicyBehaviorEnum'
-          default: mirror
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    Autocomplete:
-      type: object
-      additionalProperties: {}
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
     QueryPaginationPage:
       in: query
       name: page
       schema:
         type: integer
       description: A page number within the paginated result set.
-    QuerySearch:
+    QueryPaginationOrdering:
       in: query
-      name: search
+      name: ordering
       schema:
         type: string
-      description: A search term.
+      description: Which field to use when ordering the results.
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

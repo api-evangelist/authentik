@@ -373,25 +373,61 @@ paths:
       summary: Admin version history retrieve
       x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
   schemas:
+    VersionHistory:
+      type: object
+      description: VersionHistory Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        build:
+          type: string
+      required:
+      - build
+      - id
+      - timestamp
+      - version
+    Version:
+      type: object
+      description: Get running and latest version.
+      properties:
+        version_current:
+          type: string
+          description: Get current version
+          readOnly: true
+        version_latest:
+          type: string
+          description: Get latest version from cache
+          readOnly: true
+        version_latest_valid:
+          type: boolean
+          description: Check if latest version is valid
+          readOnly: true
+        build_hash:
+          type: string
+          description: Get build hash, if version is not latest or released
+          readOnly: true
+        outdated:
+          type: boolean
+          description: Check if we're running the latest version
+          readOnly: true
+        outpost_outdated:
+          type: boolean
+          description: Check if any outpost is outdated/has a version mismatch
+          readOnly: true
+      required:
+      - build_hash
+      - outdated
+      - outpost_outdated
+      - version_current
+      - version_latest
+      - version_latest_valid
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -485,21 +521,50 @@ components:
           type: string
       required:
       - detail
-    FileUploadRequest:
+    ThemedUrls:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
+      description: Themed URLs - maps theme names to URLs for light and dark themes
       properties:
-        file:
+        light:
+          type:
+          - string
+          - 'null'
+        dark:
+          type:
+          - string
+          - 'null'
+    UsageEnum:
+      enum:
+      - media
+      type: string
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
           type: string
-          format: binary
+        model_name:
+          type: string
+        pk:
+          type: string
         name:
           type: string
-        usage:
-          type: string
-          minLength: 1
-          default: media
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
       required:
-      - file
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
     Settings:
       type: object
       description: Settings Serializer
@@ -580,189 +645,21 @@ components:
           - flows_continuous_login
       required:
       - flags
-    FileList:
+    FileUploadRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
+        file:
+          type: string
+          format: binary
         name:
           type: string
-        mime_type:
+        usage:
           type: string
-        url:
-          type: string
-        themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
+          minLength: 1
+          default: media
       required:
-      - mime_type
-      - name
-      - url
-    Version:
-      type: object
-      description: Get running and latest version.
-      properties:
-        version_current:
-          type: string
-          description: Get current version
-          readOnly: true
-        version_latest:
-          type: string
-          description: Get latest version from cache
-          readOnly: true
-        version_latest_valid:
-          type: boolean
-          description: Check if latest version is valid
-          readOnly: true
-        build_hash:
-          type: string
-          description: Get build hash, if version is not latest or released
-          readOnly: true
-        outdated:
-          type: boolean
-          description: Check if we're running the latest version
-          readOnly: true
-        outpost_outdated:
-          type: boolean
-          description: Check if any outpost is outdated/has a version mismatch
-          readOnly: true
-      required:
-      - build_hash
-      - outdated
-      - outpost_outdated
-      - version_current
-      - version_latest
-      - version_latest_valid
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    App:
-      type: object
-      description: Serialize Application info
-      properties:
-        name:
-          type: string
-        label:
-          type: string
-      required:
-      - label
-      - name
-    SystemInfo:
-      type: object
-      description: Get system information.
-      properties:
-        http_headers:
-          type: object
-          additionalProperties:
-            type: string
-          description: Get HTTP Request headers
-          readOnly: true
-        http_host:
-          type: string
-          description: Get HTTP host
-          readOnly: true
-        http_is_secure:
-          type: boolean
-          description: Get HTTP Secure flag
-          readOnly: true
-        runtime:
-          type: object
-          description: Get versions
-          properties:
-            python_version:
-              type: string
-            environment:
-              type: string
-            architecture:
-              type: string
-            platform:
-              type: string
-            uname:
-              type: string
-            openssl_version:
-              type: string
-            openssl_fips_enabled:
-              type:
-              - boolean
-              - 'null'
-            authentik_version:
-              type: string
-          required:
-          - architecture
-          - authentik_version
-          - environment
-          - openssl_fips_enabled
-          - openssl_version
-          - platform
-          - python_version
-          - uname
-          readOnly: true
-        brand:
-          type: string
-          description: Currently active brand
-          readOnly: true
-        server_time:
-          type: string
-          format: date-time
-          description: Current server time
-          readOnly: true
-        embedded_outpost_disabled:
-          type: boolean
-          description: Whether the embedded outpost is disabled
-          readOnly: true
-        embedded_outpost_host:
-          type: string
-          description: Get the FQDN configured on the embedded outpost
-          readOnly: true
-        base_url:
-          type: string
-          description: Configured external base URL. Can be empty
-          readOnly: true
-      required:
-      - base_url
-      - brand
-      - embedded_outpost_disabled
-      - embedded_outpost_host
-      - http_headers
-      - http_host
-      - http_is_secure
-      - runtime
-      - server_time
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
+      - file
     PatchedSettingsRequest:
       type: object
       description: Settings Serializer
@@ -844,41 +741,126 @@ components:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-    VersionHistory:
+    ValidationError:
       type: object
-      description: VersionHistory Serializer
+      description: Validation Error
       properties:
-        id:
-          type: integer
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    SystemInfo:
+      type: object
+      description: Get system information.
+      properties:
+        http_headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Get HTTP Request headers
           readOnly: true
-        timestamp:
+        http_host:
+          type: string
+          description: Get HTTP host
+          readOnly: true
+        http_is_secure:
+          type: boolean
+          description: Get HTTP Secure flag
+          readOnly: true
+        runtime:
+          type: object
+          description: Get versions
+          properties:
+            python_version:
+              type: string
+            environment:
+              type: string
+            architecture:
+              type: string
+            platform:
+              type: string
+            uname:
+              type: string
+            openssl_version:
+              type: string
+            openssl_fips_enabled:
+              type:
+              - boolean
+              - 'null'
+            authentik_version:
+              type: string
+          required:
+          - architecture
+          - authentik_version
+          - environment
+          - openssl_fips_enabled
+          - openssl_version
+          - platform
+          - python_version
+          - uname
+          readOnly: true
+        brand:
+          type: string
+          description: Currently active brand
+          readOnly: true
+        server_time:
           type: string
           format: date-time
-        version:
+          description: Current server time
+          readOnly: true
+        embedded_outpost_disabled:
+          type: boolean
+          description: Whether the embedded outpost is disabled
+          readOnly: true
+        embedded_outpost_host:
           type: string
-        build:
+          description: Get the FQDN configured on the embedded outpost
+          readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
+      required:
+      - base_url
+      - brand
+      - embedded_outpost_disabled
+      - embedded_outpost_host
+      - http_headers
+      - http_host
+      - http_is_secure
+      - runtime
+      - server_time
+    App:
+      type: object
+      description: Serialize Application info
+      properties:
+        name:
+          type: string
+        label:
           type: string
       required:
-      - build
-      - id
-      - timestamp
-      - version
-    UsageEnum:
-      enum:
-      - media
-      type: string
-    ThemedUrls:
+      - label
+      - name
+    FileList:
       type: object
-      description: Themed URLs - maps theme names to URLs for light and dark themes
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        light:
-          type:
-          - string
-          - 'null'
-        dark:
-          type:
-          - string
-          - 'null'
+        name:
+          type: string
+        mime_type:
+          type: string
+        url:
+          type: string
+        themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+      required:
+      - mime_type
+      - name
+      - url
   responses:
     GenericErrorResponse:
       content:
@@ -892,6 +874,24 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+  parameters:
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

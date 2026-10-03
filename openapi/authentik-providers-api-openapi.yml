@@ -4380,52 +4380,331 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    OAuth2DynamicClientRegistration:
+    OAuth2Provider:
       type: object
-      description: Serializer for OAuth2DynamicClientRegistration
+      description: OAuth2Provider Serializer
       properties:
-        pbm_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        provider:
+        pk:
           type: integer
-        default_application_group:
+          readOnly: true
+          title: ID
+        name:
           type: string
-          description: Group to assign to automatically created applications.
-        override_authorization_flow:
+        authentication_flow:
           type:
           - string
           - 'null'
           format: uuid
-          description: Authorization flow applied to dynamically registered clients.
-        override_invalidation_flow:
-          type:
-          - string
-          - 'null'
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
           format: uuid
-        override_property_mappings:
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
           type: array
           items:
             type: string
             format: uuid
-          description: Scope mappings applied to dynamically registered clients.
-        access_token_validity:
+        component:
           type: string
-          description: 'Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
-        refresh_token_validity:
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
           type: string
-          description: 'Maximum refresh token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
-        allowed_grant_types:
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        client_type:
+          allOf:
+          - $ref: '#/components/schemas/ClientTypeEnum'
+          description: Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+        grant_types:
           type: array
           items:
             $ref: '#/components/schemas/GrantTypeEnum'
-          description: If empty, all grant types are allowed.
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
+        client_id:
+          type: string
+          maxLength: 255
+        client_secret:
+          type: string
+          maxLength: 255
+        access_code_validity:
+          type: string
+          description: 'Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        access_token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        refresh_token_threshold:
+          type: string
+          description: 'When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3).'
+        include_claims_in_id_token:
+          type: boolean
+          description: Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.
+        signing_key:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Key used to sign the tokens.
+        encryption_key:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs.
+        redirect_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
+        logout_uri:
+          type: string
+          format: uri
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
+          description: Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
+        sub_mode:
+          allOf:
+          - $ref: '#/components/schemas/SubModeEnum'
+          description: Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+        issuer_mode:
+          allOf:
+          - $ref: '#/components/schemas/IssuerModeEnum'
+          description: Configure how the issuer field of the ID Token should be filled.
+        jwt_federation_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
-      - pbm_uuid
-      - provider
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - authorization_flow
+      - component
+      - invalidation_flow
+      - meta_model_name
+      - name
+      - pk
+      - redirect_uris
+      - verbose_name
+      - verbose_name_plural
+    SyncStatus:
+      type: object
+      description: Provider/source sync status
+      properties:
+        is_running:
+          type: boolean
+        last_successful_sync:
+          type: string
+          format: date-time
+        last_sync_status:
+          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
+      required:
+      - is_running
+    RACProvider:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        settings:
+          type: object
+          additionalProperties: {}
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        connection_expiry:
+          type: string
+          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        delete_token_on_disconnect:
+          type: boolean
+          description: When set to true, connection tokens will be deleted upon disconnect.
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - authorization_flow
+      - component
+      - meta_model_name
+      - name
+      - outpost_set
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    SAMLBindingsEnum:
+      enum:
+      - redirect
+      - post
+      type: string
+    PaginatedSCIMProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    TaskAggregatedStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
+    DigestAlgorithmEnum:
+      enum:
+      - http://www.w3.org/2000/09/xmldsig#sha1
+      - http://www.w3.org/2001/04/xmlenc#sha256
+      - http://www.w3.org/2001/04/xmldsig-more#sha384
+      - http://www.w3.org/2001/04/xmlenc#sha512
+      type: string
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PaginatedWSFederationProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WSFederationProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     WSFederationProvider:
       type: object
       description: WSFederationProvider Serializer
@@ -4581,9 +4860,286 @@ components:
       - verbose_name
       - verbose_name_plural
       - wtrealm
-    WSFederationProviderRequest:
+    Pagination:
       type: object
-      description: WSFederationProvider Serializer
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    PatchedSSFProviderRequest:
+      type: object
+      description: SSFProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        signing_key:
+          type: string
+          format: uuid
+          description: Key used to sign the SSF Events.
+        oidc_auth_providers:
+          type: array
+          items:
+            type: integer
+        event_retention:
+          type: string
+          minLength: 1
+        push_verify_certificates:
+          type: boolean
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    MicrosoftEntraProviderRequest:
+      type: object
+      description: MicrosoftEntraProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources in the remote system.
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in the remote system.
+      required:
+      - client_id
+      - client_secret
+      - name
+      - tenant_id
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    PropertyMappingPreview:
+      type: object
+      description: Preview how the current user is mapped via the property mappings selected in a provider
+      properties:
+        preview:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - preview
+    Provider:
+      type: object
+      description: Provider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RedirectURITypeEnum:
+      enum:
+      - authorization
+      - logout
+      type: string
+    MicrosoftEntraProviderGroup:
+      type: object
+      description: MicrosoftEntraProviderGroup Serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        microsoft_id:
+          type: string
+        group:
+          type: string
+          format: uuid
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        provider:
+          type: integer
+        attributes:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - attributes
+      - group
+      - group_obj
+      - id
+      - microsoft_id
+      - provider
+    PatchedSAMLProviderRequest:
+      type: object
+      description: SAMLProvider Serializer
       properties:
         name:
           type: string
@@ -4607,13 +5163,20 @@ components:
           items:
             type: string
             format: uuid
-        reply_url:
+        acs_url:
           type: string
+          minLength: 1
           format: uri
-          minLength: 1
-        wtrealm:
+        sls_url:
           type: string
-          minLength: 1
+          description: Single Logout Service URL where the logout response should be sent.
+          format: uri
+        audience:
+          type: string
+          description: Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.
+        issuer_override:
+          type: string
+          description: Also known as EntityID. Providing a value overrides the default issuer generated by authentik.
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -4640,10 +5203,6 @@ components:
           format: uuid
           title: AuthnContextClassRef Property Mapping
           description: Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-        saml_version:
-          allOf:
-          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
-          description: SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -4655,6 +5214,13 @@ components:
           format: uuid
           title: Signing Keypair
           description: Keypair used to sign outgoing Responses going to the Service Provider.
+        verification_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Verification Certificate
+          description: When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
         encryption_kp:
           type:
           - string
@@ -4664,16 +5230,308 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
         sign_assertion:
           type: boolean
+        sign_response:
+          type: boolean
         sign_logout_request:
           type: boolean
+        sign_logout_response:
+          type: boolean
+        sp_binding:
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
+          title: Service Provider Binding
+          description: This determines how authentik sends the response back to the Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
+          description: This determines how authentik sends the logout response back to the Service Provider.
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/SAMLLogoutMethods'
+          description: Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
+        default_relay_state:
+          type: string
+          description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+    PaginatedRACProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedRACProviderRequest:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        settings:
+          type: object
+          additionalProperties: {}
+        connection_expiry:
+          type: string
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        delete_token_on_disconnect:
+          type: boolean
+          description: When set to true, connection tokens will be deleted upon disconnect.
+    PatchedMicrosoftEntraProviderRequest:
+      type: object
+      description: MicrosoftEntraProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources in the remote system.
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in the remote system.
+    OAuth2ProviderSetupURLs:
+      type: object
+      description: OAuth2 Provider Metadata serializer
+      properties:
+        issuer:
+          type: string
+          readOnly: true
+        authorize:
+          type: string
+          readOnly: true
+        token:
+          type: string
+          readOnly: true
+        user_info:
+          type: string
+          readOnly: true
+        provider_info:
+          type: string
+          readOnly: true
+        logout:
+          type: string
+          readOnly: true
+        jwks:
+          type: string
+          readOnly: true
+        dcr_registration:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      required:
+      - authorize
+      - dcr_registration
+      - issuer
+      - jwks
+      - logout
+      - provider_info
+      - token
+      - user_info
+    PaginatedMicrosoftEntraProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    SignatureAlgorithmEnum:
+      enum:
+      - http://www.w3.org/2000/09/xmldsig#rsa-sha1
+      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
+      - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+      type: string
+    SAMLProviderImportRequest:
+      type: object
+      description: Import saml provider from XML Metadata
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+        invalidation_flow:
+          type: string
+          format: uuid
+        file:
+          type: string
+          format: binary
       required:
       - authorization_flow
+      - file
       - invalidation_flow
       - name
-      - reply_url
-      - wtrealm
+    OutgoingSyncDeleteAction:
+      enum:
+      - do_nothing
+      - delete
+      - suspend
+      type: string
+    PaginatedProxyProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedRadiusProviderRequest:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        client_networks:
+          type: string
+          minLength: 1
+          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+        shared_secret:
+          type: string
+          minLength: 1
+          description: Shared secret between clients and server to hash packets.
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+        certificate:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    IssuerModeEnum:
+      enum:
+      - global
+      - per_provider
+      type: string
+    SSFProviderRequest:
+      type: object
+      description: SSFProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        signing_key:
+          type: string
+          format: uuid
+          description: Key used to sign the SSF Events.
+        oidc_auth_providers:
+          type: array
+          items:
+            type: integer
+        event_retention:
+          type: string
+          minLength: 1
+        push_verify_certificates:
+          type: boolean
+      required:
+      - name
+      - signing_key
     PaginatedLDAPProviderList:
       type: object
       properties:
@@ -4689,29 +5547,37 @@ components:
       - autocomplete
       - pagination
       - results
-    LogEvent:
+    SyncObjectRequest:
       type: object
-      description: Single log message with all context logged.
+      description: Sync object serializer
       properties:
-        timestamp:
+        sync_object_model:
+          $ref: '#/components/schemas/SyncObjectModelEnum'
+        sync_object_id:
           type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
+          minLength: 1
+        override_dry_run:
+          type: boolean
+          default: false
       required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
-    PaginatedGoogleWorkspaceProviderList:
+      - sync_object_id
+      - sync_object_model
+    MicrosoftEntraProviderUserRequest:
+      type: object
+      description: MicrosoftEntraProviderUser Serializer
+      properties:
+        microsoft_id:
+          type: string
+          minLength: 1
+        user:
+          type: integer
+        provider:
+          type: integer
+      required:
+      - microsoft_id
+      - provider
+      - user
+    PaginatedSCIMProviderUserList:
       type: object
       properties:
         pagination:
@@ -4719,7 +5585,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/GoogleWorkspaceProvider'
+            $ref: '#/components/schemas/SCIMProviderUser'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -4818,13 +5684,31 @@ components:
       - tenant_id
       - verbose_name
       - verbose_name_plural
-    PatchedMicrosoftEntraProviderRequest:
+    PaginatedSSFProviderList:
       type: object
-      description: MicrosoftEntraProvider Serializer
       properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SSFProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GoogleWorkspaceProvider:
+      type: object
+      description: GoogleWorkspaceProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
         name:
           type: string
-          minLength: 1
         property_mappings:
           type: array
           items:
@@ -4836,15 +5720,43 @@ components:
             type: string
             format: uuid
           description: Property mappings used for group creation/updating.
-        client_id:
+        component:
           type: string
-          minLength: 1
-        client_secret:
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
           type: string
-          minLength: 1
-        tenant_id:
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
           type: string
-          minLength: 1
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        delegated_subject:
+          type: string
+          format: email
+          maxLength: 254
+        credentials:
+          type: object
+          additionalProperties: {}
+        scopes:
+          type: string
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -4856,138 +5768,162 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        default_group_email_domain:
+          type: string
         sync_page_size:
           type: integer
           maximum: 2147483647
           minimum: 1
           description: Controls the number of objects synced in a single task
-        discovery_enabled:
-          type: boolean
-          description: When enabled, authentik will attempt to discover existing resources in the remote system.
         sync_page_timeout:
           type: string
-          minLength: 1
           description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources in the remote system.
+      required:
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - credentials
+      - default_group_email_domain
+      - delegated_subject
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    MatchingModeEnum:
+      enum:
+      - strict
+      - regex
+      type: string
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
     SAMLLogoutMethods:
       enum:
       - frontchannel_iframe
       - frontchannel_native
       - backchannel
       type: string
-    SyncStatus:
+    SCIMProviderUser:
       type: object
-      description: Provider/source sync status
+      description: SCIMProviderUser Serializer
       properties:
-        is_running:
-          type: boolean
-        last_successful_sync:
-          type: string
-          format: date-time
-        last_sync_status:
-          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
-      required:
-      - is_running
-    User:
-      type: object
-      description: User Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        date_joined:
-          type: string
-          format: date-time
-          readOnly: true
-        is_superuser:
-          type: boolean
-          readOnly: true
-        groups:
-          type: array
-          items:
-            type: string
-            format: uuid
-        groups_obj:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/PartialGroup'
-          readOnly: true
-        roles:
-          type: array
-          items:
-            type: string
-            format: uuid
-        roles_obj:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Role'
-          readOnly: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        avatar:
-          type: string
-          description: User's avatar, either a http/https URL or a data URI
-          readOnly: true
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-        path:
-          type: string
-        type:
-          $ref: '#/components/schemas/UserTypeEnum'
-        uuid:
+        id:
           type: string
           format: uuid
           readOnly: true
-        password_change_date:
+        scim_id:
           type: string
-          format: date-time
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
+        provider:
+          type: integer
+        attributes:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
-      - avatar
-      - date_joined
-      - groups_obj
-      - is_superuser
-      - last_updated
-      - name
-      - password_change_date
-      - pk
-      - roles_obj
-      - uid
-      - username
-      - uuid
+      - attributes
+      - id
+      - provider
+      - scim_id
+      - user
+      - user_obj
+    CompatibilityModeEnum:
+      enum:
+      - default
+      - aws
+      - slack
+      - sfdc
+      - gitlab
+      - webex
+      - vcenter
+      type: string
+    PatchedLDAPProviderRequest:
+      type: object
+      description: LDAPProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        base_dn:
+          type: string
+          minLength: 1
+          description: DN under which objects are accessible.
+        certificate:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        tls_server_name:
+          type: string
+        uid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
+        gid_start_number:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
+        search_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        bind_mode:
+          $ref: '#/components/schemas/LDAPAPIAccessMode'
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+    GrantTypeEnum:
+      enum:
+      - authorization_code
+      - implicit
+      - hybrid
+      - refresh_token
+      - client_credentials
+      - password
+      - urn:ietf:params:oauth:grant-type:device_code
+      - urn:ietf:params:oauth:grant-type:token-exchange
+      type: string
+    LDAPAPIAccessMode:
+      enum:
+      - direct
+      - cached
+      type: string
     ValidationError:
       type: object
       description: Validation Error
@@ -4999,7 +5935,44 @@ components:
         code:
           type: string
       additionalProperties: {}
-    ProxyProviderRequest:
+    PaginatedSCIMProviderGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    PatchedProxyProviderRequest:
       type: object
       description: ProxyProvider Serializer
       properties:
@@ -5083,104 +6056,386 @@ components:
           type: string
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-      required:
-      - authorization_flow
-      - external_host
-      - invalidation_flow
-      - name
-    SyncObjectResult:
+    OAuth2ProviderRequest:
       type: object
-      description: Result of a single object sync
+      description: OAuth2Provider Serializer
       properties:
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-      required:
-      - messages
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    GoogleWorkspaceProviderGroupRequest:
-      type: object
-      description: GoogleWorkspaceProviderGroup Serializer
-      properties:
-        google_id:
+        name:
           type: string
           minLength: 1
-        group:
-          type: string
-          format: uuid
-        provider:
-          type: integer
-      required:
-      - google_id
-      - group
-      - provider
-    PatchedOAuth2DynamicClientRegistrationRequest:
-      type: object
-      description: Serializer for OAuth2DynamicClientRegistration
-      properties:
-        provider:
-          type: integer
-        default_application_group:
-          type: string
-          description: Group to assign to automatically created applications.
-        override_authorization_flow:
+        authentication_flow:
           type:
           - string
           - 'null'
           format: uuid
-          description: Authorization flow applied to dynamically registered clients.
-        override_invalidation_flow:
-          type:
-          - string
-          - 'null'
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
           format: uuid
-        override_property_mappings:
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
           type: array
           items:
             type: string
             format: uuid
-          description: Scope mappings applied to dynamically registered clients.
-        access_token_validity:
-          type: string
-          minLength: 1
-          description: 'Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
-        refresh_token_validity:
-          type: string
-          minLength: 1
-          description: 'Maximum refresh token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
-        allowed_grant_types:
+        client_type:
+          allOf:
+          - $ref: '#/components/schemas/ClientTypeEnum'
+          description: Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+        grant_types:
           type: array
           items:
             $ref: '#/components/schemas/GrantTypeEnum'
-          description: If empty, all grant types are allowed.
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 255
+        client_secret:
+          type: string
+          maxLength: 255
+        access_code_validity:
+          type: string
+          minLength: 1
+          description: 'Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          minLength: 1
+          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        refresh_token_threshold:
+          type: string
+          minLength: 1
+          description: 'When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3).'
+        include_claims_in_id_token:
+          type: boolean
+          description: Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.
+        signing_key:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Key used to sign the tokens.
+        encryption_key:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs.
+        redirect_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
+        logout_uri:
+          type: string
+          format: uri
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
+          description: Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
+        sub_mode:
+          allOf:
+          - $ref: '#/components/schemas/SubModeEnum'
+          description: Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+        issuer_mode:
+          allOf:
+          - $ref: '#/components/schemas/IssuerModeEnum'
+          description: Configure how the issuer field of the ID Token should be filled.
+        jwt_federation_sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+            title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+      required:
+      - authorization_flow
+      - invalidation_flow
+      - name
+      - redirect_uris
+    PatchedGoogleWorkspaceProviderRequest:
+      type: object
+      description: GoogleWorkspaceProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        delegated_subject:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        credentials:
+          type: object
+          additionalProperties: {}
+        scopes:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        default_group_email_domain:
+          type: string
+          minLength: 1
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources in the remote system.
+    SCIMProviderRequest:
+      type: object
+      description: SCIMProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        url:
+          type: string
+          minLength: 1
+          description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
+        token:
+          type: string
+          description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_oauth:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
+          type: string
+          minLength: 1
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
+        exclude_users_service_account:
+          type: boolean
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources in the remote system.
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in the remote system.
+      required:
+      - name
+      - url
+    WSFedSAMLVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
+    SAMLProviderRequest:
+      type: object
+      description: SAMLProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        acs_url:
+          type: string
+          minLength: 1
+          format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should be sent.
+          format: uri
+        audience:
+          type: string
+          description: Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.
+        issuer_override:
+          type: string
+          description: Also known as EntityID. Providing a value overrides the default issuer generated by authentik.
+        assertion_valid_not_before:
+          type: string
+          minLength: 1
+          description: 'Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).'
+        assertion_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        session_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        name_id_mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: NameID Property Mapping
+          description: Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
+        digest_algorithm:
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
+        signature_algorithm:
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+        signing_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Signing Keypair
+          description: Keypair used to sign outgoing Responses going to the Service Provider.
+        verification_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Verification Certificate
+          description: When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
+        encryption_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
+        sign_logout_request:
+          type: boolean
+        sign_logout_response:
+          type: boolean
+        sp_binding:
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
+          title: Service Provider Binding
+          description: This determines how authentik sends the response back to the Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
+          description: This determines how authentik sends the logout response back to the Service Provider.
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/SAMLLogoutMethods'
+          description: Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
+        default_relay_state:
+          type: string
+          description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+      required:
+      - acs_url
+      - authorization_flow
+      - invalidation_flow
+      - name
+    Role:
+      type: object
+      description: Role serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+      required:
+      - name
+      - pk
     SCIMProvider:
       type: object
       description: SCIMProvider Serializer
@@ -5316,129 +6571,7 @@ components:
       - url
       - verbose_name
       - verbose_name_plural
-    SCIMProviderUser:
-      type: object
-      description: SCIMProviderUser Serializer
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        scim_id:
-          type: string
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        provider:
-          type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-      required:
-      - attributes
-      - id
-      - provider
-      - scim_id
-      - user
-      - user_obj
-    GoogleWorkspaceProviderUser:
-      type: object
-      description: GoogleWorkspaceProviderUser Serializer
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        google_id:
-          type: string
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        provider:
-          type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-      required:
-      - attributes
-      - google_id
-      - id
-      - provider
-      - user
-      - user_obj
-    MicrosoftEntraProviderRequest:
-      type: object
-      description: MicrosoftEntraProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
-        client_id:
-          type: string
-          minLength: 1
-        client_secret:
-          type: string
-          minLength: 1
-        tenant_id:
-          type: string
-          minLength: 1
-        exclude_users_service_account:
-          type: boolean
-        filter_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        user_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        group_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        sync_page_size:
-          type: integer
-          maximum: 2147483647
-          minimum: 1
-          description: Controls the number of objects synced in a single task
-        discovery_enabled:
-          type: boolean
-          description: When enabled, authentik will attempt to discover existing resources in the remote system.
-        sync_page_timeout:
-          type: string
-          minLength: 1
-          description: Timeout for synchronization of a single page
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in the remote system.
-      required:
-      - client_id
-      - client_secret
-      - name
-      - tenant_id
-    ProxyMode:
-      enum:
-      - proxy
-      - forward_single
-      - forward_domain
-      type: string
-    PaginatedMicrosoftEntraProviderGroupList:
+    PaginatedProviderList:
       type: object
       properties:
         pagination:
@@ -5446,13 +6579,254 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
+            $ref: '#/components/schemas/Provider'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    PatchedWSFederationProviderRequest:
+      type: object
+      description: WSFederationProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reply_url:
+          type: string
+          format: uri
+          minLength: 1
+        wtrealm:
+          type: string
+          minLength: 1
+        assertion_valid_not_before:
+          type: string
+          minLength: 1
+          description: 'Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).'
+        assertion_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        session_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        name_id_mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: NameID Property Mapping
+          description: Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+        digest_algorithm:
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
+        signature_algorithm:
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+        signing_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Signing Keypair
+          description: Keypair used to sign outgoing Responses going to the Service Provider.
+        encryption_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_logout_request:
+          type: boolean
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+    MicrosoftEntraProviderUser:
+      type: object
+      description: MicrosoftEntraProviderUser Serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        microsoft_id:
+          type: string
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        provider:
+          type: integer
+        attributes:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - attributes
+      - id
+      - microsoft_id
+      - provider
+      - user
+      - user_obj
+    WSFederationProviderRequest:
+      type: object
+      description: WSFederationProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reply_url:
+          type: string
+          format: uri
+          minLength: 1
+        wtrealm:
+          type: string
+          minLength: 1
+        assertion_valid_not_before:
+          type: string
+          minLength: 1
+          description: 'Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).'
+        assertion_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        session_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        name_id_mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: NameID Property Mapping
+          description: Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+        digest_algorithm:
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
+        signature_algorithm:
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+        signing_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Signing Keypair
+          description: Keypair used to sign outgoing Responses going to the Service Provider.
+        encryption_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_logout_request:
+          type: boolean
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+      required:
+      - authorization_flow
+      - invalidation_flow
+      - name
+      - reply_url
+      - wtrealm
     GoogleWorkspaceProviderGroup:
       type: object
       description: GoogleWorkspaceProviderGroup Serializer
@@ -5483,6 +6857,110 @@ components:
       - group_obj
       - id
       - provider
+    ProxyMode:
+      enum:
+      - proxy
+      - forward_single
+      - forward_domain
+      type: string
+    User:
+      type: object
+      description: User Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        is_superuser:
+          type: boolean
+          readOnly: true
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        groups_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        roles_obj:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          description: User's avatar, either a http/https URL or a data URI
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+        path:
+          type: string
+        type:
+          $ref: '#/components/schemas/UserTypeEnum'
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        password_change_date:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - avatar
+      - date_joined
+      - groups_obj
+      - is_superuser
+      - last_updated
+      - name
+      - password_change_date
+      - pk
+      - roles_obj
+      - uid
+      - username
+      - uuid
     OAuth2DynamicClientRegistrationRequest:
       type: object
       description: Serializer for OAuth2DynamicClientRegistration
@@ -5526,459 +7004,7 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - provider
-    SCIMProviderGroup:
-      type: object
-      description: SCIMProviderGroup Serializer
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        scim_id:
-          type: string
-        group:
-          type: string
-          format: uuid
-        group_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialGroup'
-          readOnly: true
-        provider:
-          type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-      required:
-      - attributes
-      - group
-      - group_obj
-      - id
-      - provider
-      - scim_id
-    RedirectURIRequest:
-      type: object
-      description: A single allowed redirect URI entry
-      properties:
-        matching_mode:
-          $ref: '#/components/schemas/MatchingModeEnum'
-        url:
-          type: string
-          minLength: 1
-        redirect_uri_type:
-          allOf:
-          - $ref: '#/components/schemas/RedirectURITypeEnum'
-          default: authorization
-      required:
-      - matching_mode
-      - url
-    SAMLMetadata:
-      type: object
-      description: SAML Provider Metadata serializer
-      properties:
-        metadata:
-          type: string
-        download_url:
-          type:
-          - string
-          - 'null'
-      required:
-      - metadata
-    MicrosoftEntraProviderUser:
-      type: object
-      description: MicrosoftEntraProviderUser Serializer
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        microsoft_id:
-          type: string
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        provider:
-          type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-      required:
-      - attributes
-      - id
-      - microsoft_id
-      - provider
-      - user
-      - user_obj
-    MicrosoftEntraProviderGroup:
-      type: object
-      description: MicrosoftEntraProviderGroup Serializer
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        microsoft_id:
-          type: string
-        group:
-          type: string
-          format: uuid
-        group_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialGroup'
-          readOnly: true
-        provider:
-          type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-      required:
-      - attributes
-      - group
-      - group_obj
-      - id
-      - microsoft_id
-      - provider
-    PaginatedGoogleWorkspaceProviderGroupList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    CompatibilityModeEnum:
-      enum:
-      - default
-      - aws
-      - slack
-      - sfdc
-      - gitlab
-      - webex
-      - vcenter
-      type: string
-    PaginatedMicrosoftEntraProviderUserList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/MicrosoftEntraProviderUser'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedProxyProviderList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProxyProvider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedProviderList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Provider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    SAMLProviderRequest:
-      type: object
-      description: SAMLProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        acs_url:
-          type: string
-          minLength: 1
-          format: uri
-        sls_url:
-          type: string
-          description: Single Logout Service URL where the logout response should be sent.
-          format: uri
-        audience:
-          type: string
-          description: Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.
-        issuer_override:
-          type: string
-          description: Also known as EntityID. Providing a value overrides the default issuer generated by authentik.
-        assertion_valid_not_before:
-          type: string
-          minLength: 1
-          description: 'Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).'
-        assertion_valid_not_on_or_after:
-          type: string
-          minLength: 1
-          description: 'Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        session_valid_not_on_or_after:
-          type: string
-          minLength: 1
-          description: 'Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        name_id_mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: NameID Property Mapping
-          description: Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-        digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
-        signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
-        signing_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Signing Keypair
-          description: Keypair used to sign outgoing Responses going to the Service Provider.
-        verification_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Verification Certificate
-          description: When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
-        encryption_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-        sign_assertion:
-          type: boolean
-        sign_response:
-          type: boolean
-        sign_logout_request:
-          type: boolean
-        sign_logout_response:
-          type: boolean
-        sp_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          title: Service Provider Binding
-          description: This determines how authentik sends the response back to the Service Provider.
-        sls_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          description: This determines how authentik sends the logout response back to the Service Provider.
-        logout_method:
-          allOf:
-          - $ref: '#/components/schemas/SAMLLogoutMethods'
-          description: Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
-        default_relay_state:
-          type: string
-          description: Default relay_state value for IDP-initiated logins
-        default_name_id_policy:
-          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-      required:
-      - acs_url
-      - authorization_flow
-      - invalidation_flow
-      - name
-    RadiusProviderRequest:
-      type: object
-      description: RadiusProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        client_networks:
-          type: string
-          minLength: 1
-          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-        shared_secret:
-          type: string
-          minLength: 1
-          description: Shared secret between clients and server to hash packets.
-        mfa_support:
-          type: boolean
-          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-        certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-      required:
-      - authorization_flow
-      - invalidation_flow
-      - name
-    SCIMProviderUserRequest:
-      type: object
-      description: SCIMProviderUser Serializer
-      properties:
-        scim_id:
-          type: string
-          minLength: 1
-        user:
-          type: integer
-        provider:
-          type: integer
-      required:
-      - provider
-      - scim_id
-      - user
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    SCIMProviderRequest:
-      type: object
-      description: SCIMProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
-        url:
-          type: string
-          minLength: 1
-          description: Base URL to SCIM requests, usually ends in /v2
-        verify_certificates:
-          type: boolean
-        token:
-          type: string
-          description: Authentication token
-        auth_mode:
-          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
-        auth_oauth:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: OAuth Source used for authentication
-        auth_oauth_params:
-          type: object
-          additionalProperties: {}
-          description: Additional OAuth parameters, such as grant_type
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
-        service_provider_config_cache_timeout:
-          type: string
-          minLength: 1
-          description: Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
-        exclude_users_service_account:
-          type: boolean
-        sync_page_size:
-          type: integer
-          maximum: 2147483647
-          minimum: 1
-          description: Controls the number of objects synced in a single task
-        sync_page_timeout:
-          type: string
-          minLength: 1
-          description: Timeout for synchronization of a single page
-        discovery_enabled:
-          type: boolean
-          description: When enabled, authentik will attempt to discover existing resources in the remote system.
-        group_filters:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Group filters used to define sync-scope for groups.
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in the remote system.
-      required:
-      - name
-      - url
-    OAuth2ProviderRequest:
+    PatchedOAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
       properties:
@@ -6080,22 +7106,7 @@ components:
           type: array
           items:
             type: integer
-      required:
-      - authorization_flow
-      - invalidation_flow
-      - name
-      - redirect_uris
-    WSFedSAMLVersionEnum:
-      enum:
-      - '1.1'
-      - '2.0'
-      type: string
-    LDAPAPIAccessMode:
-      enum:
-      - direct
-      - cached
-      type: string
-    PaginatedSAMLProviderList:
+    PaginatedMicrosoftEntraProviderGroupList:
       type: object
       properties:
         pagination:
@@ -6103,74 +7114,98 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/SAMLProvider'
+            $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    OAuth2ProviderSetupURLs:
+    RedirectURIRequest:
       type: object
-      description: OAuth2 Provider Metadata serializer
+      description: A single allowed redirect URI entry
       properties:
-        issuer:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
           type: string
-          readOnly: true
-        authorize:
-          type: string
-          readOnly: true
-        token:
-          type: string
-          readOnly: true
-        user_info:
-          type: string
-          readOnly: true
-        provider_info:
-          type: string
-          readOnly: true
-        logout:
-          type: string
-          readOnly: true
-        jwks:
-          type: string
-          readOnly: true
-        dcr_registration:
-          type:
-          - string
-          - 'null'
-          readOnly: true
+          minLength: 1
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectURITypeEnum'
+          default: authorization
       required:
-      - authorize
-      - dcr_registration
-      - issuer
-      - jwks
-      - logout
-      - provider_info
-      - token
-      - user_info
-    Role:
+      - matching_mode
+      - url
+    RedirectURI:
       type: object
-      description: Role serializer
+      description: A single allowed redirect URI entry
       properties:
-        pk:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
+          type: string
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectURITypeEnum'
+          default: authorization
+      required:
+      - matching_mode
+      - url
+    SCIMAuthenticationModeEnum:
+      enum:
+      - token
+      - oauth
+      - oauth_interactive
+      type: string
+    SCIMProviderGroup:
+      type: object
+      description: SCIMProviderGroup Serializer
+      properties:
+        id:
           type: string
           format: uuid
           readOnly: true
-          title: Uuid
-        name:
+        scim_id:
           type: string
+        group:
+          type: string
+          format: uuid
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        provider:
+          type: integer
+        attributes:
+          type: object
+          additionalProperties: {}
+          readOnly: true
       required:
-      - name
-      - pk
-    OAuth2ProviderLogoutMethodEnum:
-      enum:
-      - backchannel
-      - frontchannel
-      type: string
-    PatchedSAMLProviderRequest:
+      - attributes
+      - group
+      - group_obj
+      - id
+      - provider
+      - scim_id
+    PaginatedOAuth2ProviderList:
       type: object
-      description: SAMLProvider Serializer
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuth2Provider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    RadiusProviderRequest:
+      type: object
+      description: RadiusProvider Serializer
       properties:
         name:
           type: string
@@ -6194,118 +7229,26 @@ components:
           items:
             type: string
             format: uuid
-        acs_url:
+        client_networks:
           type: string
           minLength: 1
-          format: uri
-        sls_url:
-          type: string
-          description: Single Logout Service URL where the logout response should be sent.
-          format: uri
-        audience:
-          type: string
-          description: Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.
-        issuer_override:
-          type: string
-          description: Also known as EntityID. Providing a value overrides the default issuer generated by authentik.
-        assertion_valid_not_before:
+          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+        shared_secret:
           type: string
           minLength: 1
-          description: 'Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).'
-        assertion_valid_not_on_or_after:
-          type: string
-          minLength: 1
-          description: 'Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        session_valid_not_on_or_after:
-          type: string
-          minLength: 1
-          description: 'Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        name_id_mapping:
+          description: Shared secret between clients and server to hash packets.
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+        certificate:
           type:
           - string
           - 'null'
           format: uuid
-          title: NameID Property Mapping
-          description: Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-        digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
-        signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
-        signing_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Signing Keypair
-          description: Keypair used to sign outgoing Responses going to the Service Provider.
-        verification_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Verification Certificate
-          description: When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
-        encryption_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-        sign_assertion:
-          type: boolean
-        sign_response:
-          type: boolean
-        sign_logout_request:
-          type: boolean
-        sign_logout_response:
-          type: boolean
-        sp_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          title: Service Provider Binding
-          description: This determines how authentik sends the response back to the Service Provider.
-        sls_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          description: This determines how authentik sends the logout response back to the Service Provider.
-        logout_method:
-          allOf:
-          - $ref: '#/components/schemas/SAMLLogoutMethods'
-          description: Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
-        default_relay_state:
-          type: string
-          description: Default relay_state value for IDP-initiated logins
-        default_name_id_policy:
-          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-    SCIMAuthenticationModeEnum:
-      enum:
-      - token
-      - oauth
-      - oauth_interactive
-      type: string
-    SyncObjectRequest:
-      type: object
-      description: Sync object serializer
-      properties:
-        sync_object_model:
-          $ref: '#/components/schemas/SyncObjectModelEnum'
-        sync_object_id:
-          type: string
-          minLength: 1
-        override_dry_run:
-          type: boolean
-          default: false
       required:
-      - sync_object_id
-      - sync_object_model
+      - authorization_flow
+      - invalidation_flow
+      - name
     GoogleWorkspaceProviderUserRequest:
       type: object
       description: GoogleWorkspaceProviderUser Serializer
@@ -6321,9 +7264,50 @@ components:
       - google_id
       - provider
       - user
-    ProxyProvider:
+    PartialUser:
       type: object
-      description: ProxyProvider Serializer
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    SSFProvider:
+      type: object
+      description: SSFProvider Serializer
       properties:
         pk:
           type: integer
@@ -6331,52 +7315,9 @@ components:
           title: ID
         name:
           type: string
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
-          readOnly: true
-        assigned_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        assigned_backchannel_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_backchannel_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
           readOnly: true
         verbose_name:
           type: string
@@ -6390,162 +7331,48 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        client_id:
+        signing_key:
           type: string
-          readOnly: true
-        internal_host:
-          type: string
-          format: uri
-        external_host:
-          type: string
-          format: uri
-        internal_host_ssl_validation:
-          type: boolean
-          description: Validate SSL Certificates of upstream servers
-        certificate:
-          type:
-          - string
-          - 'null'
           format: uuid
-        skip_path_regex:
-          type: string
-          description: Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
-        basic_auth_enabled:
-          type: boolean
-          title: Set HTTP-Basic Authentication
-          description: Set a custom HTTP-Basic Authentication header based on values from authentik.
-        basic_auth_password_attribute:
-          type: string
-          title: HTTP-Basic Password Key
-          description: User/Group Attribute used for the password part of the HTTP-Basic Header.
-        basic_auth_user_attribute:
-          type: string
-          title: HTTP-Basic Username Key
-          description: User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
-        mode:
+          description: Key used to sign the SSF Events.
+        token_obj:
           allOf:
-          - $ref: '#/components/schemas/ProxyMode'
-          description: Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-        intercept_header_auth:
-          type: boolean
-          description: When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
-        redirect_uris:
-          type: array
-          items:
-            $ref: '#/components/schemas/RedirectURI'
+          - $ref: '#/components/schemas/Token'
           readOnly: true
-        cookie_domain:
-          type: string
-        jwt_federation_sources:
-          type: array
-          items:
-            type: string
-            format: uuid
-            title: Any JWT signed by the JWK of the selected source can be used to authenticate.
-          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
-        jwt_federation_providers:
+        oidc_auth_providers:
           type: array
           items:
             type: integer
-        access_token_validity:
-          type: string
-          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        refresh_token_validity:
-          type: string
-          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        outpost_set:
+        oidc_auth_providers_obj:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Provider'
           readOnly: true
-      required:
-      - assigned_application_name
-      - assigned_application_slug
-      - assigned_backchannel_application_name
-      - assigned_backchannel_application_slug
-      - authorization_flow
-      - client_id
-      - component
-      - external_host
-      - invalidation_flow
-      - meta_model_name
-      - name
-      - outpost_set
-      - pk
-      - redirect_uris
-      - verbose_name
-      - verbose_name_plural
-    PatchedSCIMProviderRequest:
-      type: object
-      description: SCIMProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
-        url:
-          type: string
-          minLength: 1
-          description: Base URL to SCIM requests, usually ends in /v2
-        verify_certificates:
-          type: boolean
-        token:
-          type: string
-          description: Authentication token
-        auth_mode:
-          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
-        auth_oauth:
+        ssf_url:
           type:
           - string
           - 'null'
-          format: uuid
-          description: OAuth Source used for authentication
-        auth_oauth_params:
-          type: object
-          additionalProperties: {}
-          description: Additional OAuth parameters, such as grant_type
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
-        service_provider_config_cache_timeout:
+          readOnly: true
+        event_retention:
           type: string
-          minLength: 1
-          description: Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
-        exclude_users_service_account:
+        push_verify_certificates:
           type: boolean
-        sync_page_size:
-          type: integer
-          maximum: 2147483647
-          minimum: 1
-          description: Controls the number of objects synced in a single task
-        sync_page_timeout:
-          type: string
-          minLength: 1
-          description: Timeout for synchronization of a single page
-        discovery_enabled:
-          type: boolean
-          description: When enabled, authentik will attempt to discover existing resources in the remote system.
-        group_filters:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Group filters used to define sync-scope for groups.
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in the remote system.
+      required:
+      - component
+      - meta_model_name
+      - name
+      - oidc_auth_providers_obj
+      - pk
+      - signing_key
+      - ssf_url
+      - token_obj
+      - verbose_name
+      - verbose_name_plural
+    ClientTypeEnum:
+      enum:
+      - confidential
+      - public
+      type: string
     PaginatedRadiusProviderList:
       type: object
       properties:
@@ -6555,327 +7382,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RadiusProvider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedRACProviderRequest:
-      type: object
-      description: RACProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        settings:
-          type: object
-          additionalProperties: {}
-        connection_expiry:
-          type: string
-          minLength: 1
-          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
-        delete_token_on_disconnect:
-          type: boolean
-          description: When set to true, connection tokens will be deleted upon disconnect.
-    OutgoingSyncDeleteAction:
-      enum:
-      - do_nothing
-      - delete
-      - suspend
-      type: string
-    RadiusProvider:
-      type: object
-      description: RadiusProvider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        assigned_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        assigned_backchannel_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_backchannel_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        client_networks:
-          type: string
-          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-        shared_secret:
-          type: string
-          description: Shared secret between clients and server to hash packets.
-        outpost_set:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        mfa_support:
-          type: boolean
-          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-        certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-      required:
-      - assigned_application_name
-      - assigned_application_slug
-      - assigned_backchannel_application_name
-      - assigned_backchannel_application_slug
-      - authorization_flow
-      - component
-      - invalidation_flow
-      - meta_model_name
-      - name
-      - outpost_set
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    SAMLBindingsEnum:
-      enum:
-      - redirect
-      - post
-      type: string
-    PaginatedSSFProviderList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SSFProvider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GrantTypeEnum:
-      enum:
-      - authorization_code
-      - implicit
-      - hybrid
-      - refresh_token
-      - client_credentials
-      - password
-      - urn:ietf:params:oauth:grant-type:device_code
-      - urn:ietf:params:oauth:grant-type:token-exchange
-      type: string
-    SAMLProviderImportRequest:
-      type: object
-      description: Import saml provider from XML Metadata
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authorization_flow:
-          type: string
-          format: uuid
-        invalidation_flow:
-          type: string
-          format: uuid
-        file:
-          type: string
-          format: binary
-      required:
-      - authorization_flow
-      - file
-      - invalidation_flow
-      - name
-    IssuerModeEnum:
-      enum:
-      - global
-      - per_provider
-      type: string
-    PatchedWSFederationProviderRequest:
-      type: object
-      description: WSFederationProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        reply_url:
-          type: string
-          format: uri
-          minLength: 1
-        wtrealm:
-          type: string
-          minLength: 1
-        assertion_valid_not_before:
-          type: string
-          minLength: 1
-          description: 'Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).'
-        assertion_valid_not_on_or_after:
-          type: string
-          minLength: 1
-          description: 'Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        session_valid_not_on_or_after:
-          type: string
-          minLength: 1
-          description: 'Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        name_id_mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: NameID Property Mapping
-          description: Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-        saml_version:
-          allOf:
-          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
-          description: SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
-        digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
-        signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
-        signing_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Signing Keypair
-          description: Keypair used to sign outgoing Responses going to the Service Provider.
-        encryption_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-        sign_assertion:
-          type: boolean
-        sign_logout_request:
-          type: boolean
-        default_name_id_policy:
-          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-    PaginatedOAuth2DynamicClientRegistrationList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    IntentEnum:
-      enum:
-      - verification
-      - api
-      - recovery
-      - app_password
-      type: string
-    PaginatedSCIMProviderGroupList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SCIMProviderGroup'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -7097,59 +7603,7 @@ components:
       - url_unified_init
       - verbose_name
       - verbose_name_plural
-    PatchedRadiusProviderRequest:
-      type: object
-      description: RadiusProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        client_networks:
-          type: string
-          minLength: 1
-          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-        shared_secret:
-          type: string
-          minLength: 1
-          description: Shared secret between clients and server to hash packets.
-        mfa_support:
-          type: boolean
-          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-        certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    PaginatedSCIMProviderUserList:
+    PaginatedGoogleWorkspaceProviderList:
       type: object
       properties:
         pagination:
@@ -7157,30 +7611,251 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/SCIMProviderUser'
+            $ref: '#/components/schemas/GoogleWorkspaceProvider'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    TaskAggregatedStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
-    PatchedGoogleWorkspaceProviderRequest:
+    SCIMProviderGroupRequest:
       type: object
-      description: GoogleWorkspaceProvider Serializer
+      description: SCIMProviderGroup Serializer
+      properties:
+        scim_id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        provider:
+          type: integer
+      required:
+      - group
+      - provider
+      - scim_id
+    SAMLNameIDPolicyEnum:
+      enum:
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+      type: string
+    PatchedOAuth2DynamicClientRegistrationRequest:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        provider:
+          type: integer
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        override_authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Authorization flow applied to dynamically registered clients.
+        override_invalidation_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        override_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum refresh token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+    PaginatedGoogleWorkspaceProviderGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    SyncObjectResult:
+      type: object
+      description: Result of a single object sync
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+      required:
+      - messages
+    OAuth2DynamicClientRegistration:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        provider:
+          type: integer
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        override_authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Authorization flow applied to dynamically registered clients.
+        override_invalidation_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        override_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          description: 'Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          description: 'Maximum refresh token validity for registered clients (Format: hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - pbm_uuid
+      - provider
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+    SyncObjectModelEnum:
+      enum:
+      - authentik.core.models.User
+      - authentik.core.models.Group
+      type: string
+    PaginatedSAMLProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Token:
+      type: object
+      description: Token Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Token uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        identifier:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        intent:
+          $ref: '#/components/schemas/IntentEnum'
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        description:
+          type: string
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        expiring:
+          type: boolean
+      required:
+      - identifier
+      - pk
+      - user_obj
+    OAuth2ProviderLogoutMethodEnum:
+      enum:
+      - backchannel
+      - frontchannel
+      type: string
+    MicrosoftEntraProviderGroupRequest:
+      type: object
+      description: MicrosoftEntraProviderGroup Serializer
+      properties:
+        microsoft_id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        provider:
+          type: integer
+      required:
+      - group
+      - microsoft_id
+      - provider
+    ForceBindingEnum:
+      type: string
+      enum:
+      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+    PatchedSCIMProviderRequest:
+      type: object
+      description: SCIMProvider Serializer
       properties:
         name:
           type: string
@@ -7196,31 +7871,38 @@ components:
             type: string
             format: uuid
           description: Property mappings used for group creation/updating.
-        delegated_subject:
-          type: string
-          format: email
-          minLength: 1
-          maxLength: 254
-        credentials:
-          type: object
-          additionalProperties: {}
-        scopes:
+        url:
           type: string
           minLength: 1
-        exclude_users_service_account:
+          description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
           type: boolean
-        filter_group:
+        token:
+          type: string
+          description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_oauth:
           type:
           - string
           - 'null'
           format: uuid
-        user_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        group_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        default_group_email_domain:
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
           type: string
           minLength: 1
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
+        exclude_users_service_account:
+          type: boolean
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -7230,22 +7912,56 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in the remote system.
         discovery_enabled:
           type: boolean
           description: When enabled, authentik will attempt to discover existing resources in the remote system.
-    OAuth2Provider:
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in the remote system.
+    PaginatedGoogleWorkspaceProviderUserList:
       type: object
-      description: OAuth2Provider Serializer
       properties:
-        pk:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GoogleWorkspaceProviderGroupRequest:
+      type: object
+      description: GoogleWorkspaceProviderGroup Serializer
+      properties:
+        google_id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        provider:
           type: integer
-          readOnly: true
-          title: ID
+      required:
+      - google_id
+      - group
+      - provider
+    RACProviderRequest:
+      type: object
+      description: RACProvider Serializer
+      properties:
         name:
           type: string
+          minLength: 1
         authentication_flow:
           type:
           - string
@@ -7256,191 +7972,24 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
             type: string
             format: uuid
-        component:
+        settings:
+          type: object
+          additionalProperties: {}
+        connection_expiry:
           type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        assigned_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        assigned_backchannel_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_backchannel_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        client_type:
-          allOf:
-          - $ref: '#/components/schemas/ClientTypeEnum'
-          description: Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-        grant_types:
-          type: array
-          items:
-            $ref: '#/components/schemas/GrantTypeEnum'
-        client_id:
-          type: string
-          maxLength: 255
-        client_secret:
-          type: string
-          maxLength: 255
-        access_code_validity:
-          type: string
-          description: 'Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        access_token_validity:
-          type: string
-          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        refresh_token_validity:
-          type: string
-          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        refresh_token_threshold:
-          type: string
-          description: 'When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3).'
-        include_claims_in_id_token:
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        delete_token_on_disconnect:
           type: boolean
-          description: Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.
-        signing_key:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Key used to sign the tokens.
-        encryption_key:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs.
-        redirect_uris:
-          type: array
-          items:
-            $ref: '#/components/schemas/RedirectURI'
-        logout_uri:
-          type: string
-          format: uri
-        logout_method:
-          allOf:
-          - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
-          description: Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
-        sub_mode:
-          allOf:
-          - $ref: '#/components/schemas/SubModeEnum'
-          description: Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
-        issuer_mode:
-          allOf:
-          - $ref: '#/components/schemas/IssuerModeEnum'
-          description: Configure how the issuer field of the ID Token should be filled.
-        jwt_federation_sources:
-          type: array
-          items:
-            type: string
-            format: uuid
-            title: Any JWT signed by the JWK of the selected source can be used to authenticate.
-          title: Any JWT signed by the JWK of the selected source can be used to authenticate.
-        jwt_federation_providers:
-          type: array
-          items:
-            type: integer
+          description: When set to true, connection tokens will be deleted upon disconnect.
       required:
-      - assigned_application_name
-      - assigned_application_slug
-      - assigned_backchannel_application_name
-      - assigned_backchannel_application_slug
       - authorization_flow
-      - component
-      - invalidation_flow
-      - meta_model_name
       - name
-      - pk
-      - redirect_uris
-      - verbose_name
-      - verbose_name_plural
-    SyncObjectModelEnum:
-      enum:
-      - authentik.core.models.User
-      - authentik.core.models.Group
-      type: string
-    PartialGroup:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - pk
-    PropertyMappingPreview:
-      type: object
-      description: Preview how the current user is mapped via the property mappings selected in a provider
-      properties:
-        preview:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-      required:
-      - preview
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
     LDAPProviderRequest:
       type: object
       description: LDAPProvider Serializer
@@ -7499,127 +8048,6 @@ components:
       - authorization_flow
       - invalidation_flow
       - name
-    ForceBindingEnum:
-      type: string
-      enum:
-      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
-      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
-    MicrosoftEntraProviderGroupRequest:
-      type: object
-      description: MicrosoftEntraProviderGroup Serializer
-      properties:
-        microsoft_id:
-          type: string
-          minLength: 1
-        group:
-          type: string
-          format: uuid
-        provider:
-          type: integer
-      required:
-      - group
-      - microsoft_id
-      - provider
-    PatchedSSFProviderRequest:
-      type: object
-      description: SSFProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        signing_key:
-          type: string
-          format: uuid
-          description: Key used to sign the SSF Events.
-        oidc_auth_providers:
-          type: array
-          items:
-            type: integer
-        event_retention:
-          type: string
-          minLength: 1
-        push_verify_certificates:
-          type: boolean
-    SAMLNameIDPolicyEnum:
-      enum:
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-      type: string
-    PaginatedMicrosoftEntraProviderList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/MicrosoftEntraProvider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    DigestAlgorithmEnum:
-      enum:
-      - http://www.w3.org/2000/09/xmldsig#sha1
-      - http://www.w3.org/2001/04/xmlenc#sha256
-      - http://www.w3.org/2001/04/xmldsig-more#sha384
-      - http://www.w3.org/2001/04/xmlenc#sha512
-      type: string
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    PartialUser:
-      type: object
-      description: Partial User Serializer, does not include child relations.
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-      required:
-      - name
-      - pk
-      - uid
-      - username
-    ClientTypeEnum:
-      enum:
-      - confidential
-      - public
-      type: string
     LDAPProvider:
       type: object
       description: LDAPProvider Serializer
@@ -7735,7 +8163,123 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    PatchedProxyProviderRequest:
+    GoogleWorkspaceProviderUser:
+      type: object
+      description: GoogleWorkspaceProviderUser Serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        google_id:
+          type: string
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        provider:
+          type: integer
+        attributes:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - attributes
+      - google_id
+      - id
+      - provider
+      - user
+      - user_obj
+    PaginatedMicrosoftEntraProviderUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GoogleWorkspaceProviderRequest:
+      type: object
+      description: GoogleWorkspaceProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        delegated_subject:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        credentials:
+          type: object
+          additionalProperties: {}
+        scopes:
+          type: string
+          minLength: 1
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        group_delete_action:
+          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        default_group_email_domain:
+          type: string
+          minLength: 1
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources in the remote system.
+      required:
+      - credentials
+      - default_group_email_domain
+      - delegated_subject
+      - name
+    SubModeEnum:
+      enum:
+      - hashed_user_id
+      - user_id
+      - user_uuid
+      - user_username
+      - user_email
+      - user_upn
+      type: string
+    ProxyProviderRequest:
       type: object
       description: ProxyProvider Serializer
       properties:
@@ -7819,48 +8363,36 @@ components:
           type: string
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-    RedirectURITypeEnum:
-      enum:
-      - authorization
-      - logout
-      type: string
-    PaginatedRACProviderList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RACProvider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
       required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedSCIMProviderList:
+      - authorization_flow
+      - external_host
+      - invalidation_flow
+      - name
+    SCIMProviderUserRequest:
       type: object
+      description: SCIMProviderUser Serializer
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SCIMProvider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedOAuth2ProviderRequest:
-      type: object
-      description: OAuth2Provider Serializer
-      properties:
-        name:
+        scim_id:
           type: string
           minLength: 1
+        user:
+          type: integer
+        provider:
+          type: integer
+      required:
+      - provider
+      - scim_id
+      - user
+    RadiusProvider:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
         authentication_flow:
           type:
           - string
@@ -7880,71 +8412,194 @@ components:
           items:
             type: string
             format: uuid
-        client_type:
-          allOf:
-          - $ref: '#/components/schemas/ClientTypeEnum'
-          description: Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
-        grant_types:
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        client_networks:
+          type: string
+          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+        shared_secret:
+          type: string
+          description: Shared secret between clients and server to hash packets.
+        outpost_set:
           type: array
           items:
-            $ref: '#/components/schemas/GrantTypeEnum'
+            type: string
+          readOnly: true
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+        certificate:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - authorization_flow
+      - component
+      - invalidation_flow
+      - meta_model_name
+      - name
+      - outpost_set
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    ProxyProvider:
+      type: object
+      description: ProxyProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
         client_id:
           type: string
-          minLength: 1
-          maxLength: 255
-        client_secret:
+          readOnly: true
+        internal_host:
           type: string
-          maxLength: 255
-        access_code_validity:
+          format: uri
+        external_host:
           type: string
-          minLength: 1
-          description: 'Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        access_token_validity:
-          type: string
-          minLength: 1
-          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        refresh_token_validity:
-          type: string
-          minLength: 1
-          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
-        refresh_token_threshold:
-          type: string
-          minLength: 1
-          description: 'When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3).'
-        include_claims_in_id_token:
+          format: uri
+        internal_host_ssl_validation:
           type: boolean
-          description: Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.
-        signing_key:
+          description: Validate SSL Certificates of upstream servers
+        certificate:
           type:
           - string
           - 'null'
           format: uuid
-          description: Key used to sign the tokens.
-        encryption_key:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs.
+        skip_path_regex:
+          type: string
+          description: Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
+        basic_auth_enabled:
+          type: boolean
+          title: Set HTTP-Basic Authentication
+          description: Set a custom HTTP-Basic Authentication header based on values from authentik.
+        basic_auth_password_attribute:
+          type: string
+          title: HTTP-Basic Password Key
+          description: User/Group Attribute used for the password part of the HTTP-Basic Header.
+        basic_auth_user_attribute:
+          type: string
+          title: HTTP-Basic Username Key
+          description: User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ProxyMode'
+          description: Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+        intercept_header_auth:
+          type: boolean
+          description: When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
         redirect_uris:
           type: array
           items:
-            $ref: '#/components/schemas/RedirectURIRequest'
-        logout_uri:
+            $ref: '#/components/schemas/RedirectURI'
+          readOnly: true
+        cookie_domain:
           type: string
-          format: uri
-        logout_method:
-          allOf:
-          - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
-          description: Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
-        sub_mode:
-          allOf:
-          - $ref: '#/components/schemas/SubModeEnum'
-          description: Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
-        issuer_mode:
-          allOf:
-          - $ref: '#/components/schemas/IssuerModeEnum'
-          description: Configure how the issuer field of the ID Token should be filled.
         jwt_federation_sources:
           type: array
           items:
@@ -7956,406 +8611,47 @@ components:
           type: array
           items:
             type: integer
-    PatchedLDAPProviderRequest:
-      type: object
-      description: LDAPProvider Serializer
-      properties:
-        name:
+        access_token_validity:
           type: string
-          minLength: 1
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
+          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
           type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        base_dn:
-          type: string
-          minLength: 1
-          description: DN under which objects are accessible.
-        certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        tls_server_name:
-          type: string
-        uid_start_number:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
-        gid_start_number:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
-        search_mode:
-          $ref: '#/components/schemas/LDAPAPIAccessMode'
-        bind_mode:
-          $ref: '#/components/schemas/LDAPAPIAccessMode'
-        mfa_support:
-          type: boolean
-          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-    UserTypeEnum:
-      enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
-      type: string
-    Provider:
-      type: object
-      description: Provider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        assigned_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        assigned_backchannel_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_backchannel_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - assigned_application_name
-      - assigned_application_slug
-      - assigned_backchannel_application_name
-      - assigned_backchannel_application_slug
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    MatchingModeEnum:
-      enum:
-      - strict
-      - regex
-      type: string
-    PaginatedGoogleWorkspaceProviderUserList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    RACProvider:
-      type: object
-      description: RACProvider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        assigned_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        assigned_backchannel_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_backchannel_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        settings:
-          type: object
-          additionalProperties: {}
+          description: 'Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).'
         outpost_set:
           type: array
           items:
             type: string
           readOnly: true
-        connection_expiry:
-          type: string
-          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
-        delete_token_on_disconnect:
-          type: boolean
-          description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - assigned_application_name
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - authorization_flow
+      - client_id
       - component
+      - external_host
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
       - pk
+      - redirect_uris
       - verbose_name
       - verbose_name_plural
-    SubModeEnum:
-      enum:
-      - hashed_user_id
-      - user_id
-      - user_uuid
-      - user_username
-      - user_email
-      - user_upn
-      type: string
-    SSFProviderRequest:
+    SAMLMetadata:
       type: object
-      description: SSFProvider Serializer
+      description: SAML Provider Metadata serializer
       properties:
-        name:
+        metadata:
           type: string
-          minLength: 1
-        signing_key:
-          type: string
-          format: uuid
-          description: Key used to sign the SSF Events.
-        oidc_auth_providers:
-          type: array
-          items:
-            type: integer
-        event_retention:
-          type: string
-          minLength: 1
-        push_verify_certificates:
-          type: boolean
-      required:
-      - name
-      - signing_key
-    SignatureAlgorithmEnum:
-      enum:
-      - http://www.w3.org/2000/09/xmldsig#rsa-sha1
-      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
-      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
-      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
-      - http://www.w3.org/2000/09/xmldsig#dsa-sha1
-      type: string
-    RedirectURI:
-      type: object
-      description: A single allowed redirect URI entry
-      properties:
-        matching_mode:
-          $ref: '#/components/schemas/MatchingModeEnum'
-        url:
-          type: string
-        redirect_uri_type:
-          allOf:
-          - $ref: '#/components/schemas/RedirectURITypeEnum'
-          default: authorization
-      required:
-      - matching_mode
-      - url
-    GoogleWorkspaceProviderRequest:
-      type: object
-      description: GoogleWorkspaceProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
-        delegated_subject:
-          type: string
-          format: email
-          minLength: 1
-          maxLength: 254
-        credentials:
-          type: object
-          additionalProperties: {}
-        scopes:
-          type: string
-          minLength: 1
-        exclude_users_service_account:
-          type: boolean
-        filter_group:
+        download_url:
           type:
           - string
           - 'null'
-          format: uuid
-        user_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        group_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        default_group_email_domain:
-          type: string
-          minLength: 1
-        sync_page_size:
-          type: integer
-          maximum: 2147483647
-          minimum: 1
-          description: Controls the number of objects synced in a single task
-        sync_page_timeout:
-          type: string
-          minLength: 1
-          description: Timeout for synchronization of a single page
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in the remote system.
-        discovery_enabled:
-          type: boolean
-          description: When enabled, authentik will attempt to discover existing resources in the remote system.
       required:
-      - credentials
-      - default_group_email_domain
-      - delegated_subject
-      - name
-    PaginatedOAuth2ProviderList:
+      - metadata
+    PaginatedOAuth2DynamicClientRegistrationList:
       type: object
       properties:
         pagination:
@@ -8363,313 +8659,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/OAuth2Provider'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    SSFProvider:
-      type: object
-      description: SSFProvider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        signing_key:
-          type: string
-          format: uuid
-          description: Key used to sign the SSF Events.
-        token_obj:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          readOnly: true
-        oidc_auth_providers:
-          type: array
-          items:
-            type: integer
-        oidc_auth_providers_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/Provider'
-          readOnly: true
-        ssf_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        event_retention:
-          type: string
-        push_verify_certificates:
-          type: boolean
-      required:
-      - component
-      - meta_model_name
-      - name
-      - oidc_auth_providers_obj
-      - pk
-      - signing_key
-      - ssf_url
-      - token_obj
-      - verbose_name
-      - verbose_name_plural
-    GoogleWorkspaceProvider:
-      type: object
-      description: GoogleWorkspaceProvider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        assigned_backchannel_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_backchannel_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        delegated_subject:
-          type: string
-          format: email
-          maxLength: 254
-        credentials:
-          type: object
-          additionalProperties: {}
-        scopes:
-          type: string
-        exclude_users_service_account:
-          type: boolean
-        filter_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        user_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        group_delete_action:
-          $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        default_group_email_domain:
-          type: string
-        sync_page_size:
-          type: integer
-          maximum: 2147483647
-          minimum: 1
-          description: Controls the number of objects synced in a single task
-        sync_page_timeout:
-          type: string
-          description: Timeout for synchronization of a single page
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in the remote system.
-        discovery_enabled:
-          type: boolean
-          description: When enabled, authentik will attempt to discover existing resources in the remote system.
-      required:
-      - assigned_backchannel_application_name
-      - assigned_backchannel_application_slug
-      - component
-      - credentials
-      - default_group_email_domain
-      - delegated_subject
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    TypeCreate:
-      type: object
-      description: Types of an object that can be created
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
-          type: boolean
-          default: false
-        deprecated:
-          type: boolean
-          default: false
-      required:
-      - component
-      - description
-      - model_name
-      - name
-    Token:
-      type: object
-      description: Token Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Token uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        identifier:
-          type: string
-          maxLength: 255
-          pattern: ^[-a-zA-Z0-9_]+$
-        intent:
-          $ref: '#/components/schemas/IntentEnum'
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/User'
-          readOnly: true
-        description:
-          type: string
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        expiring:
-          type: boolean
-      required:
-      - identifier
-      - pk
-      - user_obj
-    MicrosoftEntraProviderUserRequest:
-      type: object
-      description: MicrosoftEntraProviderUser Serializer
-      properties:
-        microsoft_id:
-          type: string
-          minLength: 1
-        user:
-          type: integer
-        provider:
-          type: integer
-      required:
-      - microsoft_id
-      - provider
-      - user
-    SCIMProviderGroupRequest:
-      type: object
-      description: SCIMProviderGroup Serializer
-      properties:
-        scim_id:
-          type: string
-          minLength: 1
-        group:
-          type: string
-          format: uuid
-        provider:
-          type: integer
-      required:
-      - group
-      - provider
-      - scim_id
-    RACProviderRequest:
-      type: object
-      description: RACProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        settings:
-          type: object
-          additionalProperties: {}
-        connection_expiry:
-          type: string
-          minLength: 1
-          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
-        delete_token_on_disconnect:
-          type: boolean
-          description: When set to true, connection tokens will be deleted upon disconnect.
-      required:
-      - authorization_flow
-      - name
-    PaginatedWSFederationProviderList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/WSFederationProvider'
+            $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -8681,6 +8671,29 @@ components:
       - all
       - any
       type: string
+    IntentEnum:
+      enum:
+      - verification
+      - api
+      - recovery
+      - app_password
+      type: string
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   parameters:
     QueryPaginationOrdering:
       in: query
@@ -8694,12 +8707,6 @@ components:
       schema:
         type: integer
       description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
     QuerySearch:
       in: query
       name: search
@@ -8711,19 +8718,12 @@ components:
       name: name
       schema:
         type: string
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

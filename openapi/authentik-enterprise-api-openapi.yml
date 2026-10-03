@@ -289,54 +289,20 @@ paths:
       summary: Enterprise license summary retrieve
       x-summary-source: derived
 components:
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   schemas:
-    LicenseSummaryStatusEnum:
-      enum:
-      - unlicensed
-      - valid
-      - expired
-      - expiry_soon
-      - limit_exceeded_admin
-      - limit_exceeded_user
-      - read_only
-      type: string
-    PatchedLicenseRequest:
-      type: object
-      description: License Serializer
-      properties:
-        key:
-          type: string
-          minLength: 1
     GenericError:
       type: object
       description: Generic API Error
@@ -347,6 +313,53 @@ components:
           type: string
       required:
       - detail
+    LicenseForecast:
+      type: object
+      description: Serializer for license forecast
+      properties:
+        internal_users:
+          type: integer
+        external_users:
+          type: integer
+        forecasted_internal_users:
+          type: integer
+        forecasted_external_users:
+          type: integer
+      required:
+      - external_users
+      - forecasted_external_users
+      - forecasted_internal_users
+      - internal_users
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    LicenseFlagsEnum:
+      enum:
+      - trial
+      - non_production
+      type: string
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object
@@ -367,36 +380,15 @@ components:
       - model_name
       - name
       - pk
-    License:
+    LicenseRequest:
       type: object
       description: License Serializer
       properties:
-        license_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
         key:
           type: string
-        expiry:
-          type: string
-          format: date-time
-          readOnly: true
-        internal_users:
-          type: integer
-          readOnly: true
-        external_users:
-          type: integer
-          readOnly: true
+          minLength: 1
       required:
-      - expiry
-      - external_users
-      - internal_users
       - key
-      - license_uuid
-      - name
     LicenseSummary:
       type: object
       description: Serializer for license status
@@ -428,11 +420,6 @@ components:
       - set_default
       - left_dangling
       type: string
-    LicenseFlagsEnum:
-      enum:
-      - trial
-      - non_production
-      type: string
     ValidationError:
       type: object
       description: Validation Error
@@ -444,40 +431,6 @@ components:
         code:
           type: string
       additionalProperties: {}
-    LicenseRequest:
-      type: object
-      description: License Serializer
-      properties:
-        key:
-          type: string
-          minLength: 1
-      required:
-      - key
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
     InstallID:
       type: object
       properties:
@@ -485,23 +438,53 @@ components:
           type: string
       required:
       - install_id
-    LicenseForecast:
+    LicenseSummaryStatusEnum:
+      enum:
+      - unlicensed
+      - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
+    PatchedLicenseRequest:
       type: object
-      description: Serializer for license forecast
+      description: License Serializer
       properties:
+        key:
+          type: string
+          minLength: 1
+    License:
+      type: object
+      description: License Serializer
+      properties:
+        license_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        key:
+          type: string
+        expiry:
+          type: string
+          format: date-time
+          readOnly: true
         internal_users:
           type: integer
+          readOnly: true
         external_users:
           type: integer
-        forecasted_internal_users:
-          type: integer
-        forecasted_external_users:
-          type: integer
+          readOnly: true
       required:
+      - expiry
       - external_users
-      - forecasted_external_users
-      - forecasted_internal_users
       - internal_users
+      - key
+      - license_uuid
+      - name
     PaginatedLicenseList:
       type: object
       properties:
@@ -520,19 +503,36 @@ components:
     Autocomplete:
       type: object
       additionalProperties: {}
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
+  parameters:
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

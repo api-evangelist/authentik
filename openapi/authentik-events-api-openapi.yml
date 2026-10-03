@@ -1279,44 +1279,42 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Notification:
+    NotificationTransportTest:
       type: object
-      description: Notification Serializer
+      description: Notification test serializer
       properties:
-        pk:
+        messages:
+          type: array
+          items:
+            type: string
+      required:
+      - messages
+    PatchedEventRequest:
+      type: object
+      description: Event Serializer
+      properties:
+        user:
+          type: object
+          additionalProperties: {}
+        action:
+          $ref: '#/components/schemas/EventActions'
+        app:
           type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/SeverityEnum'
-          readOnly: true
-        body:
-          type: string
-          readOnly: true
-        hyperlink:
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        client_ip:
           type:
           - string
           - 'null'
-          maxLength: 4096
-        hyperlink_label:
-          type:
-          - string
-          - 'null'
-        created:
+          minLength: 1
+        expires:
           type: string
           format: date-time
-          readOnly: true
-        event:
-          $ref: '#/components/schemas/Event'
-        seen:
-          type: boolean
-      required:
-      - body
-      - created
-      - pk
-      - severity
+        brand:
+          type: object
+          additionalProperties: {}
     Event:
       type: object
       description: Event Serializer
@@ -1355,47 +1353,35 @@ components:
       - app
       - created
       - pk
-    PartialUser:
+    EventRequest:
       type: object
-      description: Partial User Serializer, does not include child relations.
+      description: Event Serializer
       properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
+        user:
+          type: object
+          additionalProperties: {}
+        action:
+          $ref: '#/components/schemas/EventActions'
+        app:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
+          minLength: 1
+        context:
+          type: object
+          additionalProperties: {}
+        client_ip:
           type:
           - string
           - 'null'
-          format: date-time
-        email:
+          minLength: 1
+        expires:
           type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
+          format: date-time
+        brand:
           type: object
           additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
       required:
-      - name
-      - pk
-      - uid
-      - username
+      - action
+      - app
     NotificationTransport:
       type: object
       description: NotificationTransport Serializer
@@ -1445,6 +1431,68 @@ components:
       - mode_verbose
       - name
       - pk
+    PaginatedNotificationTransportList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationTransport'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    EventTopPerUser:
+      type: object
+      description: Response object of Event's top_per_user
+      properties:
+        application:
+          type: object
+          additionalProperties: {}
+        counted_events:
+          type: integer
+        unique_users:
+          type: integer
+      required:
+      - application
+      - counted_events
+      - unique_users
+    TransportModeEnum:
+      enum:
+      - local
+      - webhook
+      - webhook_slack
+      - email
+      type: string
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
     RelatedGroup:
       type: object
       description: Stripped down group serializer to show relevant children/parents for groups
@@ -1470,6 +1518,144 @@ components:
       - group_uuid
       - name
       - pk
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PaginatedEventList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    ContentType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        fully_qualified_model:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - fully_qualified_model
+      - id
+      - model
+      - verbose_name_plural
+    PatchedNotificationRuleRequest:
+      type: object
+      description: NotificationRule Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          description: Controls which severity level the created notifications will have.
+        destination_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+    Notification:
+      type: object
+      description: Notification Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          readOnly: true
+        body:
+          type: string
+          readOnly: true
+        hyperlink:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+        hyperlink_label:
+          type:
+          - string
+          - 'null'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        event:
+          $ref: '#/components/schemas/Event'
+        seen:
+          type: boolean
+      required:
+      - body
+      - created
+      - pk
+      - severity
     PaginatedNotificationList:
       type: object
       properties:
@@ -1485,6 +1671,112 @@ components:
       - autocomplete
       - pagination
       - results
+    EventStats:
+      type: object
+      description: Count of unique users in events and aggregated counts per specified deltas
+      properties:
+        unique_users:
+          type: integer
+        count_step:
+          type: object
+          additionalProperties: {}
+      required:
+      - count_step
+      - unique_users
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    PatchedNotificationRequest:
+      type: object
+      description: Notification Serializer
+      properties:
+        hyperlink:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+        hyperlink_label:
+          type:
+          - string
+          - 'null'
+        event:
+          $ref: '#/components/schemas/EventRequest'
+        seen:
+          type: boolean
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    PatchedNotificationTransportRequest:
+      type: object
+      description: NotificationTransport Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        mode:
+          $ref: '#/components/schemas/TransportModeEnum'
+        webhook_url:
+          type: string
+          format: uri
+        webhook_ca:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, the selected certificate is used to validate the certificate of the webhook server.
+        webhook_mapping_body:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Customize the body of the request. Mapping should return data that is JSON-serializable.
+        webhook_mapping_headers:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
+        send_once:
+          type: boolean
+          description: Only send notification once, for example when sending a webhook into a chat channel.
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     Group:
       type: object
       description: Group Serializer
@@ -1568,215 +1860,6 @@ components:
       - pk
       - roles_obj
       - users_obj
-    PatchedEventRequest:
-      type: object
-      description: Event Serializer
-      properties:
-        user:
-          type: object
-          additionalProperties: {}
-        action:
-          $ref: '#/components/schemas/EventActions'
-        app:
-          type: string
-          minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
-        client_ip:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        expires:
-          type: string
-          format: date-time
-        brand:
-          type: object
-          additionalProperties: {}
-    SeverityEnum:
-      enum:
-      - notice
-      - warning
-      - alert
-      type: string
-    NotificationRequest:
-      type: object
-      description: Notification Serializer
-      properties:
-        hyperlink:
-          type:
-          - string
-          - 'null'
-          maxLength: 4096
-        hyperlink_label:
-          type:
-          - string
-          - 'null'
-        event:
-          $ref: '#/components/schemas/EventRequest'
-        seen:
-          type: boolean
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    ContentType:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        model:
-          type: string
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          readOnly: true
-        fully_qualified_model:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - fully_qualified_model
-      - id
-      - model
-      - verbose_name_plural
-    PatchedNotificationRequest:
-      type: object
-      description: Notification Serializer
-      properties:
-        hyperlink:
-          type:
-          - string
-          - 'null'
-          maxLength: 4096
-        hyperlink_label:
-          type:
-          - string
-          - 'null'
-        event:
-          $ref: '#/components/schemas/EventRequest'
-        seen:
-          type: boolean
-    PatchedNotificationRuleRequest:
-      type: object
-      description: NotificationRule Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        transports:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/SeverityEnum'
-          description: Controls which severity level the created notifications will have.
-        destination_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
-        destination_event_user:
-          type: boolean
-          description: When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    EventStats:
-      type: object
-      description: Count of unique users in events and aggregated counts per specified deltas
-      properties:
-        unique_users:
-          type: integer
-        count_step:
-          type: object
-          additionalProperties: {}
-      required:
-      - count_step
-      - unique_users
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    NotificationTransportTest:
-      type: object
-      description: Notification test serializer
-      properties:
-        messages:
-          type: array
-          items:
-            type: string
-      required:
-      - messages
-    PaginatedNotificationRuleList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/NotificationRule'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    TransportModeEnum:
-      enum:
-      - local
-      - webhook
-      - webhook_slack
-      - email
-      type: string
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     NotificationRule:
       type: object
       description: NotificationRule Serializer
@@ -1815,144 +1898,29 @@ components:
       - destination_group_obj
       - name
       - pk
-    Role:
+    SeverityEnum:
+      enum:
+      - notice
+      - warning
+      - alert
+      type: string
+    NotificationRequest:
       type: object
-      description: Role serializer
+      description: Notification Serializer
       properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
-    PaginatedNotificationTransportList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/NotificationTransport'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    EventVolume:
-      type: object
-      description: Count of events of action created on day for a single event action
-      properties:
-        action:
-          $ref: '#/components/schemas/EventActions'
-        time:
-          type: string
-          format: date-time
-        count:
-          type: integer
-      required:
-      - action
-      - count
-      - time
-    NotificationTransportRequest:
-      type: object
-      description: NotificationTransport Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        mode:
-          $ref: '#/components/schemas/TransportModeEnum'
-        webhook_url:
-          type: string
-          format: uri
-        webhook_ca:
+        hyperlink:
           type:
           - string
           - 'null'
-          format: uuid
-          description: When set, the selected certificate is used to validate the certificate of the webhook server.
-        webhook_mapping_body:
+          maxLength: 4096
+        hyperlink_label:
           type:
           - string
           - 'null'
-          format: uuid
-          description: Customize the body of the request. Mapping should return data that is JSON-serializable.
-        webhook_mapping_headers:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-        email_subject_prefix:
-          type: string
-        email_template:
-          type: string
-          minLength: 1
-        send_once:
+        event:
+          $ref: '#/components/schemas/EventRequest'
+        seen:
           type: boolean
-          description: Only send notification once, for example when sending a webhook into a chat channel.
-      required:
-      - name
-    EventRequest:
-      type: object
-      description: Event Serializer
-      properties:
-        user:
-          type: object
-          additionalProperties: {}
-        action:
-          $ref: '#/components/schemas/EventActions'
-        app:
-          type: string
-          minLength: 1
-        context:
-          type: object
-          additionalProperties: {}
-        client_ip:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        expires:
-          type: string
-          format: date-time
-        brand:
-          type: object
-          additionalProperties: {}
-      required:
-      - action
-      - app
     DataExport:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -1992,127 +1960,6 @@ components:
       - query_params
       - requested_by
       - requested_on
-    PaginatedEventList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedNotificationTransportRequest:
-      type: object
-      description: NotificationTransport Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        mode:
-          $ref: '#/components/schemas/TransportModeEnum'
-        webhook_url:
-          type: string
-          format: uri
-        webhook_ca:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: When set, the selected certificate is used to validate the certificate of the webhook server.
-        webhook_mapping_body:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Customize the body of the request. Mapping should return data that is JSON-serializable.
-        webhook_mapping_headers:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-        email_subject_prefix:
-          type: string
-        email_template:
-          type: string
-          minLength: 1
-        send_once:
-          type: boolean
-          description: Only send notification once, for example when sending a webhook into a chat channel.
-    TypeCreate:
-      type: object
-      description: Types of an object that can be created
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
-          type: boolean
-          default: false
-        deprecated:
-          type: boolean
-          default: false
-      required:
-      - component
-      - description
-      - model_name
-      - name
-    EventTopPerUser:
-      type: object
-      description: Response object of Event's top_per_user
-      properties:
-        application:
-          type: object
-          additionalProperties: {}
-        counted_events:
-          type: integer
-        unique_users:
-          type: integer
-      required:
-      - application
-      - counted_events
-      - unique_users
-    NotificationRuleRequest:
-      type: object
-      description: NotificationRule Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        transports:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/SeverityEnum'
-          description: Controls which severity level the created notifications will have.
-        destination_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
-        destination_event_user:
-          type: boolean
-          description: When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
-      required:
-      - name
     EventActions:
       enum:
       - login
@@ -2154,39 +2001,162 @@ components:
       - access_request_revoked
       - custom_
       type: string
+    NotificationTransportRequest:
+      type: object
+      description: NotificationTransport Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        mode:
+          $ref: '#/components/schemas/TransportModeEnum'
+        webhook_url:
+          type: string
+          format: uri
+        webhook_ca:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, the selected certificate is used to validate the certificate of the webhook server.
+        webhook_mapping_body:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Customize the body of the request. Mapping should return data that is JSON-serializable.
+        webhook_mapping_headers:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
+        send_once:
+          type: boolean
+          description: Only send notification once, for example when sending a webhook into a chat channel.
+      required:
+      - name
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    PaginatedNotificationRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    EventVolume:
+      type: object
+      description: Count of events of action created on day for a single event action
+      properties:
+        action:
+          $ref: '#/components/schemas/EventActions'
+        time:
+          type: string
+          format: date-time
+        count:
+          type: integer
+      required:
+      - action
+      - count
+      - time
     Autocomplete:
       type: object
       additionalProperties: {}
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
+    NotificationRuleRequest:
+      type: object
+      description: NotificationRule Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/SeverityEnum'
+          description: Controls which severity level the created notifications will have.
+        destination_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+      required:
+      - name
+    Role:
+      type: object
+      description: Role serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+      required:
+      - name
+      - pk
   responses:
     GenericErrorResponse:
       content:
@@ -2200,6 +2170,36 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+  parameters:
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

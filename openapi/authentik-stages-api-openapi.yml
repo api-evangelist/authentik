@@ -6679,26 +6679,9 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ConsentModeEnum:
-      enum:
-      - always_require
-      - permanent
-      - expiring
-      type: string
-    DenyStageRequest:
+    PatchedAuthenticatorTOTPStageRequest:
       type: object
-      description: DenyStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        deny_message:
-          type: string
-      required:
-      - name
-    AuthenticatorStaticStageRequest:
-      type: object
-      description: AuthenticatorStaticStage Serializer
+      description: AuthenticatorTOTPStage Serializer
       properties:
         name:
           type: string
@@ -6711,30 +6694,11 @@ components:
           description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-        token_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        token_length:
-          type: integer
-          maximum: 100
-          minimum: 0
-      required:
-      - name
-    DummyStageRequest:
+        digits:
+          $ref: '#/components/schemas/DigitsEnum'
+    ConsentStage:
       type: object
-      description: DummyStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        throw_error:
-          type: boolean
-      required:
-      - name
-    PromptStage:
-      type: object
-      description: PromptStage Serializer
+      description: ConsentStage Serializer
       properties:
         pk:
           type: string
@@ -6764,26 +6728,36 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
           readOnly: true
-        fields:
-          type: array
-          items:
-            type: string
-            format: uuid
-        validation_policies:
-          type: array
-          items:
-            type: string
-            format: uuid
+        mode:
+          $ref: '#/components/schemas/ConsentModeEnum'
+        consent_expire_in:
+          type: string
+          title: Consent expires in
+          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
-      - fields
       - flow_set
       - meta_model_name
       - name
       - pk
       - verbose_name
       - verbose_name_plural
-    InvitationRequest:
+    PaginatedWebAuthnDeviceTypeList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedInvitationRequest:
       type: object
       description: Invitation Serializer
       properties:
@@ -6808,324 +6782,26 @@ components:
           - 'null'
           format: uuid
           description: When set, only the configured flow can use this invitation.
-      required:
-      - name
-    UserSetting:
-      type: object
-      description: Serializer for User settings for stages and sources
-      properties:
-        object_uid:
-          type: string
-        component:
-          type: string
-        title:
-          type: string
-        configure_url:
-          type: string
-        icon_url:
-          type: string
-      required:
-      - component
-      - object_uid
-      - title
-    PaginatedAuthenticatorEmailStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticatorEmailStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedDummyStageRequest:
-      type: object
-      description: DummyStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        throw_error:
-          type: boolean
-    DeviceClassesEnum:
+    FlowMessageLevelEnum:
       enum:
-      - static
-      - totp
-      - webauthn
-      - duo
-      - sms
-      - email
+      - debug
+      - info
+      - success
+      - warning
+      - error
       type: string
-    RedirectStage:
+    AuthenticatorDuoStageDeviceImportResponse:
       type: object
-      description: RedirectStage Serializer
       properties:
-        pk:
-          type: string
-          format: uuid
+        count:
+          type: integer
           readOnly: true
-          title: Stage uuid
-        name:
+        error:
           type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
           readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        keep_context:
-          type: boolean
-        mode:
-          $ref: '#/components/schemas/RedirectStageModeEnum'
-        target_static:
-          type: string
-        target_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
       required:
-      - component
-      - flow_set
-      - meta_model_name
-      - mode
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PromptChoice:
-      type: object
-      description: Serializer for a single Choice field
-      properties:
-        value:
-          type: string
-        label:
-          type: string
-      required:
-      - label
-      - value
-    PatchedRedirectStageRequest:
-      type: object
-      description: RedirectStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        keep_context:
-          type: boolean
-        mode:
-          $ref: '#/components/schemas/RedirectStageModeEnum'
-        target_static:
-          type: string
-        target_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-    PaginatedDummyStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DummyStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedAuthenticatorTOTPStageRequest:
-      type: object
-      description: AuthenticatorTOTPStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        digits:
-          $ref: '#/components/schemas/DigitsEnum'
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    AuthenticatorValidateStage:
-      type: object
-      description: AuthenticatorValidateStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        not_configured_action:
-          $ref: '#/components/schemas/NotConfiguredActionEnum'
-        device_classes:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceClassesEnum'
-          description: Device classes which can be used to authenticate
-        configuration_stages:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
-        last_auth_threshold:
-          type: string
-          description: If any of the user's device has been used within this threshold, this stage will be skipped
-        webauthn_user_verification:
-          allOf:
-          - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for WebAuthn devices.
-        webauthn_hints:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnHintEnum'
-        webauthn_allowed_device_types:
-          type: array
-          items:
-            type: string
-            format: uuid
-        webauthn_allowed_device_types_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnDeviceType'
-          readOnly: true
-        email_otp_throttling_factor:
-          type: number
-          format: double
-        sms_otp_throttling_factor:
-          type: number
-          format: double
-        totp_otp_throttling_factor:
-          type: number
-          format: double
-        static_otp_throttling_factor:
-          type: number
-          format: double
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-      - webauthn_allowed_device_types_obj
-    ProviderEnum:
-      enum:
-      - twilio
-      - generic
-      type: string
-    PaginatedUserLogoutStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserLogoutStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedSourceStageRequest:
-      type: object
-      description: SourceStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        source:
-          type: string
-          format: uuid
-        resume_timeout:
-          type: string
-          minLength: 1
-          description: 'Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
-        resume_on_match_failures:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
-          description: Source matching failure reasons for which the flow should resume.
-    PaginatedInvitationStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvitationStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
+      - count
+      - error
     Flow:
       type: object
       description: Flow Serializer
@@ -7211,6 +6887,134 @@ components:
       - slug
       - stages
       - title
+    PaginatedUserDeleteStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDeleteStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRedirectStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedAuthenticatorStaticStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorStaticStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    DuoDeviceEnrollmentStatus:
+      type: object
+      properties:
+        duo_response:
+          $ref: '#/components/schemas/DuoResponseEnum'
+      required:
+      - duo_response
+    PaginatedAuthenticatorValidateStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorValidateStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    StagePrompt:
+      type: object
+      description: Serializer for a single Prompt field
+      properties:
+        field_key:
+          type: string
+        label:
+          type: string
+        type:
+          $ref: '#/components/schemas/PromptTypeEnum'
+        required:
+          type: boolean
+        placeholder:
+          type: string
+        initial_value:
+          type: string
+        order:
+          type: integer
+        sub_text:
+          type: string
+        choices:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PromptChoice'
+      required:
+      - choices
+      - field_key
+      - initial_value
+      - label
+      - order
+      - placeholder
+      - required
+      - sub_text
+      - type
     Pagination:
       type: object
       properties:
@@ -7236,6 +7040,178 @@ components:
       - previous
       - start_index
       - total_pages
+    PromptTypeEnum:
+      enum:
+      - text
+      - text_area
+      - text_read_only
+      - text_area_read_only
+      - username
+      - email
+      - password
+      - number
+      - checkbox
+      - radio-button-group
+      - dropdown
+      - date
+      - date-time
+      - file
+      - separator
+      - hidden
+      - static
+      - alert_info
+      - alert_warning
+      - alert_danger
+      - ak-locale
+      type: string
+    AuthenticatorTOTPStageRequest:
+      type: object
+      description: AuthenticatorTOTPStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        digits:
+          $ref: '#/components/schemas/DigitsEnum'
+      required:
+      - digits
+      - name
+    InvitationSendEmailRequest:
+      type: object
+      description: Serializer for sending invitation emails
+      properties:
+        email_addresses:
+          type: array
+          items: {}
+        cc_addresses:
+          type: array
+          items: {}
+        bcc_addresses:
+          type: array
+          items: {}
+        template:
+          type: string
+          minLength: 1
+          default: invitation
+      required:
+      - email_addresses
+    InvitationRequest:
+      type: object
+      description: Invitation Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          pattern: ^[-a-zA-Z0-9_]+$
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        fixed_data:
+          type: object
+          additionalProperties: {}
+        single_use:
+          type: boolean
+          description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, only the configured flow can use this invitation.
+      required:
+      - name
+    DummyStage:
+      type: object
+      description: DummyStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        throw_error:
+          type: boolean
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    ErrorDetail:
+      type: object
+      description: Serializer for rest_framework's error messages
+      properties:
+        string:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - string
+    UserLogoutStageRequest:
+      type: object
+      description: UserLogoutStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
     EmailStageRequest:
       type: object
       description: EmailStage Serializer
@@ -7294,6 +7270,21 @@ components:
           description: 'The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    PaginatedPromptList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Prompt'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     ConsentStageRequest:
       type: object
       description: ConsentStage Serializer
@@ -7310,6 +7301,85 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    StageModeEnum:
+      enum:
+      - optional
+      - required
+      type: string
+    CaptchaStageRequest:
+      type: object
+      description: CaptchaStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        public_key:
+          type: string
+          minLength: 1
+          description: Public key, acquired your captcha Provider.
+        private_key:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: Private key, acquired your captcha Provider.
+        js_url:
+          type: string
+          minLength: 1
+        api_url:
+          type: string
+          minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
+        interactive:
+          type: boolean
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
+      required:
+      - name
+      - private_key
+      - public_key
+    AuthenticatorDuoStageRequest:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        api_hostname:
+          type: string
+          minLength: 1
+        admin_integration_key:
+          type: string
+        admin_secret_key:
+          type: string
+          writeOnly: true
+      required:
+      - api_hostname
+      - client_id
+      - client_secret
+      - name
     PaginatedPromptStageList:
       type: object
       properties:
@@ -7319,6 +7389,54 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PromptStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedInvitationStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvitationStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UserSetting:
+      type: object
+      description: Serializer for User settings for stages and sources
+      properties:
+        object_uid:
+          type: string
+        component:
+          type: string
+        title:
+          type: string
+        configure_url:
+          type: string
+        icon_url:
+          type: string
+      required:
+      - component
+      - object_uid
+      - title
+    PaginatedUserLogoutStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserLogoutStage'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -7352,7 +7470,7 @@ components:
           description: Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
       required:
       - name
-    PatchedAuthenticatorSMSStageRequest:
+    AuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
       properties:
@@ -7391,44 +7509,165 @@ components:
           - 'null'
           format: uuid
           description: Optionally modify the payload being sent to custom providers.
-    PatchedDenyStageRequest:
+      required:
+      - account_sid
+      - auth
+      - from_number
+      - name
+      - provider
+    DuoResponseEnum:
+      enum:
+      - success
+      - waiting
+      - invalid
+      type: string
+    InvitationStageRequest:
       type: object
-      description: DenyStage Serializer
+      description: InvitationStage Serializer
       properties:
         name:
           type: string
           minLength: 1
-        deny_message:
+        continue_flow_without_invitation:
+          type: boolean
+          description: If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
+      required:
+      - name
+    AuthenticatorWebAuthnStage:
+      type: object
+      description: AuthenticatorWebAuthnStage Serializer
+      properties:
+        pk:
           type: string
-    PromptTypeEnum:
-      enum:
-      - text
-      - text_area
-      - text_read_only
-      - text_area_read_only
-      - username
-      - email
-      - password
-      - number
-      - checkbox
-      - radio-button-group
-      - dropdown
-      - date
-      - date-time
-      - file
-      - separator
-      - hidden
-      - static
-      - alert_info
-      - alert_warning
-      - alert_danger
-      - ak-locale
-      type: string
-    RequestContentTypeEnum:
-      enum:
-      - application/x-www-form-urlencoded
-      - application/json
-      type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+        resident_key_requirement:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+        device_type_restrictions_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+        max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - component
+      - device_type_restrictions_obj
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedMutualTLSStageRequest:
+      type: object
+      description: MutualTLSStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
+    PatchedDummyStageRequest:
+      type: object
+      description: DummyStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        throw_error:
+          type: boolean
+    PatchedSourceStageRequest:
+      type: object
+      description: SourceStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        source:
+          type: string
+          format: uuid
+        resume_timeout:
+          type: string
+          minLength: 1
+          description: 'Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
+    PatchedConsentStageRequest:
+      type: object
+      description: ConsentStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        mode:
+          $ref: '#/components/schemas/ConsentModeEnum'
+        consent_expire_in:
+          type: string
+          minLength: 1
+          title: Consent expires in
+          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
     FlowSet:
       type: object
       description: Stripped down flow serializer
@@ -7483,46 +7722,129 @@ components:
       - policybindingmodel_ptr_id
       - slug
       - title
-    PromptRequest:
+    AuthenticationEnum:
+      enum:
+      - none
+      - require_authenticated
+      - require_unauthenticated
+      - require_superuser
+      - require_redirect
+      - require_outpost
+      - require_token
+      type: string
+    PaginatedInvitationList:
       type: object
-      description: Prompt Serializer
       properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invitation'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UserLoginStage:
+      type: object
+      description: UserLoginStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
         name:
           type: string
-          minLength: 1
-        field_key:
+        component:
           type: string
-          minLength: 1
-          description: Name of the form field, also used to store the value
-        label:
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
           type: string
-          minLength: 1
-        type:
-          $ref: '#/components/schemas/PromptTypeEnum'
-        required:
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        session_duration:
+          type: string
+          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        terminate_other_sessions:
           type: boolean
-        placeholder:
+          description: Terminate all other sessions of the user logging in.
+        remember_me_offset:
           type: string
-          description: Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
-        initial_value:
+          description: 'Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: Bind sessions created by this stage to the configured network
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: Bind sessions created by this stage to the configured GeoIP location
+        remember_device:
           type: string
-          description: Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        sub_text:
-          type: string
-        placeholder_expression:
-          type: boolean
-        initial_value_expression:
-          type: boolean
+          description: 'When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
-      - field_key
-      - label
+      - component
+      - flow_set
+      - meta_model_name
       - name
-      - type
-    PasswordStageRequest:
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedAuthenticatorEmailStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorEmailStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GeoipBindingEnum:
+      enum:
+      - no_binding
+      - bind_continent
+      - bind_continent_country
+      - bind_continent_country_city
+      type: string
+    PaginatedAuthenticatorTOTPStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorTOTPStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedPasswordStageRequest:
       type: object
       description: PasswordStage Serializer
       properties:
@@ -7548,74 +7870,21 @@ components:
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password input field.
-      required:
-      - backends
-      - name
-    PatchedInvitationRequest:
+    PaginatedIdentificationStageList:
       type: object
-      description: Invitation Serializer
       properties:
-        name:
-          type: string
-          minLength: 1
-          pattern: ^[-a-zA-Z0-9_]+$
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        fixed_data:
-          type: object
-          additionalProperties: {}
-        single_use:
-          type: boolean
-          description: When enabled, the invitation will be deleted after usage.
-        flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: When set, only the configured flow can use this invitation.
-    UserLogoutStage:
-      type: object
-      description: UserLogoutStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
+            $ref: '#/components/schemas/IdentificationStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
+      - autocomplete
+      - pagination
+      - results
     ThemedUrls:
       type: object
       description: Themed URLs - maps theme names to URLs for light and dark themes
@@ -7628,834 +7897,6 @@ components:
           type:
           - string
           - 'null'
-    UserWriteStage:
-      type: object
-      description: UserWriteStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        user_creation_mode:
-          $ref: '#/components/schemas/UserCreationModeEnum'
-        create_users_as_inactive:
-          type: boolean
-          description: When set, newly created users are inactive and cannot login.
-        create_users_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optionally add newly created users to this group.
-        user_type:
-          $ref: '#/components/schemas/UserTypeEnum'
-        user_path_template:
-          type: string
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PatchedInvitationStageRequest:
-      type: object
-      description: InvitationStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        continue_flow_without_invitation:
-          type: boolean
-          description: If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
-    PaginatedConsentStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConsentStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    AuthenticatorEndpointGDTCStageRequest:
-      type: object
-      description: AuthenticatorEndpointGDTCStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        credentials:
-          type: object
-          additionalProperties: {}
-      required:
-      - credentials
-      - name
-    PaginatedUserDeleteStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserDeleteStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    CaptchaStageRequest:
-      type: object
-      description: CaptchaStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        public_key:
-          type: string
-          minLength: 1
-          description: Public key, acquired your captcha Provider.
-        private_key:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: Private key, acquired your captcha Provider.
-        js_url:
-          type: string
-          minLength: 1
-        api_url:
-          type: string
-          minLength: 1
-        request_content_type:
-          $ref: '#/components/schemas/RequestContentTypeEnum'
-        interactive:
-          type: boolean
-        score_min_threshold:
-          type: number
-          format: double
-        score_max_threshold:
-          type: number
-          format: double
-        error_on_invalid_score:
-          type: boolean
-          description: When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
-      required:
-      - name
-      - private_key
-      - public_key
-    SourceStage:
-      type: object
-      description: SourceStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        resume_timeout:
-          type: string
-          description: 'Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
-        resume_on_match_failures:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
-          description: Source matching failure reasons for which the flow should resume.
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - source
-      - verbose_name
-      - verbose_name_plural
-    PaginatedAuthenticatorDuoStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticatorDuoStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    RedirectStageModeEnum:
-      enum:
-      - static
-      - flow
-      type: string
-    AuthenticatorSMSStageRequest:
-      type: object
-      description: AuthenticatorSMSStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        provider:
-          $ref: '#/components/schemas/ProviderEnum'
-        from_number:
-          type: string
-          minLength: 1
-        account_sid:
-          type: string
-          minLength: 1
-        auth:
-          type: string
-          minLength: 1
-        auth_password:
-          type: string
-        auth_type:
-          $ref: '#/components/schemas/AuthTypeEnum'
-        verify_only:
-          type: boolean
-          description: When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
-        mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optionally modify the payload being sent to custom providers.
-      required:
-      - account_sid
-      - auth
-      - from_number
-      - name
-      - provider
-    UserCreationModeEnum:
-      enum:
-      - never_create
-      - create_when_required
-      - always_create
-      type: string
-    UserLogoutStageRequest:
-      type: object
-      description: UserLogoutStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-      required:
-      - name
-    AuthenticatorSMSStage:
-      type: object
-      description: AuthenticatorSMSStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        provider:
-          $ref: '#/components/schemas/ProviderEnum'
-        from_number:
-          type: string
-        account_sid:
-          type: string
-        auth:
-          type: string
-        auth_password:
-          type: string
-        auth_type:
-          $ref: '#/components/schemas/AuthTypeEnum'
-        verify_only:
-          type: boolean
-          description: When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
-        mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optionally modify the payload being sent to custom providers.
-      required:
-      - account_sid
-      - auth
-      - component
-      - flow_set
-      - from_number
-      - meta_model_name
-      - name
-      - pk
-      - provider
-      - verbose_name
-      - verbose_name_plural
-    PatchedAccountLockdownStageRequest:
-      type: object
-      description: AccountLockdownStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        deactivate_user:
-          type: boolean
-          description: Deactivate the user account (set is_active to False)
-        set_unusable_password:
-          type: boolean
-          description: Set an unusable password for the user
-        delete_sessions:
-          type: boolean
-          description: Delete all active sessions for the user
-        revoke_tokens:
-          type: boolean
-          description: Revoke all tokens for the user (API, app password, recovery, verification, OAuth)
-        self_service_completion_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    EndpointStageRequest:
-      type: object
-      description: EndpointStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        connector:
-          type: string
-          format: uuid
-        mode:
-          $ref: '#/components/schemas/StageModeEnum'
-      required:
-      - connector
-      - name
-    PaginatedCaptchaStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/CaptchaStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    FlowDesignationEnum:
-      enum:
-      - authentication
-      - authorization
-      - invalidation
-      - enrollment
-      - unenrollment
-      - recovery
-      - stage_configuration
-      type: string
-    WebAuthnHintEnum:
-      enum:
-      - security-key
-      - client-device
-      - hybrid
-      type: string
-    NetworkBindingEnum:
-      enum:
-      - no_binding
-      - bind_asn
-      - bind_asn_network
-      - bind_asn_network_ip
-      type: string
-    PaginatedMutualTLSStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/MutualTLSStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    IdentificationStageRequest:
-      type: object
-      description: IdentificationStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        user_fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserFieldsEnum'
-          description: Fields of the user object to match against. (Hold shift to select multiple options)
-        password_stage:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: When set, shows a password field, instead of showing the password field as separate step.
-        captcha_stage:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.
-        case_insensitive_matching:
-          type: boolean
-          description: When enabled, user fields are matched regardless of their casing.
-        show_matched_user:
-          type: boolean
-          description: When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optional enrollment flow, which is linked at the bottom of the page.
-        recovery_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optional recovery flow, which is linked at the bottom of the page.
-        passwordless_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optional passwordless flow, which is linked at the bottom of the page.
-        sources:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Specify which sources should be shown.
-        show_source_labels:
-          type: boolean
-        pretend_user_exists:
-          type: boolean
-          description: When enabled, the stage will succeed and continue even when incorrect user info is entered.
-        enable_remember_me:
-          type: boolean
-          description: Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
-        webauthn_stage:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-      required:
-      - name
-    DigitsEnum:
-      enum:
-      - '6'
-      - '8'
-      type: string
-    UserDeleteStageRequest:
-      type: object
-      description: UserDeleteStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-      required:
-      - name
-    PaginatedUserWriteStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserWriteStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    FlowMessage:
-      type: object
-      description: Serializer for a django.contrib.messages message
-      properties:
-        level:
-          $ref: '#/components/schemas/FlowMessageLevelEnum'
-        message:
-          type: string
-      required:
-      - level
-      - message
-    AuthTypeEnum:
-      enum:
-      - basic
-      - bearer
-      type: string
-    PaginatedEmailStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GeoipBindingEnum:
-      enum:
-      - no_binding
-      - bind_continent
-      - bind_continent_country
-      - bind_continent_country_city
-      type: string
-    PatchedUserWriteStageRequest:
-      type: object
-      description: UserWriteStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        user_creation_mode:
-          $ref: '#/components/schemas/UserCreationModeEnum'
-        create_users_as_inactive:
-          type: boolean
-          description: When set, newly created users are inactive and cannot login.
-        create_users_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optionally add newly created users to this group.
-        user_type:
-          $ref: '#/components/schemas/UserTypeEnum'
-        user_path_template:
-          type: string
-    AuthenticationEnum:
-      enum:
-      - none
-      - require_authenticated
-      - require_unauthenticated
-      - require_superuser
-      - require_redirect
-      - require_outpost
-      - require_token
-      type: string
-    PatchedPromptStageRequest:
-      type: object
-      description: PromptStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        fields:
-          type: array
-          items:
-            type: string
-            format: uuid
-        validation_policies:
-          type: array
-          items:
-            type: string
-            format: uuid
-    Stage:
-      type: object
-      description: Stage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    EmailStage:
-      type: object
-      description: EmailStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        use_global_settings:
-          type: boolean
-          description: When enabled, global Email connection settings will be used and connection settings below will be ignored.
-        host:
-          type: string
-        port:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        username:
-          type: string
-        use_tls:
-          type: boolean
-        use_ssl:
-          type: boolean
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        from_address:
-          type: string
-          format: email
-          maxLength: 254
-        token_expiry:
-          type: string
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
-        subject:
-          type: string
-        template:
-          type: string
-        activate_user_on_success:
-          type: boolean
-          description: Activate users upon completion of stage.
-        recovery_max_attempts:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        recovery_cache_timeout:
-          type: string
-          description: 'The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    StagePrompt:
-      type: object
-      description: Serializer for a single Prompt field
-      properties:
-        field_key:
-          type: string
-        label:
-          type: string
-        type:
-          $ref: '#/components/schemas/PromptTypeEnum'
-        required:
-          type: boolean
-        placeholder:
-          type: string
-        initial_value:
-          type: string
-        order:
-          type: integer
-        sub_text:
-          type: string
-        choices:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/PromptChoice'
-      required:
-      - choices
-      - field_key
-      - initial_value
-      - label
-      - order
-      - placeholder
-      - required
-      - sub_text
-      - type
-    FlowLayoutEnum:
-      enum:
-      - stacked
-      - content_left
-      - content_right
-      - sidebar_left
-      - sidebar_right
-      - sidebar_left_frame_background
-      - sidebar_right_frame_background
-      type: string
-    PaginatedRedirectStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RedirectStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     IdentificationStage:
       type: object
       description: IdentificationStage Serializer
@@ -8557,28 +7998,443 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    PatchedEmailStageRequest:
+    UserCreationModeEnum:
+      enum:
+      - never_create
+      - create_when_required
+      - always_create
+      type: string
+    PaginatedMutualTLSStageList:
       type: object
-      description: EmailStage Serializer
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MutualTLSStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedDummyStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DummyStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedAuthenticatorStaticStageRequest:
+      type: object
+      description: AuthenticatorStaticStage Serializer
       properties:
         name:
           type: string
           minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        token_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        token_length:
+          type: integer
+          maximum: 100
+          minimum: 0
+    PatchedAuthenticatorEndpointGDTCStageRequest:
+      type: object
+      description: AuthenticatorEndpointGDTCStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        credentials:
+          type: object
+          additionalProperties: {}
+    AuthenticatorDuoStageManualDeviceImportRequest:
+      type: object
+      properties:
+        duo_user_id:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+      required:
+      - duo_user_id
+      - username
+    AuthenticatorEndpointGDTCStageRequest:
+      type: object
+      description: AuthenticatorEndpointGDTCStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        credentials:
+          type: object
+          additionalProperties: {}
+      required:
+      - credentials
+      - name
+    PromptStageRequest:
+      type: object
+      description: PromptStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        fields:
+          type: array
+          items:
+            type: string
+            format: uuid
+        validation_policies:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - fields
+      - name
+    UserVerificationEnum:
+      enum:
+      - required
+      - preferred
+      - discouraged
+      type: string
+    PaginatedConsentStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PromptChallenge:
+      type: object
+      description: Initial challenge being sent, define fields
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-prompt
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/StagePrompt'
+      required:
+      - fields
+    PromptChoice:
+      type: object
+      description: Serializer for a single Choice field
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - value
+    EndpointStage:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        connector:
+          type: string
+          format: uuid
+        connector_obj:
+          allOf:
+          - $ref: '#/components/schemas/Connector'
+          readOnly: true
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+      required:
+      - component
+      - connector
+      - connector_obj
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedCaptchaStageRequest:
+      type: object
+      description: CaptchaStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        public_key:
+          type: string
+          minLength: 1
+          description: Public key, acquired your captcha Provider.
+        private_key:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: Private key, acquired your captcha Provider.
+        js_url:
+          type: string
+          minLength: 1
+        api_url:
+          type: string
+          minLength: 1
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
+        interactive:
+          type: boolean
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    PaginatedUserLoginStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserLoginStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    RedirectStageRequest:
+      type: object
+      description: RedirectStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        keep_context:
+          type: boolean
+        mode:
+          $ref: '#/components/schemas/RedirectStageModeEnum'
+        target_static:
+          type: string
+        target_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      required:
+      - mode
+      - name
+    PaginatedUserWriteStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserWriteStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    DigitsEnum:
+      enum:
+      - '6'
+      - '8'
+      type: string
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    DeniedActionEnum:
+      enum:
+      - message_continue
+      - message
+      - continue
+      type: string
+    PatchedEndpointStageRequest:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        connector:
+          type: string
+          format: uuid
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+    Connector:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - meta_model_name
+      - name
+      - verbose_name
+      - verbose_name_plural
+    EmailStage:
+      type: object
+      description: EmailStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used and connection settings below will be ignored.
         host:
           type: string
-          minLength: 1
         port:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
         username:
           type: string
-        password:
-          type: string
-          writeOnly: true
         use_tls:
           type: boolean
         use_ssl:
@@ -8590,18 +8446,14 @@ components:
         from_address:
           type: string
           format: email
-          minLength: 1
           maxLength: 254
         token_expiry:
           type: string
-          minLength: 1
           description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
-          minLength: 1
         template:
           type: string
-          minLength: 1
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
@@ -8611,8 +8463,68 @@ components:
           minimum: 0
         recovery_cache_timeout:
           type: string
-          minLength: 1
           description: 'The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    DenyStage:
+      type: object
+      description: DenyStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        deny_message:
+          type: string
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    DummyStageRequest:
+      type: object
+      description: DummyStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        throw_error:
+          type: boolean
+      required:
+      - name
     PatchedAuthenticatorValidateStageRequest:
       type: object
       description: AuthenticatorValidateStage Serializer
@@ -8662,197 +8574,90 @@ components:
         static_otp_throttling_factor:
           type: number
           format: double
-    AccountLockdownStage:
+    PromptRequest:
       type: object
-      description: AccountLockdownStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        deactivate_user:
-          type: boolean
-          description: Deactivate the user account (set is_active to False)
-        set_unusable_password:
-          type: boolean
-          description: Set an unusable password for the user
-        delete_sessions:
-          type: boolean
-          description: Delete all active sessions for the user
-        revoke_tokens:
-          type: boolean
-          description: Revoke all tokens for the user (API, app password, recovery, verification, OAuth)
-        self_service_completion_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    AuthenticatorTOTPStage:
-      type: object
-      description: AuthenticatorTOTPStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        digits:
-          $ref: '#/components/schemas/DigitsEnum'
-      required:
-      - component
-      - digits
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PatchedAuthenticatorWebAuthnStageRequest:
-      type: object
-      description: AuthenticatorWebAuthnStage Serializer
+      description: Prompt Serializer
       properties:
         name:
           type: string
           minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
+        field_key:
           type: string
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-        resident_key_requirement:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        hints:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnHintEnum'
-        device_type_restrictions:
-          type: array
-          items:
-            type: string
-            format: uuid
-        max_attempts:
+          minLength: 1
+          description: Name of the form field, also used to store the value
+        label:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/PromptTypeEnum'
+        required:
+          type: boolean
+        placeholder:
+          type: string
+          description: Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
+        order:
           type: integer
           maximum: 2147483647
-          minimum: 0
-    UserLoginStageRequest:
+          minimum: -2147483648
+        sub_text:
+          type: string
+        placeholder_expression:
+          type: boolean
+        initial_value_expression:
+          type: boolean
+      required:
+      - field_key
+      - label
+      - name
+      - type
+    Invitation:
       type: object
-      description: UserLoginStage Serializer
+      description: Invitation Serializer
       properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Invite uuid
         name:
           type: string
-          minLength: 1
-        session_duration:
-          type: string
-          minLength: 1
-          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
-        terminate_other_sessions:
+          pattern: ^[-a-zA-Z0-9_]+$
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        fixed_data:
+          type: object
+          additionalProperties: {}
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        single_use:
           type: boolean
-          description: Terminate all other sessions of the user logging in.
-        remember_me_offset:
-          type: string
-          minLength: 1
-          description: 'Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
-        network_binding:
+          description: When enabled, the invitation will be deleted after usage.
+        flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, only the configured flow can use this invitation.
+        flow_obj:
           allOf:
-          - $ref: '#/components/schemas/NetworkBindingEnum'
-          description: Bind sessions created by this stage to the configured network
-        geoip_binding:
-          allOf:
-          - $ref: '#/components/schemas/GeoipBindingEnum'
-          description: Bind sessions created by this stage to the configured GeoIP location
-        remember_device:
-          type: string
-          minLength: 1
-          description: 'When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)'
+          - $ref: '#/components/schemas/Flow'
+          readOnly: true
       required:
+      - created_by
+      - flow_obj
       - name
-    AuthenticatorDuoStageManualDeviceImportRequest:
+      - pk
+    SourceStage:
       type: object
-      properties:
-        duo_user_id:
-          type: string
-          minLength: 1
-        username:
-          type: string
-          minLength: 1
-      required:
-      - duo_user_id
-      - username
-    DummyStage:
-      type: object
-      description: DummyStage Serializer
+      description: SourceStage Serializer
       properties:
         pk:
           type: string
@@ -8882,219 +8687,26 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
           readOnly: true
-        throw_error:
-          type: boolean
+        source:
+          type: string
+          format: uuid
+        resume_timeout:
+          type: string
+          description: 'Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
       required:
       - component
       - flow_set
       - meta_model_name
       - name
       - pk
+      - source
       - verbose_name
       - verbose_name_plural
-    PaginatedSourceStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SourceStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedUserLoginStageRequest:
-      type: object
-      description: UserLoginStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        session_duration:
-          type: string
-          minLength: 1
-          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
-        terminate_other_sessions:
-          type: boolean
-          description: Terminate all other sessions of the user logging in.
-        remember_me_offset:
-          type: string
-          minLength: 1
-          description: 'Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
-        network_binding:
-          allOf:
-          - $ref: '#/components/schemas/NetworkBindingEnum'
-          description: Bind sessions created by this stage to the configured network
-        geoip_binding:
-          allOf:
-          - $ref: '#/components/schemas/GeoipBindingEnum'
-          description: Bind sessions created by this stage to the configured GeoIP location
-        remember_device:
-          type: string
-          minLength: 1
-          description: 'When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)'
-    PaginatedAuthenticatorStaticStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticatorStaticStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UserDeleteStage:
-      type: object
-      description: UserDeleteStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    Connector:
-      type: object
-      properties:
-        connector_uuid:
-          type: string
-          format: uuid
-        name:
-          type: string
-        enabled:
-          type: boolean
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - meta_model_name
-      - name
-      - verbose_name
-      - verbose_name_plural
-    AuthenticatorValidateStageRequest:
-      type: object
-      description: AuthenticatorValidateStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        not_configured_action:
-          $ref: '#/components/schemas/NotConfiguredActionEnum'
-        device_classes:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceClassesEnum'
-          description: Device classes which can be used to authenticate
-        configuration_stages:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
-        last_auth_threshold:
-          type: string
-          minLength: 1
-          description: If any of the user's device has been used within this threshold, this stage will be skipped
-        webauthn_user_verification:
-          allOf:
-          - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for WebAuthn devices.
-        webauthn_hints:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnHintEnum'
-        webauthn_allowed_device_types:
-          type: array
-          items:
-            type: string
-            format: uuid
-        email_otp_throttling_factor:
-          type: number
-          format: double
-        sms_otp_throttling_factor:
-          type: number
-          format: double
-        totp_otp_throttling_factor:
-          type: number
-          format: double
-        static_otp_throttling_factor:
-          type: number
-          format: double
-      required:
-      - name
-    PaginatedDenyStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DenyStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    StageModeEnum:
-      enum:
-      - optional
-      - required
-      type: string
     PasswordStage:
       type: object
       description: PasswordStage Serializer
@@ -9155,9 +8767,156 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    PatchedAuthenticatorEmailStageRequest:
+    InvitationStage:
       type: object
-      description: AuthenticatorEmailStage Serializer
+      description: InvitationStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        continue_flow_without_invitation:
+          type: boolean
+          description: If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    ConsentModeEnum:
+      enum:
+      - always_require
+      - permanent
+      - expiring
+      type: string
+    AuthenticatorSMSStage:
+      type: object
+      description: AuthenticatorSMSStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        provider:
+          $ref: '#/components/schemas/ProviderEnum'
+        from_number:
+          type: string
+        account_sid:
+          type: string
+        auth:
+          type: string
+        auth_password:
+          type: string
+        auth_type:
+          $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
+        mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optionally modify the payload being sent to custom providers.
+      required:
+      - account_sid
+      - auth
+      - component
+      - flow_set
+      - from_number
+      - meta_model_name
+      - name
+      - pk
+      - provider
+      - verbose_name
+      - verbose_name_plural
+    DenyStageRequest:
+      type: object
+      description: DenyStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        deny_message:
+          type: string
+      required:
+      - name
+    PatchedUserLogoutStageRequest:
+      type: object
+      description: UserLogoutStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
+    AuthenticatorStaticStageRequest:
+      type: object
+      description: AuthenticatorStaticStage Serializer
       properties:
         name:
           type: string
@@ -9170,6 +8929,242 @@ components:
           description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
+        token_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        token_length:
+          type: integer
+          maximum: 100
+          minimum: 0
+      required:
+      - name
+    PatchedPromptStageRequest:
+      type: object
+      description: PromptStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        fields:
+          type: array
+          items:
+            type: string
+            format: uuid
+        validation_policies:
+          type: array
+          items:
+            type: string
+            format: uuid
+    FlowDesignationEnum:
+      enum:
+      - authentication
+      - authorization
+      - invalidation
+      - enrollment
+      - unenrollment
+      - recovery
+      - stage_configuration
+      type: string
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    AuthTypeEnum:
+      enum:
+      - basic
+      - bearer
+      type: string
+    PaginatedDenyStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DenyStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedCaptchaStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaptchaStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    CertAttributeEnum:
+      enum:
+      - subject
+      - common_name
+      - email
+      type: string
+    UserLoginStageRequest:
+      type: object
+      description: UserLoginStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        session_duration:
+          type: string
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        terminate_other_sessions:
+          type: boolean
+          description: Terminate all other sessions of the user logging in.
+        remember_me_offset:
+          type: string
+          minLength: 1
+          description: 'Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: Bind sessions created by this stage to the configured network
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: Bind sessions created by this stage to the configured GeoIP location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)'
+      required:
+      - name
+    PatchedAccountLockdownStageRequest:
+      type: object
+      description: AccountLockdownStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        deactivate_user:
+          type: boolean
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery, verification, OAuth)
+        self_service_completion_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
+    AuthenticatorAttachmentEnum:
+      enum:
+      - platform
+      - cross-platform
+      type: string
+    PatchedAuthenticatorSMSStageRequest:
+      type: object
+      description: AuthenticatorSMSStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        provider:
+          $ref: '#/components/schemas/ProviderEnum'
+        from_number:
+          type: string
+          minLength: 1
+        account_sid:
+          type: string
+          minLength: 1
+        auth:
+          type: string
+          minLength: 1
+        auth_password:
+          type: string
+        auth_type:
+          $ref: '#/components/schemas/AuthTypeEnum'
+        verify_only:
+          type: boolean
+          description: When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
+        mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optionally modify the payload being sent to custom providers.
+    FlowLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      - sidebar_left_frame_background
+      - sidebar_right_frame_background
+      type: string
+    PaginatedEndpointStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedEmailStageRequest:
+      type: object
+      description: EmailStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used and connection settings below will be ignored.
@@ -9184,6 +9179,7 @@ components:
           type: string
         password:
           type: string
+          writeOnly: true
         use_tls:
           type: boolean
         use_ssl:
@@ -9197,95 +9193,27 @@ components:
           format: email
           minLength: 1
           maxLength: 254
-        subject:
-          type: string
-          minLength: 1
         token_expiry:
           type: string
           minLength: 1
           description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+        subject:
+          type: string
+          minLength: 1
         template:
           type: string
           minLength: 1
-    PaginatedPromptList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Prompt'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    DuoResponseEnum:
-      enum:
-      - success
-      - waiting
-      - invalid
-      type: string
-    MutualTLSStageRequest:
-      type: object
-      description: MutualTLSStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        mode:
-          $ref: '#/components/schemas/StageModeEnum'
-        certificate_authorities:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
-        cert_attribute:
-          $ref: '#/components/schemas/CertAttributeEnum'
-        user_attribute:
-          $ref: '#/components/schemas/UserAttributeEnum'
-      required:
-      - cert_attribute
-      - mode
-      - name
-      - user_attribute
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    UserWriteStageRequest:
-      type: object
-      description: UserWriteStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        user_creation_mode:
-          $ref: '#/components/schemas/UserCreationModeEnum'
-        create_users_as_inactive:
+        activate_user_on_success:
           type: boolean
-          description: When set, newly created users are inactive and cannot login.
-        create_users_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optionally add newly created users to this group.
-        user_type:
-          $ref: '#/components/schemas/UserTypeEnum'
-        user_path_template:
+          description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        recovery_cache_timeout:
           type: string
-      required:
-      - name
+          minLength: 1
+          description: 'The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
     AuthenticatorEmailStage:
       type: object
       description: AuthenticatorEmailStage Serializer
@@ -9366,6 +9294,377 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PromptStage:
+      type: object
+      description: PromptStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        fields:
+          type: array
+          items:
+            type: string
+            format: uuid
+        validation_policies:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - component
+      - fields
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    Prompt:
+      type: object
+      description: Prompt Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Prompt uuid
+        name:
+          type: string
+        field_key:
+          type: string
+          description: Name of the form field, also used to store the value
+        label:
+          type: string
+        type:
+          $ref: '#/components/schemas/PromptTypeEnum'
+        required:
+          type: boolean
+        placeholder:
+          type: string
+          description: Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        prompt_stages_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromptStage'
+          readOnly: true
+        sub_text:
+          type: string
+        placeholder_expression:
+          type: boolean
+        initial_value_expression:
+          type: boolean
+      required:
+      - field_key
+      - label
+      - name
+      - pk
+      - prompt_stages_obj
+      - type
+    PatchedAuthenticatorDuoStageRequest:
+      type: object
+      description: AuthenticatorDuoStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        api_hostname:
+          type: string
+          minLength: 1
+        admin_integration_key:
+          type: string
+        admin_secret_key:
+          type: string
+          writeOnly: true
+    PatchedPromptRequest:
+      type: object
+      description: Prompt Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        field_key:
+          type: string
+          minLength: 1
+          description: Name of the form field, also used to store the value
+        label:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/PromptTypeEnum'
+        required:
+          type: boolean
+        placeholder:
+          type: string
+          description: Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        sub_text:
+          type: string
+        placeholder_expression:
+          type: boolean
+        initial_value_expression:
+          type: boolean
+    PasswordStageRequest:
+      type: object
+      description: PasswordStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        backends:
+          type: array
+          items:
+            $ref: '#/components/schemas/BackendsEnum'
+          description: Selection of backends to test the password against.
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        failed_attempts_before_cancel:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
+        allow_show_password:
+          type: boolean
+          description: When enabled, provides a 'show password' button with the password input field.
+      required:
+      - backends
+      - name
+    AuthenticatorValidateStage:
+      type: object
+      description: AuthenticatorValidateStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        not_configured_action:
+          $ref: '#/components/schemas/NotConfiguredActionEnum'
+        device_classes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceClassesEnum'
+          description: Device classes which can be used to authenticate
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
+        last_auth_threshold:
+          type: string
+          description: If any of the user's device has been used within this threshold, this stage will be skipped
+        webauthn_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
+        webauthn_allowed_device_types_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+          readOnly: true
+        email_otp_throttling_factor:
+          type: number
+          format: double
+        sms_otp_throttling_factor:
+          type: number
+          format: double
+        totp_otp_throttling_factor:
+          type: number
+          format: double
+        static_otp_throttling_factor:
+          type: number
+          format: double
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+      - webauthn_allowed_device_types_obj
+    UserWriteStage:
+      type: object
+      description: UserWriteStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        user_creation_mode:
+          $ref: '#/components/schemas/UserCreationModeEnum'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optionally add newly created users to this group.
+        user_type:
+          $ref: '#/components/schemas/UserTypeEnum'
+        user_path_template:
+          type: string
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    SourceStageRequest:
+      type: object
+      description: SourceStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        source:
+          type: string
+          format: uuid
+        resume_timeout:
+          type: string
+          minLength: 1
+          description: 'Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
+      required:
+      - name
+      - source
+    PaginatedAuthenticatorDuoStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorDuoStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     AuthenticatorStaticStage:
       type: object
       description: AuthenticatorStaticStage Serializer
@@ -9422,138 +9721,7 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    ContextualFlowInfo:
-      type: object
-      description: Contextual flow information for a challenge
-      properties:
-        title:
-          type: string
-        background:
-          type: string
-        background_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-        cancel_url:
-          type: string
-        layout:
-          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowMessage'
-      required:
-      - cancel_url
-      - layout
-    AuthenticatorAttachmentEnum:
-      enum:
-      - platform
-      - cross-platform
-      type: string
-    ContextualFlowInfoLayoutEnum:
-      enum:
-      - stacked
-      - content_left
-      - content_right
-      - sidebar_left
-      - sidebar_right
-      - sidebar_left_frame_background
-      - sidebar_right_frame_background
-      type: string
-    CertAttributeEnum:
-      enum:
-      - subject
-      - common_name
-      - email
-      type: string
-    PatchedPromptRequest:
-      type: object
-      description: Prompt Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        field_key:
-          type: string
-          minLength: 1
-          description: Name of the form field, also used to store the value
-        label:
-          type: string
-          minLength: 1
-        type:
-          $ref: '#/components/schemas/PromptTypeEnum'
-        required:
-          type: boolean
-        placeholder:
-          type: string
-          description: Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
-        initial_value:
-          type: string
-          description: Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        sub_text:
-          type: string
-        placeholder_expression:
-          type: boolean
-        initial_value_expression:
-          type: boolean
-    AuthenticatorEmailStageRequest:
-      type: object
-      description: AuthenticatorEmailStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        use_global_settings:
-          type: boolean
-          description: When enabled, global Email connection settings will be used and connection settings below will be ignored.
-        host:
-          type: string
-          minLength: 1
-        port:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        username:
-          type: string
-        password:
-          type: string
-        use_tls:
-          type: boolean
-        use_ssl:
-          type: boolean
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        from_address:
-          type: string
-          format: email
-          minLength: 1
-          maxLength: 254
-        subject:
-          type: string
-          minLength: 1
-        token_expiry:
-          type: string
-          minLength: 1
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
-        template:
-          type: string
-          minLength: 1
-      required:
-      - name
-    PaginatedAuthenticatorTOTPStageList:
+    PaginatedPasswordStageList:
       type: object
       properties:
         pagination:
@@ -9561,115 +9729,16 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/AuthenticatorTOTPStage'
+            $ref: '#/components/schemas/PasswordStage'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    ResumeOnMatchFailuresEnum:
-      enum:
-      - missing_property
-      type: string
-    AuthenticatorTOTPStageRequest:
+    AccountLockdownStage:
       type: object
-      description: AuthenticatorTOTPStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        digits:
-          $ref: '#/components/schemas/DigitsEnum'
-      required:
-      - digits
-      - name
-    InvitationStageRequest:
-      type: object
-      description: InvitationStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        continue_flow_without_invitation:
-          type: boolean
-          description: If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
-      required:
-      - name
-    PromptStageRequest:
-      type: object
-      description: PromptStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        fields:
-          type: array
-          items:
-            type: string
-            format: uuid
-        validation_policies:
-          type: array
-          items:
-            type: string
-            format: uuid
-      required:
-      - fields
-      - name
-    PatchedMutualTLSStageRequest:
-      type: object
-      description: MutualTLSStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        mode:
-          $ref: '#/components/schemas/StageModeEnum'
-        certificate_authorities:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
-        cert_attribute:
-          $ref: '#/components/schemas/CertAttributeEnum'
-        user_attribute:
-          $ref: '#/components/schemas/UserAttributeEnum'
-    NotConfiguredActionEnum:
-      enum:
-      - skip
-      - deny
-      - configure
-      type: string
-    PatchedAuthenticatorEndpointGDTCStageRequest:
-      type: object
-      description: AuthenticatorEndpointGDTCStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        credentials:
-          type: object
-          additionalProperties: {}
-    UserLoginStage:
-      type: object
-      description: UserLoginStage Serializer
+      description: AccountLockdownStage Serializer
       properties:
         pk:
           type: string
@@ -9699,26 +9768,24 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
           readOnly: true
-        session_duration:
-          type: string
-          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
-        terminate_other_sessions:
+        deactivate_user:
           type: boolean
-          description: Terminate all other sessions of the user logging in.
-        remember_me_offset:
-          type: string
-          description: 'Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
-        network_binding:
-          allOf:
-          - $ref: '#/components/schemas/NetworkBindingEnum'
-          description: Bind sessions created by this stage to the configured network
-        geoip_binding:
-          allOf:
-          - $ref: '#/components/schemas/GeoipBindingEnum'
-          description: Bind sessions created by this stage to the configured GeoIP location
-        remember_device:
-          type: string
-          description: 'When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)'
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery, verification, OAuth)
+        self_service_completion_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
       required:
       - component
       - flow_set
@@ -9727,54 +9794,77 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    RedirectStageRequest:
+    RedirectStageModeEnum:
+      enum:
+      - static
+      - flow
+      type: string
+    PartialUser:
       type: object
-      description: RedirectStage Serializer
+      description: Partial User Serializer, does not include child relations.
       properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
         name:
           type: string
-          minLength: 1
-        keep_context:
+          description: User's display name.
+        is_active:
           type: boolean
-        mode:
-          $ref: '#/components/schemas/RedirectStageModeEnum'
-        target_static:
-          type: string
-        target_flow:
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
           type:
           - string
           - 'null'
-          format: uuid
-      required:
-      - mode
-      - name
-    AuthenticatorDuoStageDeviceImportResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-          readOnly: true
-        error:
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
           type: string
           readOnly: true
       required:
-      - count
-      - error
-    PaginatedAuthenticatorValidateStageList:
+      - name
+      - pk
+      - uid
+      - username
+    FlowMessage:
       type: object
+      description: Serializer for a django.contrib.messages message
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticatorValidateStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
       required:
-      - autocomplete
-      - pagination
-      - results
+      - level
+      - message
+    RequestContentTypeEnum:
+      enum:
+      - application/x-www-form-urlencoded
+      - application/json
+      type: string
+    ResumeOnMatchFailuresEnum:
+      enum:
+      - missing_property
+      type: string
+    UserAttributeEnum:
+      enum:
+      - username
+      - email
+      type: string
     MutualTLSStage:
       type: object
       description: MutualTLSStage Serializer
@@ -9830,9 +9920,214 @@ components:
       - user_attribute
       - verbose_name
       - verbose_name_plural
-    PatchedAuthenticatorStaticStageRequest:
+    PaginatedAuthenticatorEndpointGDTCStageList:
       type: object
-      description: AuthenticatorStaticStage Serializer
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedUserLoginStageRequest:
+      type: object
+      description: UserLoginStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        session_duration:
+          type: string
+          minLength: 1
+          description: 'Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        terminate_other_sessions:
+          type: boolean
+          description: Terminate all other sessions of the user logging in.
+        remember_me_offset:
+          type: string
+          minLength: 1
+          description: 'Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
+        network_binding:
+          allOf:
+          - $ref: '#/components/schemas/NetworkBindingEnum'
+          description: Bind sessions created by this stage to the configured network
+        geoip_binding:
+          allOf:
+          - $ref: '#/components/schemas/GeoipBindingEnum'
+          description: Bind sessions created by this stage to the configured GeoIP location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)'
+    RedirectStage:
+      type: object
+      description: RedirectStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        keep_context:
+          type: boolean
+        mode:
+          $ref: '#/components/schemas/RedirectStageModeEnum'
+        target_static:
+          type: string
+        target_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - mode
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AuthenticatorTOTPStage:
+      type: object
+      description: AuthenticatorTOTPStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        digits:
+          $ref: '#/components/schemas/DigitsEnum'
+      required:
+      - component
+      - digits
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    WebAuthnHintEnum:
+      enum:
+      - security-key
+      - client-device
+      - hybrid
+      type: string
+    AuthenticatorValidateStageRequest:
+      type: object
+      description: AuthenticatorValidateStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        not_configured_action:
+          $ref: '#/components/schemas/NotConfiguredActionEnum'
+        device_classes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceClassesEnum'
+          description: Device classes which can be used to authenticate
+        configuration_stages:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
+        last_auth_threshold:
+          type: string
+          minLength: 1
+          description: If any of the user's device has been used within this threshold, this stage will be skipped
+        webauthn_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for WebAuthn devices.
+        webauthn_hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_allowed_device_types:
+          type: array
+          items:
+            type: string
+            format: uuid
+        email_otp_throttling_factor:
+          type: number
+          format: double
+        sms_otp_throttling_factor:
+          type: number
+          format: double
+        totp_otp_throttling_factor:
+          type: number
+          format: double
+        static_otp_throttling_factor:
+          type: number
+          format: double
+      required:
+      - name
+    AuthenticatorEmailStageRequest:
+      type: object
+      description: AuthenticatorEmailStage Serializer
       properties:
         name:
           type: string
@@ -9845,412 +10140,45 @@ components:
           description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-        token_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        token_length:
-          type: integer
-          maximum: 100
-          minimum: 0
-    DeniedActionEnum:
-      enum:
-      - message_continue
-      - message
-      - continue
-      type: string
-    PatchedUserDeleteStageRequest:
-      type: object
-      description: UserDeleteStage Serializer
-      properties:
-        name:
+        use_global_settings:
+          type: boolean
+          description: When enabled, global Email connection settings will be used and connection settings below will be ignored.
+        host:
           type: string
           minLength: 1
-    InvitationSendEmailRequest:
-      type: object
-      description: Serializer for sending invitation emails
-      properties:
-        email_addresses:
-          type: array
-          items: {}
-        cc_addresses:
-          type: array
-          items: {}
-        bcc_addresses:
-          type: array
-          items: {}
+        port:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        username:
+          type: string
+        password:
+          type: string
+        use_tls:
+          type: boolean
+        use_ssl:
+          type: boolean
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        from_address:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        subject:
+          type: string
+          minLength: 1
+        token_expiry:
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         template:
           type: string
           minLength: 1
-          default: invitation
-      required:
-      - email_addresses
-    InvitationStage:
-      type: object
-      description: InvitationStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        continue_flow_without_invitation:
-          type: boolean
-          description: If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PatchedCaptchaStageRequest:
-      type: object
-      description: CaptchaStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        public_key:
-          type: string
-          minLength: 1
-          description: Public key, acquired your captcha Provider.
-        private_key:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: Private key, acquired your captcha Provider.
-        js_url:
-          type: string
-          minLength: 1
-        api_url:
-          type: string
-          minLength: 1
-        request_content_type:
-          $ref: '#/components/schemas/RequestContentTypeEnum'
-        interactive:
-          type: boolean
-        score_min_threshold:
-          type: number
-          format: double
-        score_max_threshold:
-          type: number
-          format: double
-        error_on_invalid_score:
-          type: boolean
-          description: When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    PartialUser:
-      type: object
-      description: Partial User Serializer, does not include child relations.
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
       required:
       - name
-      - pk
-      - uid
-      - username
-    AuthenticatorWebAuthnStage:
-      type: object
-      description: AuthenticatorWebAuthnStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-        resident_key_requirement:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        hints:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnHintEnum'
-        device_type_restrictions:
-          type: array
-          items:
-            type: string
-            format: uuid
-        device_type_restrictions_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnDeviceType'
-          readOnly: true
-        max_attempts:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-      required:
-      - component
-      - device_type_restrictions_obj
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PaginatedEndpointStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EndpointStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    DenyStage:
-      type: object
-      description: DenyStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        deny_message:
-          type: string
-      required:
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    UserAttributeEnum:
-      enum:
-      - username
-      - email
-      type: string
-    AuthenticatorWebAuthnStageRequest:
-      type: object
-      description: AuthenticatorWebAuthnStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        user_verification:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        authenticator_attachment:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
-        resident_key_requirement:
-          $ref: '#/components/schemas/UserVerificationEnum'
-        hints:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnHintEnum'
-        device_type_restrictions:
-          type: array
-          items:
-            type: string
-            format: uuid
-        max_attempts:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-      required:
-      - name
-    PaginatedStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Stage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    AuthenticatorDuoStage:
-      type: object
-      description: AuthenticatorDuoStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-          readOnly: true
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        client_id:
-          type: string
-        api_hostname:
-          type: string
-        admin_integration_key:
-          type: string
-      required:
-      - api_hostname
-      - client_id
-      - component
-      - flow_set
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
     PaginatedAuthenticatorSMSStageList:
       type: object
       properties:
@@ -10266,69 +10194,16 @@ components:
       - autocomplete
       - pagination
       - results
-    UserTypeEnum:
+    BackendsEnum:
       enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
+      - authentik.core.auth.InbuiltBackend
+      - authentik.core.auth.TokenBackend
+      - authentik.sources.ldap.auth.LDAPBackend
+      - authentik.sources.kerberos.auth.KerberosBackend
       type: string
-    UsedBy:
+    CaptchaStage:
       type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    PromptChallenge:
-      type: object
-      description: Initial challenge being sent, define fields
-      properties:
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfo'
-        component:
-          type: string
-          default: ak-stage-prompt
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/StagePrompt'
-      required:
-      - fields
-    WebAuthnDeviceType:
-      type: object
-      description: WebAuthnDeviceType Serializer
-      properties:
-        aaguid:
-          type: string
-          format: uuid
-        description:
-          type: string
-      required:
-      - aaguid
-      - description
-    ConsentStage:
-      type: object
-      description: ConsentStage Serializer
+      description: CaptchaStage Serializer
       properties:
         pk:
           type: string
@@ -10358,12 +10233,161 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
           readOnly: true
-        mode:
-          $ref: '#/components/schemas/ConsentModeEnum'
-        consent_expire_in:
+        public_key:
           type: string
-          title: Consent expires in
-          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
+          description: Public key, acquired your captcha Provider.
+        js_url:
+          type: string
+        api_url:
+          type: string
+        request_content_type:
+          $ref: '#/components/schemas/RequestContentTypeEnum'
+        interactive:
+          type: boolean
+        score_min_threshold:
+          type: number
+          format: double
+        score_max_threshold:
+          type: number
+          format: double
+        error_on_invalid_score:
+          type: boolean
+          description: When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - public_key
+      - verbose_name
+      - verbose_name_plural
+    PaginatedSourceStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ProviderEnum:
+      enum:
+      - twilio
+      - generic
+      type: string
+    PatchedUserWriteStageRequest:
+      type: object
+      description: UserWriteStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        user_creation_mode:
+          $ref: '#/components/schemas/UserCreationModeEnum'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optionally add newly created users to this group.
+        user_type:
+          $ref: '#/components/schemas/UserTypeEnum'
+        user_path_template:
+          type: string
+    WebAuthnDeviceType:
+      type: object
+      description: WebAuthnDeviceType Serializer
+      properties:
+        aaguid:
+          type: string
+          format: uuid
+        description:
+          type: string
+      required:
+      - aaguid
+      - description
+    PatchedInvitationStageRequest:
+      type: object
+      description: InvitationStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        continue_flow_without_invitation:
+          type: boolean
+          description: If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
+    UserWriteStageRequest:
+      type: object
+      description: UserWriteStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        user_creation_mode:
+          $ref: '#/components/schemas/UserCreationModeEnum'
+        create_users_as_inactive:
+          type: boolean
+          description: When set, newly created users are inactive and cannot login.
+        create_users_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optionally add newly created users to this group.
+        user_type:
+          $ref: '#/components/schemas/UserTypeEnum'
+        user_path_template:
+          type: string
+      required:
+      - name
+    NotConfiguredActionEnum:
+      enum:
+      - skip
+      - deny
+      - configure
+      type: string
+    UserDeleteStage:
+      type: object
+      description: UserDeleteStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
       required:
       - component
       - flow_set
@@ -10372,6 +10396,21 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PaginatedAuthenticatorWebAuthnStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PatchedIdentificationStageRequest:
       type: object
       description: IdentificationStage Serializer
@@ -10440,160 +10479,15 @@ components:
           - 'null'
           format: uuid
           description: When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-    PaginatedInvitationList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Invitation'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedConsentStageRequest:
-      type: object
-      description: ConsentStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        mode:
-          $ref: '#/components/schemas/ConsentModeEnum'
-        consent_expire_in:
-          type: string
-          minLength: 1
-          title: Consent expires in
-          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
-    Invitation:
-      type: object
-      description: Invitation Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Invite uuid
-        name:
-          type: string
-          pattern: ^[-a-zA-Z0-9_]+$
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        fixed_data:
-          type: object
-          additionalProperties: {}
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        single_use:
-          type: boolean
-          description: When enabled, the invitation will be deleted after usage.
-        flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: When set, only the configured flow can use this invitation.
-        flow_obj:
-          allOf:
-          - $ref: '#/components/schemas/Flow'
-          readOnly: true
-      required:
-      - created_by
-      - flow_obj
-      - name
-      - pk
-    PaginatedWebAuthnDeviceTypeList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebAuthnDeviceType'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    FlowMessageLevelEnum:
+    DeviceClassesEnum:
       enum:
-      - debug
-      - info
-      - success
-      - warning
-      - error
-      type: string
-    PaginatedIdentificationStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/IdentificationStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UserVerificationEnum:
-      enum:
-      - required
-      - preferred
-      - discouraged
-      type: string
-    DuoDeviceEnrollmentStatus:
-      type: object
-      properties:
-        duo_response:
-          $ref: '#/components/schemas/DuoResponseEnum'
-      required:
-      - duo_response
-    UserFieldsEnum:
-      enum:
+      - static
+      - totp
+      - webauthn
+      - duo
+      - sms
       - email
-      - username
-      - upn
       type: string
-    PatchedPasswordStageRequest:
-      type: object
-      description: PasswordStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        backends:
-          type: array
-          items:
-            $ref: '#/components/schemas/BackendsEnum'
-          description: Selection of backends to test the password against.
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        failed_attempts_before_cancel:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
-        allow_show_password:
-          type: boolean
-          description: When enabled, provides a 'show password' button with the password input field.
     PaginatedAccountLockdownStageList:
       type: object
       properties:
@@ -10609,49 +10503,48 @@ components:
       - autocomplete
       - pagination
       - results
-    PatchedUserLogoutStageRequest:
+    UserFieldsEnum:
+      enum:
+      - email
+      - username
+      - upn
+      type: string
+    MutualTLSStageRequest:
       type: object
-      description: UserLogoutStage Serializer
+      description: MutualTLSStage Serializer
       properties:
         name:
           type: string
           minLength: 1
-    SourceStageRequest:
-      type: object
-      description: SourceStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        source:
-          type: string
-          format: uuid
-        resume_timeout:
-          type: string
-          minLength: 1
-          description: 'Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
-        resume_on_match_failures:
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+        certificate_authorities:
           type: array
           items:
-            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
-          description: Source matching failure reasons for which the flow should resume.
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
+      required:
+      - cert_attribute
+      - mode
+      - name
+      - user_attribute
+    UserDeleteStageRequest:
+      type: object
+      description: UserDeleteStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
       required:
       - name
-      - source
-    ErrorDetail:
+    AuthenticatorDuoStage:
       type: object
-      description: Serializer for rest_framework's error messages
-      properties:
-        string:
-          type: string
-        code:
-          type: string
-      required:
-      - code
-      - string
-    CaptchaStage:
-      type: object
-      description: CaptchaStage Serializer
+      description: AuthenticatorDuoStage Serializer
       properties:
         pk:
           type: string
@@ -10681,74 +10574,88 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
           readOnly: true
-        public_key:
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
           type: string
-          description: Public key, acquired your captcha Provider.
-        js_url:
+        client_id:
           type: string
-        api_url:
+        api_hostname:
           type: string
-        request_content_type:
-          $ref: '#/components/schemas/RequestContentTypeEnum'
-        interactive:
-          type: boolean
-        score_min_threshold:
-          type: number
-          format: double
-        score_max_threshold:
-          type: number
-          format: double
-        error_on_invalid_score:
-          type: boolean
-          description: When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
+        admin_integration_key:
+          type: string
       required:
+      - api_hostname
+      - client_id
       - component
       - flow_set
       - meta_model_name
       - name
       - pk
-      - public_key
       - verbose_name
       - verbose_name_plural
-    PaginatedAuthenticatorWebAuthnStageList:
+    ContextualFlowInfo:
       type: object
+      description: Contextual flow information for a challenge
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        title:
+          type: string
+        background:
+          type: string
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+        cancel_url:
+          type: string
+        layout:
+          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
           type: array
           items:
-            $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+            $ref: '#/components/schemas/FlowMessage'
       required:
-      - autocomplete
-      - pagination
-      - results
-    TypeCreate:
+      - cancel_url
+      - layout
+    AuthenticatorWebAuthnStageRequest:
       type: object
-      description: Types of an object that can be created
+      description: AuthenticatorWebAuthnStage Serializer
       properties:
         name:
           type: string
-        description:
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
           type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
-          type: boolean
-          default: false
-        deprecated:
-          type: boolean
-          default: false
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+        resident_key_requirement:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+        max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
       required:
-      - component
-      - description
-      - model_name
       - name
     AuthenticatorEndpointGDTCStage:
       type: object
@@ -10802,24 +10709,37 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    PaginatedPasswordStageList:
+    ContextualFlowInfoLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      - sidebar_left_frame_background
+      - sidebar_right_frame_background
+      type: string
+    PatchedRedirectStageRequest:
       type: object
+      description: RedirectStage Serializer
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PasswordStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    AuthenticatorDuoStageRequest:
+        name:
+          type: string
+          minLength: 1
+        keep_context:
+          type: boolean
+        mode:
+          $ref: '#/components/schemas/RedirectStageModeEnum'
+        target_static:
+          type: string
+        target_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    PatchedAuthenticatorWebAuthnStageRequest:
       type: object
-      description: AuthenticatorDuoStage Serializer
+      description: AuthenticatorWebAuthnStage Serializer
       properties:
         name:
           type: string
@@ -10832,27 +10752,94 @@ components:
           description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-        client_id:
-          type: string
-          minLength: 1
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        api_hostname:
-          type: string
-          minLength: 1
-        admin_integration_key:
-          type: string
-        admin_secret_key:
-          type: string
-          writeOnly: true
+        user_verification:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        authenticator_attachment:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticatorAttachmentEnum'
+        resident_key_requirement:
+          $ref: '#/components/schemas/UserVerificationEnum'
+        hints:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnHintEnum'
+        device_type_restrictions:
+          type: array
+          items:
+            type: string
+            format: uuid
+        max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+    PaginatedEmailStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - api_hostname
-      - client_id
-      - client_secret
-      - name
-    PatchedEndpointStageRequest:
+      - autocomplete
+      - pagination
+      - results
+    PatchedAuthenticatorEmailStageRequest:
+      type: object
+      description: AuthenticatorEmailStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        configure_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+        use_global_settings:
+          type: boolean
+          description: When enabled, global Email connection settings will be used and connection settings below will be ignored.
+        host:
+          type: string
+          minLength: 1
+        port:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        username:
+          type: string
+        password:
+          type: string
+        use_tls:
+          type: boolean
+        use_ssl:
+          type: boolean
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        from_address:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        subject:
+          type: string
+          minLength: 1
+        token_expiry:
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+        template:
+          type: string
+          minLength: 1
+    EndpointStageRequest:
       type: object
       description: EndpointStage Serializer
       properties:
@@ -10864,129 +10851,26 @@ components:
           format: uuid
         mode:
           $ref: '#/components/schemas/StageModeEnum'
-    PaginatedUserLoginStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserLoginStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
       required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedAuthenticatorEndpointGDTCStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedAuthenticatorDuoStageRequest:
-      type: object
-      description: AuthenticatorDuoStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        configure_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        client_id:
-          type: string
-          minLength: 1
-        client_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        api_hostname:
-          type: string
-          minLength: 1
-        admin_integration_key:
-          type: string
-        admin_secret_key:
-          type: string
-          writeOnly: true
-    Prompt:
-      type: object
-      description: Prompt Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Prompt uuid
-        name:
-          type: string
-        field_key:
-          type: string
-          description: Name of the form field, also used to store the value
-        label:
-          type: string
-        type:
-          $ref: '#/components/schemas/PromptTypeEnum'
-        required:
-          type: boolean
-        placeholder:
-          type: string
-          description: Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
-        initial_value:
-          type: string
-          description: Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        prompt_stages_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/PromptStage'
-          readOnly: true
-        sub_text:
-          type: string
-        placeholder_expression:
-          type: boolean
-        initial_value_expression:
-          type: boolean
-      required:
-      - field_key
-      - label
+      - connector
       - name
-      - pk
-      - prompt_stages_obj
-      - type
+    PatchedDenyStageRequest:
+      type: object
+      description: DenyStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        deny_message:
+          type: string
     PolicyEngineMode:
       enum:
       - all
       - any
       type: string
-    BackendsEnum:
-      enum:
-      - authentik.core.auth.InbuiltBackend
-      - authentik.core.auth.TokenBackend
-      - authentik.sources.ldap.auth.LDAPBackend
-      - authentik.sources.kerberos.auth.KerberosBackend
-      type: string
-    EndpointStage:
+    Stage:
       type: object
-      description: EndpointStage Serializer
+      description: Stage Serializer
       properties:
         pk:
           type: string
@@ -11016,25 +10900,154 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
           readOnly: true
-        connector:
-          type: string
-          format: uuid
-        connector_obj:
-          allOf:
-          - $ref: '#/components/schemas/Connector'
-          readOnly: true
-        mode:
-          $ref: '#/components/schemas/StageModeEnum'
       required:
       - component
-      - connector
-      - connector_obj
       - flow_set
       - meta_model_name
       - name
       - pk
       - verbose_name
       - verbose_name_plural
+    NetworkBindingEnum:
+      enum:
+      - no_binding
+      - bind_asn
+      - bind_asn_network
+      - bind_asn_network_ip
+      type: string
+    PatchedUserDeleteStageRequest:
+      type: object
+      description: UserDeleteStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+    IdentificationStageRequest:
+      type: object
+      description: IdentificationStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        user_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserFieldsEnum'
+          description: Fields of the user object to match against. (Hold shift to select multiple options)
+        password_stage:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, shows a password field, instead of showing the password field as separate step.
+        captcha_stage:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.
+        case_insensitive_matching:
+          type: boolean
+          description: When enabled, user fields are matched regardless of their casing.
+        show_matched_user:
+          type: boolean
+          description: When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optional enrollment flow, which is linked at the bottom of the page.
+        recovery_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optional recovery flow, which is linked at the bottom of the page.
+        passwordless_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Optional passwordless flow, which is linked at the bottom of the page.
+        sources:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Specify which sources should be shown.
+        show_source_labels:
+          type: boolean
+        pretend_user_exists:
+          type: boolean
+          description: When enabled, the stage will succeed and continue even when incorrect user info is entered.
+        enable_remember_me:
+          type: boolean
+          description: Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
+      required:
+      - name
+    UserLogoutStage:
+      type: object
+      description: UserLogoutStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+  responses:
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   parameters:
     QueryPaginationOrdering:
       in: query
@@ -11048,12 +11061,6 @@ components:
       schema:
         type: integer
       description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
     QuerySearch:
       in: query
       name: search
@@ -11065,19 +11072,12 @@ components:
       name: name
       schema:
         type: string
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   securitySchemes:
     authentik:
       type: http

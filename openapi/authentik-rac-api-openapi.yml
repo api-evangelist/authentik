@@ -419,75 +419,43 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PartialUser:
+    ProtocolEnum:
+      enum:
+      - rdp
+      - vnc
+      - ssh
+      type: string
+    ConnectionToken:
       type: object
-      description: Partial User Serializer, does not include child relations.
+      description: ConnectionToken Serializer
       properties:
         pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-      required:
-      - name
-      - pk
-      - uid
-      - username
-    PatchedEndpointRequest:
-      type: object
-      description: Endpoint Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
+          format: uuid
+          title: Connection token uuid
         provider:
           type: integer
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/RACProvider'
+          readOnly: true
+        endpoint:
           type: string
-          minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
+          format: uuid
+        endpoint_obj:
+          allOf:
+          - $ref: '#/components/schemas/Endpoint'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - endpoint
+      - endpoint_obj
+      - provider
+      - provider_obj
+      - user
     Endpoint:
       type: object
       description: Endpoint Serializer
@@ -540,75 +508,26 @@ components:
       - protocol
       - provider
       - provider_obj
-    GenericError:
+    PaginatedConnectionTokenList:
       type: object
-      description: Generic API Error
       properties:
-        detail:
-          type: string
-        code:
-          type: string
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionToken'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - detail
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    UsedByActionEnum:
+      - autocomplete
+      - pagination
+      - results
+    EndpointAuthModeEnum:
       enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
+      - static
+      - prompt
       type: string
-    ConnectionToken:
-      type: object
-      description: ConnectionToken Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Connection token uuid
-        provider:
-          type: integer
-        provider_obj:
-          allOf:
-          - $ref: '#/components/schemas/RACProvider'
-          readOnly: true
-        endpoint:
-          type: string
-          format: uuid
-        endpoint_obj:
-          allOf:
-          - $ref: '#/components/schemas/Endpoint'
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - endpoint
-      - endpoint_obj
-      - provider
-      - provider_obj
-      - user
     RACProvider:
       type: object
       description: RACProvider Serializer
@@ -701,28 +620,16 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    EndpointAuthModeEnum:
-      enum:
-      - static
-      - prompt
-      type: string
-    ProtocolEnum:
-      enum:
-      - rdp
-      - vnc
-      - ssh
-      type: string
-    ValidationError:
+    GenericError:
       type: object
-      description: Validation Error
+      description: Generic API Error
       properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
+        detail:
+          type: string
         code:
           type: string
-      additionalProperties: {}
+      required:
+      - detail
     Pagination:
       type: object
       properties:
@@ -748,21 +655,143 @@ components:
       - previous
       - start_index
       - total_pages
-    PaginatedConnectionTokenList:
+    ConnectionTokenRequest:
       type: object
+      description: ConnectionToken Serializer
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
+        provider:
+          type: integer
+        endpoint:
+          type: string
+          format: uuid
+      required:
+      - endpoint
+      - provider
+    PatchedEndpointRequest:
+      type: object
+      description: Endpoint Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        provider:
+          type: integer
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+          minLength: 1
+        settings:
+          type: object
+          additionalProperties: {}
+        property_mappings:
           type: array
           items:
-            $ref: '#/components/schemas/ConnectionToken'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+            type: string
+            format: uuid
+        auth_mode:
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
       required:
-      - autocomplete
-      - pagination
-      - results
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PatchedConnectionTokenRequest:
+      type: object
+      description: ConnectionToken Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
+        provider:
+          type: integer
+        endpoint:
+          type: string
+          format: uuid
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
     EndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -797,35 +826,6 @@ components:
       - name
       - protocol
       - provider
-    PatchedConnectionTokenRequest:
-      type: object
-      description: ConnectionToken Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Connection token uuid
-        provider:
-          type: integer
-        endpoint:
-          type: string
-          format: uuid
-    ConnectionTokenRequest:
-      type: object
-      description: ConnectionToken Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Connection token uuid
-        provider:
-          type: integer
-        endpoint:
-          type: string
-          format: uuid
-      required:
-      - endpoint
-      - provider
     PaginatedEndpointList:
       type: object
       properties:
@@ -844,36 +844,6 @@ components:
     Autocomplete:
       type: object
       additionalProperties: {}
-  parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
   responses:
     GenericErrorResponse:
       content:
@@ -887,6 +857,36 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+  parameters:
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

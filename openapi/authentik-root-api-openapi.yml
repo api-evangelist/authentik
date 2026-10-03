@@ -39,64 +39,19 @@ paths:
       x-summary-source: derived
 components:
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
   schemas:
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    CapabilitiesEnum:
-      enum:
-      - can_save_media
-      - can_save_reports
-      - can_geo_ip
-      - can_asn
-      - can_impersonate
-      - can_debug
-      - is_enterprise
-      - can_request
-      - can_agent_self_service
-      type: string
-    Config:
-      type: object
-      description: Serialize authentik Config into DRF Object
-      properties:
-        error_reporting:
-          $ref: '#/components/schemas/ErrorReportingConfig'
-        capabilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CapabilitiesEnum'
-        cache_timeout:
-          type: integer
-        cache_timeout_flows:
-          type: integer
-        cache_timeout_policies:
-          type: integer
-      required:
-      - cache_timeout
-      - cache_timeout_flows
-      - cache_timeout_policies
-      - capabilities
-      - error_reporting
     ErrorReportingConfig:
       type: object
       description: Config for error reporting
@@ -123,6 +78,39 @@ components:
       - send_pii
       - sentry_dsn
       - traces_sample_rate
+    Config:
+      type: object
+      description: Serialize authentik Config into DRF Object
+      properties:
+        error_reporting:
+          $ref: '#/components/schemas/ErrorReportingConfig'
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilitiesEnum'
+        cache_timeout:
+          type: integer
+        cache_timeout_flows:
+          type: integer
+        cache_timeout_policies:
+          type: integer
+      required:
+      - cache_timeout
+      - cache_timeout_flows
+      - cache_timeout_policies
+      - capabilities
+      - error_reporting
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     GenericError:
       type: object
       description: Generic API Error
@@ -133,6 +121,18 @@ components:
           type: string
       required:
       - detail
+    CapabilitiesEnum:
+      enum:
+      - can_save_media
+      - can_save_reports
+      - can_geo_ip
+      - can_asn
+      - can_impersonate
+      - can_debug
+      - is_enterprise
+      - can_request
+      - can_agent_self_service
+      type: string
   securitySchemes:
     authentik:
       type: http
