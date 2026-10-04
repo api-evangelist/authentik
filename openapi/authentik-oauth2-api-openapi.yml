@@ -361,6 +361,31 @@ paths:
       summary: Oauth2 refresh tokens used by list
       x-summary-source: derived
 components:
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   responses:
     GenericErrorResponse:
       content:
@@ -375,41 +400,12 @@ components:
             $ref: '#/components/schemas/ValidationError'
       description: ''
   schemas:
-    UserTypeEnum:
-      enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
-      type: string
-    GenericError:
+    Autocomplete:
       type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    PaginatedExpiringBaseGrantModelList:
+      additionalProperties: {}
+    ExpiringBaseGrantModel:
       type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExpiringBaseGrantModel'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    TokenModel:
-      type: object
-      description: Serializer for BaseGrantModel and RefreshToken
+      description: Serializer for BaseGrantModel and ExpiringBaseGrant
       properties:
         pk:
           type: integer
@@ -432,19 +428,104 @@ components:
           type: array
           items:
             type: string
-        id_token:
-          type: string
-          description: Get the token's id_token as JSON String
-          readOnly: true
-        revoked:
-          type: boolean
       required:
-      - id_token
       - is_expired
       - pk
       - provider
       - scope
       - user
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Provider:
+      type: object
+      description: Provider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
+        authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type:
+          - string
+          - 'null'
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type:
+          - string
+          - 'null'
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
     Pagination:
       type: object
       properties:
@@ -470,26 +551,17 @@ components:
       - previous
       - start_index
       - total_pages
-    UsedBy:
+    ValidationError:
       type: object
-      description: A list of all objects referencing the queried object
+      description: Validation Error
       properties:
-        app:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
           type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
+      additionalProperties: {}
     User:
       type: object
       description: User Serializer
@@ -588,6 +660,16 @@ components:
       - uid
       - username
       - uuid
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     PartialGroup:
       type: object
       description: Partial Group Serializer, does not include child relations.
@@ -613,127 +695,9 @@ components:
       - name
       - num_pk
       - pk
-    PaginatedTokenModelList:
+    TokenModel:
       type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TokenModel'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    Provider:
-      type: object
-      description: Provider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used for authentication when the associated application is accessed by an un-authenticated user.
-        authorization_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        assigned_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        assigned_backchannel_application_slug:
-          type:
-          - string
-          - 'null'
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_backchannel_application_name:
-          type:
-          - string
-          - 'null'
-          description: Application's display Name.
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - assigned_application_name
-      - assigned_application_slug
-      - assigned_backchannel_application_name
-      - assigned_backchannel_application_slug
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    ExpiringBaseGrantModel:
-      type: object
-      description: Serializer for BaseGrantModel and ExpiringBaseGrant
+      description: Serializer for BaseGrantModel and RefreshToken
       properties:
         pk:
           type: integer
@@ -756,15 +720,61 @@ components:
           type: array
           items:
             type: string
+        id_token:
+          type: string
+          description: Get the token's id_token as JSON String
+          readOnly: true
+        revoked:
+          type: boolean
       required:
+      - id_token
       - is_expired
       - pk
       - provider
       - scope
       - user
-    Autocomplete:
+    PaginatedExpiringBaseGrantModelList:
       type: object
-      additionalProperties: {}
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpiringBaseGrantModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
     Role:
       type: object
       description: Role serializer
@@ -779,31 +789,21 @@ components:
       required:
       - name
       - pk
-  parameters:
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
+    PaginatedTokenModelList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
   securitySchemes:
     authentik:
       type: http

@@ -38,19 +38,6 @@ paths:
       summary: Root config retrieve
       x-summary-source: derived
 components:
-  responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
   schemas:
     ErrorReportingConfig:
       type: object
@@ -78,6 +65,27 @@ components:
       - send_pii
       - sentry_dsn
       - traces_sample_rate
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -100,27 +108,6 @@ components:
       - cache_timeout_policies
       - capabilities
       - error_reporting
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
     CapabilitiesEnum:
       enum:
       - can_save_media
@@ -133,6 +120,19 @@ components:
       - can_request
       - can_agent_self_service
       type: string
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

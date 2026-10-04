@@ -1084,7 +1084,7 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedServiceConnectionList:
+    PaginatedDockerServiceConnectionList:
       type: object
       properties:
         pagination:
@@ -1092,7 +1092,255 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ServiceConnection'
+            $ref: '#/components/schemas/DockerServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ProxyMode:
+      enum:
+      - proxy
+      - forward_single
+      - forward_domain
+      type: string
+    DockerServiceConnection:
+      type: object
+      description: DockerServiceConnection Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        component:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        url:
+          type: string
+          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
+        tls_verification:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
+        tls_authentication:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Certificate/Key used for authentication. Can be left empty for no authentication.
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - url
+      - verbose_name
+      - verbose_name_plural
+    PatchedDockerServiceConnectionRequest:
+      type: object
+      description: DockerServiceConnection Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        url:
+          type: string
+          minLength: 1
+          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
+        tls_verification:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
+        tls_authentication:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Certificate/Key used for authentication. Can be left empty for no authentication.
+    ServiceConnection:
+      type: object
+      description: ServiceConnection Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        component:
+          type: string
+          description: Return component used to edit this object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    OutpostHealth:
+      type: object
+      description: Outpost health status
+      properties:
+        uid:
+          type: string
+          readOnly: true
+        last_seen:
+          type: string
+          format: date-time
+          readOnly: true
+        version:
+          type: string
+          readOnly: true
+        golang_version:
+          type: string
+          readOnly: true
+        openssl_enabled:
+          type: boolean
+          readOnly: true
+        openssl_version:
+          type: string
+          readOnly: true
+        fips_enabled:
+          type:
+          - boolean
+          - 'null'
+          description: Get FIPS enabled
+          readOnly: true
+        version_should:
+          type: string
+          readOnly: true
+        version_outdated:
+          type: boolean
+          readOnly: true
+        build_hash:
+          type: string
+          readOnly: true
+        build_hash_should:
+          type: string
+          readOnly: true
+        hostname:
+          type: string
+          readOnly: true
+      required:
+      - build_hash
+      - build_hash_should
+      - fips_enabled
+      - golang_version
+      - hostname
+      - last_seen
+      - openssl_enabled
+      - openssl_version
+      - uid
+      - version
+      - version_outdated
+      - version_should
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    PaginatedProxyOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedKubernetesServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KubernetesServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedLDAPOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPOutpostConfig'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -1154,51 +1402,35 @@ components:
       - name
       - pk
       - unbind_flow_slug
-    OutpostDefaultConfig:
-      type: object
-      description: Global default outpost config
-      properties:
-        config:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-      required:
-      - config
-    PaginatedDockerServiceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DockerServiceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    LDAPCheckAccess:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        has_search_permission:
-          type: boolean
-        access:
-          $ref: '#/components/schemas/PolicyTestResult'
-      required:
-      - access
-    KubernetesServiceConnectionRequest:
+    KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
       properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
         name:
           type: string
-          minLength: 1
         local:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        component:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
         kubeconfig:
           type: object
           additionalProperties: {}
@@ -1207,262 +1439,17 @@ components:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
       required:
-      - name
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
-    TypeCreate:
-      type: object
-      description: Types of an object that can be created
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
-          type: boolean
-          default: false
-        deprecated:
-          type: boolean
-          default: false
-      required:
       - component
-      - description
-      - model_name
-      - name
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    PaginatedKubernetesServiceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/KubernetesServiceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    RadiusOutpostConfig:
-      type: object
-      description: RadiusProvider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        application_slug:
-          type: string
-        auth_flow_slug:
-          type: string
-        client_networks:
-          type: string
-          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-        shared_secret:
-          type: string
-          description: Shared secret between clients and server to hash packets.
-        mfa_support:
-          type: boolean
-          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-        certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-      required:
-      - application_slug
-      - auth_flow_slug
+      - meta_model_name
       - name
       - pk
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    OpenIDConnectConfiguration:
-      type: object
-      description: rest_framework Serializer for OIDC Configuration
-      properties:
-        issuer:
-          type: string
-        authorization_endpoint:
-          type: string
-        token_endpoint:
-          type: string
-        userinfo_endpoint:
-          type: string
-        end_session_endpoint:
-          type: string
-        introspection_endpoint:
-          type: string
-        jwks_uri:
-          type: string
-        response_types_supported:
-          type: array
-          items:
-            type: string
-        id_token_signing_alg_values_supported:
-          type: array
-          items:
-            type: string
-        subject_types_supported:
-          type: array
-          items:
-            type: string
-        token_endpoint_auth_methods_supported:
-          type: array
-          items:
-            type: string
-      required:
-      - authorization_endpoint
-      - end_session_endpoint
-      - id_token_signing_alg_values_supported
-      - introspection_endpoint
-      - issuer
-      - jwks_uri
-      - response_types_supported
-      - subject_types_supported
-      - token_endpoint
-      - token_endpoint_auth_methods_supported
-      - userinfo_endpoint
-    PaginatedRadiusOutpostConfigList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RadiusOutpostConfig'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    OutpostRequest:
-      type: object
-      description: Outpost Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        type:
-          $ref: '#/components/schemas/OutpostTypeEnum'
-        providers:
-          type: array
-          items:
-            type: integer
-        service_connection:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
-        config:
-          type: object
-          additionalProperties: {}
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-      required:
-      - config
-      - name
-      - providers
-      - type
-    ProxyMode:
+      - verbose_name
+      - verbose_name_plural
+    LDAPAPIAccessMode:
       enum:
-      - proxy
-      - forward_single
-      - forward_domain
+      - direct
+      - cached
       type: string
-    PaginatedProxyOutpostConfigList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProxyOutpostConfig'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     ServiceConnectionState:
       type: object
       description: Serializer for Service connection state
@@ -1476,143 +1463,6 @@ components:
       required:
       - healthy
       - version
-    PolicyTestResult:
-      type: object
-      description: result of a policy test
-      properties:
-        passing:
-          type: boolean
-        messages:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        log_messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-      required:
-      - log_messages
-      - messages
-      - passing
-    ProxyOutpostConfig:
-      type: object
-      description: Proxy provider serializer for outposts
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        internal_host:
-          type: string
-          format: uri
-        external_host:
-          type: string
-          format: uri
-        internal_host_ssl_validation:
-          type: boolean
-          description: Validate SSL Certificates of upstream servers
-        client_id:
-          type: string
-          maxLength: 255
-        client_secret:
-          type: string
-          maxLength: 255
-        oidc_configuration:
-          allOf:
-          - $ref: '#/components/schemas/OpenIDConnectConfiguration'
-          readOnly: true
-        cookie_secret:
-          type: string
-        certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        skip_path_regex:
-          type: string
-          description: Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
-        basic_auth_enabled:
-          type: boolean
-          title: Set HTTP-Basic Authentication
-          description: Set a custom HTTP-Basic Authentication header based on values from authentik.
-        basic_auth_password_attribute:
-          type: string
-          title: HTTP-Basic Password Key
-          description: User/Group Attribute used for the password part of the HTTP-Basic Header.
-        basic_auth_user_attribute:
-          type: string
-          title: HTTP-Basic Username Key
-          description: User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
-        mode:
-          allOf:
-          - $ref: '#/components/schemas/ProxyMode'
-          description: Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-        cookie_domain:
-          type: string
-        access_token_validity:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Get token validity as second count
-          readOnly: true
-        intercept_header_auth:
-          type: boolean
-          description: When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
-        scopes_to_request:
-          type: array
-          items:
-            type: string
-          description: 'Get all the scope names the outpost should request,
-
-            including custom-defined ones'
-          readOnly: true
-        assigned_application_slug:
-          type: string
-          description: Internal application name, used in URLs.
-          readOnly: true
-        assigned_application_name:
-          type: string
-          description: Application's display Name.
-          readOnly: true
-      required:
-      - access_token_validity
-      - assigned_application_name
-      - assigned_application_slug
-      - external_host
-      - name
-      - oidc_configuration
-      - pk
-      - scopes_to_request
-    PaginatedLDAPOutpostConfigList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LDAPOutpostConfig'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    RadiusCheckAccess:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        attributes:
-          type: string
-        access:
-          $ref: '#/components/schemas/PolicyTestResult'
-      required:
-      - access
     UsedByActionEnum:
       enum:
       - cascade
@@ -1705,6 +1555,16 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    OutpostDefaultConfig:
+      type: object
+      description: Global default outpost config
+      properties:
+        config:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - config
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -1734,46 +1594,129 @@ components:
           minLength: 1
           title: Managed by authentik
           description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-    DockerServiceConnectionRequest:
+    ProxyOutpostConfig:
       type: object
-      description: DockerServiceConnection Serializer
+      description: Proxy provider serializer for outposts
       properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
         name:
           type: string
-          minLength: 1
-        local:
-          type: boolean
-          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-        url:
+        internal_host:
           type: string
-          minLength: 1
-          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
-        tls_verification:
+          format: uri
+        external_host:
+          type: string
+          format: uri
+        internal_host_ssl_validation:
+          type: boolean
+          description: Validate SSL Certificates of upstream servers
+        client_id:
+          type: string
+          maxLength: 255
+        client_secret:
+          type: string
+          maxLength: 255
+        oidc_configuration:
+          allOf:
+          - $ref: '#/components/schemas/OpenIDConnectConfiguration'
+          readOnly: true
+        cookie_secret:
+          type: string
+        certificate:
           type:
           - string
           - 'null'
           format: uuid
-          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
-        tls_authentication:
+        skip_path_regex:
+          type: string
+          description: Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
+        basic_auth_enabled:
+          type: boolean
+          title: Set HTTP-Basic Authentication
+          description: Set a custom HTTP-Basic Authentication header based on values from authentik.
+        basic_auth_password_attribute:
+          type: string
+          title: HTTP-Basic Password Key
+          description: User/Group Attribute used for the password part of the HTTP-Basic Header.
+        basic_auth_user_attribute:
+          type: string
+          title: HTTP-Basic Username Key
+          description: User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ProxyMode'
+          description: Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+        cookie_domain:
+          type: string
+        access_token_validity:
           type:
-          - string
+          - number
           - 'null'
-          format: uuid
-          description: Certificate/Key used for authentication. Can be left empty for no authentication.
+          format: double
+          description: Get token validity as second count
+          readOnly: true
+        intercept_header_auth:
+          type: boolean
+          description: When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
+        scopes_to_request:
+          type: array
+          items:
+            type: string
+          description: 'Get all the scope names the outpost should request,
+
+            including custom-defined ones'
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
       required:
+      - access_token_validity
+      - assigned_application_name
+      - assigned_application_slug
+      - external_host
       - name
-      - url
+      - oidc_configuration
+      - pk
+      - scopes_to_request
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
     OutpostTypeEnum:
       enum:
       - proxy
       - ldap
       - radius
       - rac
-      type: string
-    LDAPAPIAccessMode:
-      enum:
-      - direct
-      - cached
       type: string
     ValidationError:
       type: object
@@ -1786,180 +1729,6 @@ components:
         code:
           type: string
       additionalProperties: {}
-    OutpostHealth:
-      type: object
-      description: Outpost health status
-      properties:
-        uid:
-          type: string
-          readOnly: true
-        last_seen:
-          type: string
-          format: date-time
-          readOnly: true
-        version:
-          type: string
-          readOnly: true
-        golang_version:
-          type: string
-          readOnly: true
-        openssl_enabled:
-          type: boolean
-          readOnly: true
-        openssl_version:
-          type: string
-          readOnly: true
-        fips_enabled:
-          type:
-          - boolean
-          - 'null'
-          description: Get FIPS enabled
-          readOnly: true
-        version_should:
-          type: string
-          readOnly: true
-        version_outdated:
-          type: boolean
-          readOnly: true
-        build_hash:
-          type: string
-          readOnly: true
-        build_hash_should:
-          type: string
-          readOnly: true
-        hostname:
-          type: string
-          readOnly: true
-      required:
-      - build_hash
-      - build_hash_should
-      - fips_enabled
-      - golang_version
-      - hostname
-      - last_seen
-      - openssl_enabled
-      - openssl_version
-      - uid
-      - version
-      - version_outdated
-      - version_should
-    LogEvent:
-      type: object
-      description: Single log message with all context logged.
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
-    PatchedKubernetesServiceConnectionRequest:
-      type: object
-      description: KubernetesServiceConnection Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        local:
-          type: boolean
-          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-        kubeconfig:
-          type: object
-          additionalProperties: {}
-          description: Paste your kubeconfig here. authentik will automatically use the currently selected context.
-        verify_ssl:
-          type: boolean
-          description: Verify SSL Certificates of the Kubernetes API endpoint
-    DockerServiceConnection:
-      type: object
-      description: DockerServiceConnection Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        name:
-          type: string
-        local:
-          type: boolean
-          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-        component:
-          type: string
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        url:
-          type: string
-          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
-        tls_verification:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
-        tls_authentication:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Certificate/Key used for authentication. Can be left empty for no authentication.
-      required:
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - url
-      - verbose_name
-      - verbose_name_plural
-    PatchedDockerServiceConnectionRequest:
-      type: object
-      description: DockerServiceConnection Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        local:
-          type: boolean
-          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-        url:
-          type: string
-          minLength: 1
-          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
-        tls_verification:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
-        tls_authentication:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Certificate/Key used for authentication. Can be left empty for no authentication.
     Outpost:
       type: object
       description: Outpost Serializer
@@ -2018,72 +1787,16 @@ components:
       - service_connection_obj
       - token_identifier
       - type
-    ServiceConnection:
-      type: object
-      description: ServiceConnection Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        name:
-          type: string
-        local:
-          type: boolean
-          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-        component:
-          type: string
-          description: Return component used to edit this object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    KubernetesServiceConnection:
+    KubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
       properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
         name:
           type: string
+          minLength: 1
         local:
           type: boolean
           description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-        component:
-          type: string
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
         kubeconfig:
           type: object
           additionalProperties: {}
@@ -2092,15 +1805,115 @@ components:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
       required:
-      - component
-      - meta_model_name
       - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    Autocomplete:
+    OpenIDConnectConfiguration:
       type: object
-      additionalProperties: {}
+      description: rest_framework Serializer for OIDC Configuration
+      properties:
+        issuer:
+          type: string
+        authorization_endpoint:
+          type: string
+        token_endpoint:
+          type: string
+        userinfo_endpoint:
+          type: string
+        end_session_endpoint:
+          type: string
+        introspection_endpoint:
+          type: string
+        jwks_uri:
+          type: string
+        response_types_supported:
+          type: array
+          items:
+            type: string
+        id_token_signing_alg_values_supported:
+          type: array
+          items:
+            type: string
+        subject_types_supported:
+          type: array
+          items:
+            type: string
+        token_endpoint_auth_methods_supported:
+          type: array
+          items:
+            type: string
+      required:
+      - authorization_endpoint
+      - end_session_endpoint
+      - id_token_signing_alg_values_supported
+      - introspection_endpoint
+      - issuer
+      - jwks_uri
+      - response_types_supported
+      - subject_types_supported
+      - token_endpoint
+      - token_endpoint_auth_methods_supported
+      - userinfo_endpoint
+    PaginatedRadiusOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PolicyTestResult:
+      type: object
+      description: result of a policy test
+      properties:
+        passing:
+          type: boolean
+        messages:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        log_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+      required:
+      - log_messages
+      - messages
+      - passing
+    PatchedKubernetesServiceConnectionRequest:
+      type: object
+      description: KubernetesServiceConnection Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        kubeconfig:
+          type: object
+          additionalProperties: {}
+          description: Paste your kubeconfig here. authentik will automatically use the currently selected context.
+        verify_ssl:
+          type: boolean
+          description: Verify SSL Certificates of the Kubernetes API endpoint
     PaginatedOutpostList:
       type: object
       properties:
@@ -2116,6 +1929,223 @@ components:
       - autocomplete
       - pagination
       - results
+    RadiusCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        attributes:
+          type: string
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
+    DockerServiceConnectionRequest:
+      type: object
+      description: DockerServiceConnection Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        local:
+          type: boolean
+          description: If enabled, use the local connection. Required Docker socket/Kubernetes Integration
+        url:
+          type: string
+          minLength: 1
+          description: Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
+        tls_verification:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
+        tls_authentication:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Certificate/Key used for authentication. Can be left empty for no authentication.
+      required:
+      - name
+      - url
+    PaginatedServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    LDAPCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        has_search_permission:
+          type: boolean
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
+    RadiusOutpostConfig:
+      type: object
+      description: RadiusProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        application_slug:
+          type: string
+        auth_flow_slug:
+          type: string
+        client_networks:
+          type: string
+          description: List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+        shared_secret:
+          type: string
+          description: Shared secret between clients and server to hash packets.
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+        certificate:
+          type:
+          - string
+          - 'null'
+          format: uuid
+      required:
+      - application_slug
+      - auth_flow_slug
+      - name
+      - pk
+    OutpostRequest:
+      type: object
+      description: Outpost Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/OutpostTypeEnum'
+        providers:
+          type: array
+          items:
+            type: integer
+        service_connection:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
+        config:
+          type: object
+          additionalProperties: {}
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+      required:
+      - config
+      - name
+      - providers
+      - type
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
   responses:
     GenericErrorResponse:
       content:
@@ -2129,36 +2159,6 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
-  parameters:
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
   securitySchemes:
     authentik:
       type: http

@@ -302,73 +302,37 @@ paths:
       summary: Managed blueprints import create
       x-summary-source: derived
 components:
-  responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
   schemas:
-    PaginatedBlueprintInstanceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/BlueprintInstance'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    PatchedBlueprintInstanceRequest:
-      type: object
-      description: Info about a single blueprint instance file
-      properties:
-        name:
-          type: string
-          minLength: 1
-        path:
-          type: string
-          default: ''
-        context:
-          type: object
-          additionalProperties: {}
-        enabled:
-          type: boolean
-        content:
-          type: string
     BlueprintInstanceRequest:
       type: object
       description: Info about a single blueprint instance file
@@ -388,31 +352,94 @@ components:
           type: string
       required:
       - name
-    Pagination:
+    BlueprintFile:
       type: object
       properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
+        path:
+          type: string
+        last_m:
+          type: string
+          format: date-time
+        hash:
+          type: string
+        meta:
+          allOf:
+          - $ref: '#/components/schemas/Metadata'
+          readOnly: true
       required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
+      - hash
+      - last_m
+      - meta
+      - path
+    Metadata:
+      type: object
+      description: Serializer for blueprint metadata
+      properties:
+        name:
+          type: string
+        labels:
+          type: object
+          additionalProperties: {}
+      required:
+      - labels
+      - name
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    BlueprintImportResult:
+      type: object
+      description: Logs of an attempted blueprint import
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+        success:
+          type: boolean
+          readOnly: true
+      required:
+      - logs
+      - success
+    PatchedBlueprintInstanceRequest:
+      type: object
+      description: Info about a single blueprint instance file
+      properties:
+        name:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          default: ''
+        context:
+          type: object
+          additionalProperties: {}
+        enabled:
+          type: boolean
+        content:
+          type: string
     BlueprintInstance:
       type: object
       description: Info about a single blueprint instance file
@@ -462,6 +489,106 @@ components:
       - name
       - pk
       - status
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    BlueprintInstanceStatusEnum:
+      enum:
+      - successful
+      - warning
+      - error
+      - orphaned
+      - unknown
+      type: string
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PaginatedBlueprintInstanceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintInstance'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    BlueprintUploadRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        file:
+          type: string
+          format: binary
+        path:
+          type: string
+          minLength: 1
+        context:
+          type: string
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object
@@ -482,146 +609,19 @@ components:
       - model_name
       - name
       - pk
-    BlueprintImportResult:
-      type: object
-      description: Logs of an attempted blueprint import
-      properties:
-        logs:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-        success:
-          type: boolean
-          readOnly: true
-      required:
-      - logs
-      - success
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    BlueprintUploadRequest:
-      type: object
-      description: Serializer to upload file
-      properties:
-        file:
-          type: string
-          format: binary
-        path:
-          type: string
-          minLength: 1
-        context:
-          type: string
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    LogEvent:
-      type: object
-      description: Single log message with all context logged.
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
-    Metadata:
-      type: object
-      description: Serializer for blueprint metadata
-      properties:
-        name:
-          type: string
-        labels:
-          type: object
-          additionalProperties: {}
-      required:
-      - labels
-      - name
-    BlueprintInstanceStatusEnum:
-      enum:
-      - successful
-      - warning
-      - error
-      - orphaned
-      - unknown
-      type: string
-    BlueprintFile:
-      type: object
-      properties:
-        path:
-          type: string
-        last_m:
-          type: string
-          format: date-time
-        hash:
-          type: string
-        meta:
-          allOf:
-          - $ref: '#/components/schemas/Metadata'
-          readOnly: true
-      required:
-      - hash
-      - last_m
-      - meta
-      - path
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-  parameters:
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
+  responses:
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
+      description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

@@ -2083,204 +2083,48 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Software:
+    NetworkInterface:
       type: object
       properties:
         name:
           type: string
-        version:
+        hardware_address:
           type: string
-        source:
-          type: string
-        path:
-          type: string
-      required:
-      - name
-      - source
-    TokenView:
-      type: object
-      description: Show token's current key
-      properties:
-        key:
-          type: string
-          readOnly: true
-      required:
-      - key
-    Config:
-      type: object
-      description: Serialize authentik Config into DRF Object
-      properties:
-        error_reporting:
-          $ref: '#/components/schemas/ErrorReportingConfig'
-        capabilities:
+        ip_addresses:
           type: array
           items:
-            $ref: '#/components/schemas/CapabilitiesEnum'
-        cache_timeout:
-          type: integer
-        cache_timeout_flows:
-          type: integer
-        cache_timeout_policies:
-          type: integer
+            type: string
+        dns_servers:
+          type: array
+          items:
+            type: string
       required:
-      - cache_timeout
-      - cache_timeout_flows
-      - cache_timeout_policies
-      - capabilities
-      - error_reporting
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    CapabilitiesEnum:
-      enum:
-      - can_save_media
-      - can_save_reports
-      - can_geo_ip
-      - can_asn
-      - can_impersonate
-      - can_debug
-      - is_enterprise
-      - can_request
-      - can_agent_self_service
-      type: string
-    ProcessRequest:
+      - hardware_address
+      - name
+    EnrollmentTokenRequest:
       type: object
       properties:
-        id:
-          type: integer
+        device_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        connector:
+          type: string
+          format: uuid
         name:
           type: string
           minLength: 1
-        user:
-          type: string
-          minLength: 1
-      required:
-      - id
-      - name
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    PaginatedAgentConnectorList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AgentConnector'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    AppleIndependentSecureEnclave:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        user:
-          type: integer
-          description: The user that this device belongs to.
-        apple_secure_enclave_key:
-          type: string
-        apple_enclave_key_id:
-          type: string
-        device_type:
-          type: string
-      required:
-      - apple_enclave_key_id
-      - apple_secure_enclave_key
-      - device_type
-      - user
-    PartialGroup:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
+        expiring:
           type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
       required:
+      - connector
       - name
-      - num_pk
-      - pk
-    UserSelfGroups:
-      type: object
-      properties:
-        name:
-          type: string
-          readOnly: true
-        pk:
-          type: string
-          readOnly: true
-      required:
-      - name
-      - pk
     DeviceUser:
       type: object
       properties:
@@ -2294,6 +2138,24 @@ components:
           type: string
       required:
       - id
+    PaginatedFleetConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FleetConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Autocomplete:
+      type: object
+      additionalProperties: {}
     EndpointDeviceDetails:
       type: object
       properties:
@@ -2350,133 +2212,16 @@ components:
       - name
       - pbm_uuid
       - policies
-    AgentPSSODeviceRegistrationResponse:
+    PatchedDeviceAccessGroupRequest:
       type: object
-      description: authentik settings for Platform SSO tokens
       properties:
-        client_id:
-          type: string
-        issuer:
-          type: string
-        token_endpoint:
-          type: string
-        jwks_endpoint:
-          type: string
-        audience:
-          type: string
-        nonce_endpoint:
-          type: string
-      required:
-      - audience
-      - client_id
-      - issuer
-      - jwks_endpoint
-      - nonce_endpoint
-      - token_endpoint
-    UserSelf:
-      type: object
-      description: User Serializer for information a user can retrieve about themselves
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
         name:
           type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          readOnly: true
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        is_superuser:
-          type: boolean
-          readOnly: true
-        is_current:
-          type: boolean
-          description: Return whether this user owns the current browser session.
-          readOnly: true
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserSelfGroups'
-          readOnly: true
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserSelfRoles'
-          readOnly: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        avatar:
-          type: string
-          description: User's avatar, either a http/https URL or a data URI
-          readOnly: true
-        uid:
-          type: string
-          readOnly: true
-        settings:
+          minLength: 1
+        attributes:
           type: object
           additionalProperties: {}
-          description: Get user settings with brand and group settings applied
-          readOnly: true
-        type:
-          $ref: '#/components/schemas/UserTypeEnum'
-        system_permissions:
-          type: array
-          items:
-            type: string
-          description: Get all system permissions assigned to the user
-          readOnly: true
-      required:
-      - avatar
-      - groups
-      - is_active
-      - is_current
-      - is_superuser
-      - name
-      - pk
-      - roles
-      - settings
-      - system_permissions
-      - uid
-      - username
-    OperatingSystemRequest:
-      type: object
-      description: 'For example:
-
-        {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
-
-        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
-
-        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
-
-        {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}'
-      properties:
-        family:
-          $ref: '#/components/schemas/DeviceFactsOSFamily'
-        name:
-          type: string
-          minLength: 1
-          description: Operating System name, such as 'Server 2022' or 'Ubuntu'
-        version:
-          type: string
-          minLength: 1
-          description: Operating System version, must always be the version number but may contain build name
-        arch:
-          type: string
-          minLength: 1
-      required:
-      - family
-    PaginatedFleetConnectorList:
+    PaginatedEnrollmentTokenList:
       type: object
       properties:
         pagination:
@@ -2484,142 +2229,63 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/FleetConnector'
+            $ref: '#/components/schemas/EnrollmentToken'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    AgentConnectorRequest:
+    PaginatedDeviceUserBindingList:
       type: object
       properties:
-        connector_uuid:
-          type: string
-          format: uuid
-        name:
-          type: string
-          minLength: 1
-        enabled:
-          type: boolean
-        snapshot_expiry:
-          type: string
-          minLength: 1
-        auth_session_duration:
-          type: string
-          minLength: 1
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-          minLength: 1
-        authorization_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        nss_uid_offset:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        nss_gid_offset:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        challenge_key:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        challenge_idle_timeout:
-          type: string
-          minLength: 1
-        challenge_trigger_check_in:
-          type: boolean
-        jwt_federation_providers:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
           type: array
           items:
-            type: integer
+            $ref: '#/components/schemas/DeviceUserBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - name
-    DeviceFacts:
-      type: object
-      properties:
-        os:
-          allOf:
-          - $ref: '#/components/schemas/OperatingSystem'
-        disks:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Disk'
-        network:
-          allOf:
-          - $ref: '#/components/schemas/Network'
-        hardware:
-          allOf:
-          - $ref: '#/components/schemas/Hardware'
-        software:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Software'
-        processes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Process'
-        users:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DeviceUser'
-        groups:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DeviceGroup'
-        vendor:
-          type: object
-          additionalProperties: {}
-    UserSelfRoles:
+      - autocomplete
+      - pagination
+      - results
+    Disk:
       type: object
       properties:
         name:
           type: string
-          readOnly: true
-        pk:
+        mountpoint:
           type: string
-          readOnly: true
+        label:
+          type: string
+        capacity_total_bytes:
+          type: integer
+          format: int64
+        capacity_used_bytes:
+          type: integer
+          format: int64
+        encryption_enabled:
+          type: boolean
+          default: false
       required:
+      - mountpoint
       - name
-      - pk
-    EnrollmentToken:
+    PatchedEnrollmentTokenRequest:
       type: object
       properties:
-        token_uuid:
-          type: string
-          format: uuid
-          readOnly: true
         device_group:
           type:
           - string
           - 'null'
           format: uuid
-        device_group_obj:
-          allOf:
-          - $ref: '#/components/schemas/DeviceAccessGroup'
-          readOnly: true
         connector:
           type: string
           format: uuid
         name:
           type: string
+          minLength: 1
         expiring:
           type: boolean
         expires:
@@ -2627,41 +2293,7 @@ components:
           - string
           - 'null'
           format: date-time
-      required:
-      - connector
-      - device_group_obj
-      - name
-      - token_uuid
-    MDMConfigResponse:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        config:
-          type: string
-        mime_type:
-          type: string
-        filename:
-          type: string
-      required:
-      - config
-      - filename
-      - mime_type
-    PaginatedEndpointDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EndpointDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    AppleIndependentSecureEnclaveRequest:
+    PatchedAppleIndependentSecureEnclaveRequest:
       type: object
       properties:
         uuid:
@@ -2679,54 +2311,6 @@ components:
         device_type:
           type: string
           minLength: 1
-      required:
-      - apple_enclave_key_id
-      - apple_secure_enclave_key
-      - device_type
-      - user
-    DeviceUserBindingRequest:
-      type: object
-      description: PolicyBinding Serializer
-      properties:
-        policy:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        user:
-          type:
-          - integer
-          - 'null'
-        target:
-          type: string
-          format: uuid
-        negate:
-          type: boolean
-          description: Negates the outcome of the policy. Messages are unaffected.
-        enabled:
-          type: boolean
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Timeout after which Policy execution is terminated.
-        failure_result:
-          type: boolean
-          description: Result if the Policy execution fails.
-        is_primary:
-          type: boolean
-      required:
-      - order
-      - target
     GoogleChromeConnector:
       type: object
       description: GoogleChromeConnector Serializer
@@ -2771,24 +2355,6 @@ components:
       - name
       - verbose_name
       - verbose_name_plural
-    NetworkRequest:
-      type: object
-      properties:
-        hostname:
-          type: string
-          minLength: 1
-        firewall_enabled:
-          type: boolean
-        interfaces:
-          type: array
-          items:
-            $ref: '#/components/schemas/NetworkInterfaceRequest'
-        gateway:
-          type: string
-          minLength: 1
-      required:
-      - hostname
-      - interfaces
     GoogleChromeConnectorRequest:
       type: object
       description: GoogleChromeConnector Serializer
@@ -2807,106 +2373,6 @@ components:
       required:
       - credentials
       - name
-    EnrollmentTokenRequest:
-      type: object
-      properties:
-        device_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        connector:
-          type: string
-          format: uuid
-        name:
-          type: string
-          minLength: 1
-        expiring:
-          type: boolean
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - connector
-      - name
-    NetworkInterfaceRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-        hardware_address:
-          type: string
-          minLength: 1
-        ip_addresses:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        dns_servers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-      required:
-      - hardware_address
-      - name
-    NetworkInterface:
-      type: object
-      properties:
-        name:
-          type: string
-        hardware_address:
-          type: string
-        ip_addresses:
-          type: array
-          items:
-            type: string
-        dns_servers:
-          type: array
-          items:
-            type: string
-      required:
-      - hardware_address
-      - name
-    PatchedEnrollmentTokenRequest:
-      type: object
-      properties:
-        device_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        connector:
-          type: string
-          format: uuid
-        name:
-          type: string
-          minLength: 1
-        expiring:
-          type: boolean
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    PaginatedDeviceUserBindingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceUserBinding'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     PaginatedAppleIndependentSecureEnclaveList:
       type: object
       properties:
@@ -2922,393 +2388,6 @@ components:
       - autocomplete
       - pagination
       - results
-    SoftwareRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-        version:
-          type: string
-        source:
-          type: string
-          minLength: 1
-        path:
-          type: string
-          minLength: 1
-      required:
-      - name
-      - source
-    DeviceConnection:
-      type: object
-      properties:
-        device:
-          type: string
-          format: uuid
-        connector:
-          type: string
-          format: uuid
-        connector_obj:
-          allOf:
-          - $ref: '#/components/schemas/Connector'
-          readOnly: true
-        latest_snapshot:
-          allOf:
-          - $ref: '#/components/schemas/DeviceFactSnapshot'
-          readOnly: true
-      required:
-      - connector
-      - connector_obj
-      - device
-      - latest_snapshot
-    Process:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        user:
-          type: string
-      required:
-      - id
-      - name
-    DeviceFactsOSFamily:
-      enum:
-      - linux
-      - unix
-      - bsd
-      - windows
-      - mac_os
-      - android
-      - i_os
-      - other
-      type: string
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    PatchedEndpointDeviceRequest:
-      type: object
-      properties:
-        device_uuid:
-          type: string
-          format: uuid
-        name:
-          type: string
-          minLength: 1
-        access_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        access_group_obj:
-          $ref: '#/components/schemas/DeviceAccessGroupRequest'
-        expiring:
-          type: boolean
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        attributes:
-          type: object
-          additionalProperties: {}
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    LicenseStatusEnum:
-      enum:
-      - unlicensed
-      - valid
-      - expired
-      - expiry_soon
-      - limit_exceeded_admin
-      - limit_exceeded_user
-      - read_only
-      type: string
-    PatchedDeviceUserBindingRequest:
-      type: object
-      description: PolicyBinding Serializer
-      properties:
-        policy:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        user:
-          type:
-          - integer
-          - 'null'
-        target:
-          type: string
-          format: uuid
-        negate:
-          type: boolean
-          description: Negates the outcome of the policy. Messages are unaffected.
-        enabled:
-          type: boolean
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Timeout after which Policy execution is terminated.
-        failure_result:
-          type: boolean
-          description: Result if the Policy execution fails.
-        is_primary:
-          type: boolean
-    AgentTokenResponse:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        token:
-          type: string
-        expires_in:
-          type: integer
-      required:
-      - token
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    Connector:
-      type: object
-      properties:
-        connector_uuid:
-          type: string
-          format: uuid
-        name:
-          type: string
-        enabled:
-          type: boolean
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - meta_model_name
-      - name
-      - verbose_name
-      - verbose_name_plural
-    DeviceGroupRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 1
-        name:
-          type: string
-          minLength: 1
-      required:
-      - id
-    AgentPSSODeviceRegistrationRequest:
-      type: object
-      description: Register Apple device via Platform SSO
-      properties:
-        device_signing_key:
-          type: string
-          minLength: 1
-        device_encryption_key:
-          type: string
-          minLength: 1
-        sign_key_id:
-          type: string
-          minLength: 1
-        enc_key_id:
-          type: string
-          minLength: 1
-      required:
-      - device_encryption_key
-      - device_signing_key
-      - enc_key_id
-      - sign_key_id
-    EnrollRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        device_serial:
-          type: string
-          minLength: 1
-        device_name:
-          type: string
-          minLength: 1
-      required:
-      - device_name
-      - device_serial
-    UserTypeEnum:
-      enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
-      type: string
-    TypeCreate:
-      type: object
-      description: Types of an object that can be created
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
-          type: boolean
-          default: false
-        deprecated:
-          type: boolean
-          default: false
-      required:
-      - component
-      - description
-      - model_name
-      - name
-    DeviceFactsRequest:
-      type: object
-      properties:
-        os:
-          allOf:
-          - $ref: '#/components/schemas/OperatingSystemRequest'
-        disks:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DiskRequest'
-        network:
-          allOf:
-          - $ref: '#/components/schemas/NetworkRequest'
-        hardware:
-          allOf:
-          - $ref: '#/components/schemas/HardwareRequest'
-        software:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SoftwareRequest'
-        processes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ProcessRequest'
-        users:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DeviceUserRequest'
-        groups:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DeviceGroupRequest'
-        vendor:
-          type: object
-          additionalProperties: {}
-    PaginatedGoogleChromeConnectorList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleChromeConnector'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedAppleIndependentSecureEnclaveRequest:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-        user:
-          type: integer
-          description: The user that this device belongs to.
-        apple_secure_enclave_key:
-          type: string
-          minLength: 1
-        apple_enclave_key_id:
-          type: string
-          minLength: 1
-        device_type:
-          type: string
-          minLength: 1
-    PaginatedEnrollmentTokenList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EnrollmentToken'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    DeviceAccessGroup:
-      type: object
-      properties:
-        pbm_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - pbm_uuid
     PatchedAgentConnectorRequest:
       type: object
       properties:
@@ -3358,7 +2437,185 @@ components:
           type: array
           items:
             type: integer
-    PatchedFleetConnectorRequest:
+    OperatingSystem:
+      type: object
+      description: 'For example:
+
+        {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
+
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+
+        {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}'
+      properties:
+        family:
+          $ref: '#/components/schemas/DeviceFactsOSFamily'
+        name:
+          type: string
+          description: Operating System name, such as 'Server 2022' or 'Ubuntu'
+        version:
+          type: string
+          description: Operating System version, must always be the version number but may contain build name
+        arch:
+          type: string
+      required:
+      - family
+    Software:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        source:
+          type: string
+        path:
+          type: string
+      required:
+      - name
+      - source
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    PatchedEndpointDeviceRequest:
+      type: object
+      properties:
+        device_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        access_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroupRequest'
+        expiring:
+          type: boolean
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        attributes:
+          type: object
+          additionalProperties: {}
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    Connector:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - meta_model_name
+      - name
+      - verbose_name
+      - verbose_name_plural
+    UserSelfGroups:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+        pk:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+    FleetConnector:
       type: object
       description: FleetConnector Serializer
       properties:
@@ -3367,18 +2624,28 @@ components:
           format: uuid
         name:
           type: string
-          minLength: 1
         enabled:
           type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
         url:
           type: string
           format: uri
-          minLength: 1
           maxLength: 200
-        token:
-          type: string
-          writeOnly: true
-          minLength: 1
         headers_mapping:
           type:
           - string
@@ -3389,84 +2656,63 @@ components:
           type: boolean
         map_teams_access_group:
           type: boolean
-    DeviceGroup:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
       required:
-      - id
-    DeviceAccessGroupRequest:
+      - component
+      - meta_model_name
+      - name
+      - url
+      - verbose_name
+      - verbose_name_plural
+    AgentConfig:
       type: object
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        name:
+        device_id:
           type: string
-          minLength: 1
-        attributes:
+          readOnly: true
+        refresh_interval:
+          type: integer
+          readOnly: true
+        authorization_flow:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jwks_auth:
           type: object
           additionalProperties: {}
-      required:
-      - name
-    HardwareRequest:
-      type: object
-      properties:
-        model:
-          type: string
-          minLength: 1
-        manufacturer:
-          type: string
-          minLength: 1
-        serial:
-          type: string
-          minLength: 1
-        cpu_name:
-          type: string
-          minLength: 1
-        cpu_count:
+          readOnly: true
+        jwks_challenge:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+          readOnly: true
+        nss_uid_offset:
           type: integer
-        memory_bytes:
+        nss_gid_offset:
           type: integer
-          format: int64
-      required:
-      - serial
-    PaginatedConnectorList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Connector'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    Disk:
-      type: object
-      properties:
-        name:
-          type: string
-        mountpoint:
-          type: string
-        label:
-          type: string
-        capacity_total_bytes:
-          type: integer
-          format: int64
-        capacity_used_bytes:
-          type: integer
-          format: int64
-        encryption_enabled:
+        auth_terminate_session_on_expiry:
           type: boolean
-          default: false
+        system_config:
+          allOf:
+          - $ref: '#/components/schemas/Config'
+          readOnly: true
+        license_status:
+          allOf:
+          - $ref: '#/components/schemas/LicenseStatusEnum'
+          readOnly: true
       required:
-      - mountpoint
-      - name
+      - auth_terminate_session_on_expiry
+      - authorization_flow
+      - device_id
+      - jwks_auth
+      - jwks_challenge
+      - license_status
+      - nss_gid_offset
+      - nss_uid_offset
+      - refresh_interval
+      - system_config
     DeviceFactSnapshot:
       type: object
       properties:
@@ -3495,149 +2741,158 @@ components:
       - data
       - expires
       - vendor
-    AgentPSSOUserRegistrationRequest:
+    PaginatedConnectorList:
       type: object
-      description: Register Apple device user via Platform SSO
       properties:
-        user_auth:
-          type: string
-          minLength: 1
-        user_secure_enclave_key:
-          type: string
-          minLength: 1
-        enclave_key_id:
-          type: string
-          minLength: 1
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - enclave_key_id
-      - user_auth
-      - user_secure_enclave_key
-    PartialUser:
+      - autocomplete
+      - pagination
+      - results
+    EnrollmentToken:
       type: object
-      description: Partial User Serializer, does not include child relations.
       properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
+        token_uuid:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
+          format: uuid
+          readOnly: true
+        device_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        device_group_obj:
+          allOf:
+          - $ref: '#/components/schemas/DeviceAccessGroup'
+          readOnly: true
+        connector:
+          type: string
+          format: uuid
         name:
           type: string
-          description: User's display name.
-        is_active:
+        expiring:
           type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
+        expires:
           type:
           - string
           - 'null'
           format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
       required:
+      - connector
+      - device_group_obj
       - name
-      - pk
-      - uid
-      - username
-    ErrorReportingConfig:
+      - token_uuid
+    DeviceUserBindingRequest:
       type: object
-      description: Config for error reporting
+      description: PolicyBinding Serializer
       properties:
+        policy:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user:
+          type:
+          - integer
+          - 'null'
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
-          readOnly: true
-        sentry_dsn:
-          type: string
-          readOnly: true
-        environment:
-          type: string
-          readOnly: true
-        send_pii:
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
           type: boolean
-          readOnly: true
-        traces_sample_rate:
-          type: number
-          format: double
-          readOnly: true
+          description: Result if the Policy execution fails.
+        is_primary:
+          type: boolean
       required:
-      - enabled
-      - environment
-      - send_pii
-      - sentry_dsn
-      - traces_sample_rate
-    DeviceUserRequest:
+      - order
+      - target
+    AgentPSSODeviceRegistrationResponse:
+      type: object
+      description: authentik settings for Platform SSO tokens
+      properties:
+        client_id:
+          type: string
+        issuer:
+          type: string
+        token_endpoint:
+          type: string
+        jwks_endpoint:
+          type: string
+        audience:
+          type: string
+        nonce_endpoint:
+          type: string
+      required:
+      - audience
+      - client_id
+      - issuer
+      - jwks_endpoint
+      - nonce_endpoint
+      - token_endpoint
+    PaginatedDeviceAccessGroupList:
       type: object
       properties:
-        id:
-          type: string
-          minLength: 1
-        username:
-          type: string
-          minLength: 1
-        name:
-          type: string
-          minLength: 1
-        home:
-          type: string
-          minLength: 1
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceAccessGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - id
-    Policy:
+      - autocomplete
+      - pagination
+      - results
+    DeviceAccessGroup:
       type: object
-      description: Policy Serializer
       properties:
-        pk:
+        pbm_uuid:
           type: string
           format: uuid
           readOnly: true
-          title: Policy uuid
         name:
           type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
-      - bound_to
-      - component
-      - meta_model_name
       - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
+      - pbm_uuid
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
     DeviceUserBinding:
       type: object
       description: PolicyBinding Serializer
@@ -3725,29 +2980,6 @@ components:
       - policy_obj
       - target
       - user_obj
-    DiskRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-        mountpoint:
-          type: string
-          minLength: 1
-        label:
-          type: string
-        capacity_total_bytes:
-          type: integer
-          format: int64
-        capacity_used_bytes:
-          type: integer
-          format: int64
-        encryption_enabled:
-          type: boolean
-          default: false
-      required:
-      - mountpoint
-      - name
     Network:
       type: object
       properties:
@@ -3764,6 +2996,630 @@ components:
       required:
       - hostname
       - interfaces
+    Hardware:
+      type: object
+      properties:
+        model:
+          type: string
+        manufacturer:
+          type: string
+        serial:
+          type: string
+        cpu_name:
+          type: string
+        cpu_count:
+          type: integer
+        memory_bytes:
+          type: integer
+          format: int64
+      required:
+      - serial
+    PatchedFleetConnectorRequest:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
+        headers_mapping:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
+        map_users:
+          type: boolean
+        map_teams_access_group:
+          type: boolean
+    AgentPSSODeviceRegistrationRequest:
+      type: object
+      description: Register Apple device via Platform SSO
+      properties:
+        device_signing_key:
+          type: string
+          minLength: 1
+        device_encryption_key:
+          type: string
+          minLength: 1
+        sign_key_id:
+          type: string
+          minLength: 1
+        enc_key_id:
+          type: string
+          minLength: 1
+      required:
+      - device_encryption_key
+      - device_signing_key
+      - enc_key_id
+      - sign_key_id
+    SoftwareRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        version:
+          type: string
+        source:
+          type: string
+          minLength: 1
+        path:
+          type: string
+          minLength: 1
+      required:
+      - name
+      - source
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
+    DeviceConnection:
+      type: object
+      properties:
+        device:
+          type: string
+          format: uuid
+        connector:
+          type: string
+          format: uuid
+        connector_obj:
+          allOf:
+          - $ref: '#/components/schemas/Connector'
+          readOnly: true
+        latest_snapshot:
+          allOf:
+          - $ref: '#/components/schemas/DeviceFactSnapshot'
+          readOnly: true
+      required:
+      - connector
+      - connector_obj
+      - device
+      - latest_snapshot
+    Process:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        user:
+          type: string
+      required:
+      - id
+      - name
+    Config:
+      type: object
+      description: Serialize authentik Config into DRF Object
+      properties:
+        error_reporting:
+          $ref: '#/components/schemas/ErrorReportingConfig'
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilitiesEnum'
+        cache_timeout:
+          type: integer
+        cache_timeout_flows:
+          type: integer
+        cache_timeout_policies:
+          type: integer
+      required:
+      - cache_timeout
+      - cache_timeout_flows
+      - cache_timeout_policies
+      - capabilities
+      - error_reporting
+    AgentAuthenticationResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        url:
+          type: string
+      required:
+      - url
+    DeviceUserRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        home:
+          type: string
+          minLength: 1
+      required:
+      - id
+    AgentConnectorRequest:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        snapshot_expiry:
+          type: string
+          minLength: 1
+        auth_session_duration:
+          type: string
+          minLength: 1
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        nss_uid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        nss_gid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        challenge_key:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        challenge_idle_timeout:
+          type: string
+          minLength: 1
+        challenge_trigger_check_in:
+          type: boolean
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+    ProcessRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        user:
+          type: string
+          minLength: 1
+      required:
+      - id
+      - name
+    AppleIndependentSecureEnclaveRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        user:
+          type: integer
+          description: The user that this device belongs to.
+        apple_secure_enclave_key:
+          type: string
+          minLength: 1
+        apple_enclave_key_id:
+          type: string
+          minLength: 1
+        device_type:
+          type: string
+          minLength: 1
+      required:
+      - apple_enclave_key_id
+      - apple_secure_enclave_key
+      - device_type
+      - user
+    Policy:
+      type: object
+      description: Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedEndpointDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    TokenView:
+      type: object
+      description: Show token's current key
+      properties:
+        key:
+          type: string
+          readOnly: true
+      required:
+      - key
+    EnrollRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        device_serial:
+          type: string
+          minLength: 1
+        device_name:
+          type: string
+          minLength: 1
+      required:
+      - device_name
+      - device_serial
+    PaginatedGoogleChromeConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleChromeConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    DeviceFactsOSFamily:
+      enum:
+      - linux
+      - unix
+      - bsd
+      - windows
+      - mac_os
+      - android
+      - i_os
+      - other
+      type: string
+    OperatingSystemRequest:
+      type: object
+      description: 'For example:
+
+        {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
+
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+
+        {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}'
+      properties:
+        family:
+          $ref: '#/components/schemas/DeviceFactsOSFamily'
+        name:
+          type: string
+          minLength: 1
+          description: Operating System name, such as 'Server 2022' or 'Ubuntu'
+        version:
+          type: string
+          minLength: 1
+          description: Operating System version, must always be the version number but may contain build name
+        arch:
+          type: string
+          minLength: 1
+      required:
+      - family
+    MDMConfigRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        platform:
+          $ref: '#/components/schemas/DeviceFactsOSFamily'
+        enrollment_token:
+          type: string
+          format: uuid
+      required:
+      - enrollment_token
+      - platform
+    ErrorReportingConfig:
+      type: object
+      description: Config for error reporting
+      properties:
+        enabled:
+          type: boolean
+          readOnly: true
+        sentry_dsn:
+          type: string
+          readOnly: true
+        environment:
+          type: string
+          readOnly: true
+        send_pii:
+          type: boolean
+          readOnly: true
+        traces_sample_rate:
+          type: number
+          format: double
+          readOnly: true
+      required:
+      - enabled
+      - environment
+      - send_pii
+      - sentry_dsn
+      - traces_sample_rate
+    LicenseStatusEnum:
+      enum:
+      - unlicensed
+      - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
+    DeviceAccessGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    VendorEnum:
+      enum:
+      - goauthentik.io/@merged
+      - goauthentik.io/platform
+      - fleetdm.com
+      - chrome.google.com
+      type: string
+    NetworkRequest:
+      type: object
+      properties:
+        hostname:
+          type: string
+          minLength: 1
+        firewall_enabled:
+          type: boolean
+        interfaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkInterfaceRequest'
+        gateway:
+          type: string
+          minLength: 1
+      required:
+      - hostname
+      - interfaces
+    MDMConfigResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        config:
+          type: string
+        mime_type:
+          type: string
+        filename:
+          type: string
+      required:
+      - config
+      - filename
+      - mime_type
+    DeviceSummary:
+      type: object
+      description: Summary of registered devices
+      properties:
+        total_count:
+          type: integer
+        unreachable_count:
+          type: integer
+        outdated_agent_count:
+          type: integer
+      required:
+      - outdated_agent_count
+      - total_count
+      - unreachable_count
+    DeviceGroup:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+      - id
+    UserSelfRoles:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+        pk:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
+    DeviceFactsRequest:
+      type: object
+      properties:
+        os:
+          allOf:
+          - $ref: '#/components/schemas/OperatingSystemRequest'
+        disks:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DiskRequest'
+        network:
+          allOf:
+          - $ref: '#/components/schemas/NetworkRequest'
+        hardware:
+          allOf:
+          - $ref: '#/components/schemas/HardwareRequest'
+        software:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SoftwareRequest'
+        processes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProcessRequest'
+        users:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DeviceUserRequest'
+        groups:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DeviceGroupRequest'
+        vendor:
+          type: object
+          additionalProperties: {}
     EndpointDevice:
       type: object
       properties:
@@ -3801,12 +3657,17 @@ components:
       - facts
       - name
       - pbm_uuid
-    VendorEnum:
+    CapabilitiesEnum:
       enum:
-      - goauthentik.io/@merged
-      - goauthentik.io/platform
-      - fleetdm.com
-      - chrome.google.com
+      - can_save_media
+      - can_save_reports
+      - can_geo_ip
+      - can_asn
+      - can_impersonate
+      - can_debug
+      - is_enterprise
+      - can_request
+      - can_agent_self_service
       type: string
     AgentConnector:
       type: object
@@ -3874,14 +3735,26 @@ components:
       - name
       - verbose_name
       - verbose_name_plural
-    AgentAuthenticationResponse:
+    AppleIndependentSecureEnclave:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
       properties:
-        url:
+        uuid:
+          type: string
+          format: uuid
+        user:
+          type: integer
+          description: The user that this device belongs to.
+        apple_secure_enclave_key:
+          type: string
+        apple_enclave_key_id:
+          type: string
+        device_type:
           type: string
       required:
-      - url
+      - apple_enclave_key_id
+      - apple_secure_enclave_key
+      - device_type
+      - user
     PatchedGoogleChromeConnectorRequest:
       type: object
       description: GoogleChromeConnector Serializer
@@ -3897,143 +3770,175 @@ components:
         credentials:
           type: object
           additionalProperties: {}
-    PaginatedDeviceAccessGroupList:
+    PatchedDeviceUserBindingRequest:
       type: object
+      description: PolicyBinding Serializer
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceAccessGroup'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    OperatingSystem:
-      type: object
-      description: 'For example:
-
-        {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
-
-        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
-
-        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
-
-        {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}'
-      properties:
-        family:
-          $ref: '#/components/schemas/DeviceFactsOSFamily'
-        name:
-          type: string
-          description: Operating System name, such as 'Server 2022' or 'Ubuntu'
-        version:
-          type: string
-          description: Operating System version, must always be the version number but may contain build name
-        arch:
-          type: string
-      required:
-      - family
-    AgentConfig:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        device_id:
-          type: string
-          readOnly: true
-        refresh_interval:
-          type: integer
-          readOnly: true
-        authorization_flow:
+        policy:
           type:
           - string
           - 'null'
-          readOnly: true
-        jwks_auth:
-          type: object
-          additionalProperties: {}
-          readOnly: true
-        jwks_challenge:
+          format: uuid
+        group:
           type:
-          - object
+          - string
           - 'null'
-          additionalProperties: {}
-          readOnly: true
-        nss_uid_offset:
-          type: integer
-        nss_gid_offset:
-          type: integer
-        auth_terminate_session_on_expiry:
-          type: boolean
-        system_config:
-          allOf:
-          - $ref: '#/components/schemas/Config'
-          readOnly: true
-        license_status:
-          allOf:
-          - $ref: '#/components/schemas/LicenseStatusEnum'
-          readOnly: true
-      required:
-      - auth_terminate_session_on_expiry
-      - authorization_flow
-      - device_id
-      - jwks_auth
-      - jwks_challenge
-      - license_status
-      - nss_gid_offset
-      - nss_uid_offset
-      - refresh_interval
-      - system_config
-    FleetConnector:
-      type: object
-      description: FleetConnector Serializer
-      properties:
-        connector_uuid:
+          format: uuid
+        user:
+          type:
+          - integer
+          - 'null'
+        target:
           type: string
           format: uuid
-        name:
-          type: string
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        url:
-          type: string
-          format: uri
-          maxLength: 200
-        headers_mapping:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-        map_users:
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
           type: boolean
-        map_teams_access_group:
+          description: Result if the Policy execution fails.
+        is_primary:
           type: boolean
+    UserSelf:
+      type: object
+      description: User Serializer for information a user can retrieve about themselves
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          readOnly: true
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        is_superuser:
+          type: boolean
+          readOnly: true
+        is_current:
+          type: boolean
+          description: Return whether this user owns the current browser session.
+          readOnly: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelfGroups'
+          readOnly: true
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelfRoles'
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        avatar:
+          type: string
+          description: User's avatar, either a http/https URL or a data URI
+          readOnly: true
+        uid:
+          type: string
+          readOnly: true
+        settings:
+          type: object
+          additionalProperties: {}
+          description: Get user settings with brand and group settings applied
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/UserTypeEnum'
+        system_permissions:
+          type: array
+          items:
+            type: string
+          description: Get all system permissions assigned to the user
+          readOnly: true
       required:
-      - component
-      - meta_model_name
+      - avatar
+      - groups
+      - is_active
+      - is_current
+      - is_superuser
       - name
-      - url
-      - verbose_name
-      - verbose_name_plural
+      - pk
+      - roles
+      - settings
+      - system_permissions
+      - uid
+      - username
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    AgentPSSOUserRegistrationRequest:
+      type: object
+      description: Register Apple device user via Platform SSO
+      properties:
+        user_auth:
+          type: string
+          minLength: 1
+        user_secure_enclave_key:
+          type: string
+          minLength: 1
+        enclave_key_id:
+          type: string
+          minLength: 1
+      required:
+      - enclave_key_id
+      - user_auth
+      - user_secure_enclave_key
     EndpointDeviceRequest:
       type: object
       properties:
@@ -4062,18 +3967,132 @@ components:
           additionalProperties: {}
       required:
       - name
-    MDMConfigRequest:
+    NetworkInterfaceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        hardware_address:
+          type: string
+          minLength: 1
+        ip_addresses:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        dns_servers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+      required:
+      - hardware_address
+      - name
+    AgentTokenResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
-        platform:
-          $ref: '#/components/schemas/DeviceFactsOSFamily'
-        enrollment_token:
+        token:
           type: string
-          format: uuid
+        expires_in:
+          type: integer
       required:
-      - enrollment_token
-      - platform
+      - token
+    DeviceGroupRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+      required:
+      - id
+    PaginatedAgentConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    DiskRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        mountpoint:
+          type: string
+          minLength: 1
+        label:
+          type: string
+        capacity_total_bytes:
+          type: integer
+          format: int64
+        capacity_used_bytes:
+          type: integer
+          format: int64
+        encryption_enabled:
+          type: boolean
+          default: false
+      required:
+      - mountpoint
+      - name
+    DeviceFacts:
+      type: object
+      properties:
+        os:
+          allOf:
+          - $ref: '#/components/schemas/OperatingSystem'
+        disks:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Disk'
+        network:
+          allOf:
+          - $ref: '#/components/schemas/Network'
+        hardware:
+          allOf:
+          - $ref: '#/components/schemas/Hardware'
+        software:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Software'
+        processes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Process'
+        users:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DeviceUser'
+        groups:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DeviceGroup'
+        vendor:
+          type: object
+          additionalProperties: {}
     FleetConnectorRequest:
       type: object
       description: FleetConnector Serializer
@@ -4109,17 +4128,21 @@ components:
       - name
       - token
       - url
-    Hardware:
+    HardwareRequest:
       type: object
       properties:
         model:
           type: string
+          minLength: 1
         manufacturer:
           type: string
+          minLength: 1
         serial:
           type: string
+          minLength: 1
         cpu_name:
           type: string
+          minLength: 1
         cpu_count:
           type: integer
         memory_bytes:
@@ -4127,72 +4150,49 @@ components:
           format: int64
       required:
       - serial
-    DeviceSummary:
-      type: object
-      description: Summary of registered devices
-      properties:
-        total_count:
-          type: integer
-        unreachable_count:
-          type: integer
-        outdated_agent_count:
-          type: integer
-      required:
-      - outdated_agent_count
-      - total_count
-      - unreachable_count
-    PatchedDeviceAccessGroupRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-        attributes:
-          type: object
-          additionalProperties: {}
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
       description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
   securitySchemes:
     authentik:
       type: http

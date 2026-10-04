@@ -5542,116 +5542,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    SCIMSourceGroupRequest:
-      type: object
-      description: SCIMSourceGroup Serializer
-      properties:
-        id:
-          type: string
-          minLength: 1
-        external_id:
-          type: string
-          minLength: 1
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - external_id
-      - group
-      - source
-    LDAPDebug:
-      type: object
-      properties:
-        user:
-          type: array
-          items:
-            type: object
-            additionalProperties: {}
-          readOnly: true
-        group:
-          type: array
-          items:
-            type: object
-            additionalProperties: {}
-          readOnly: true
-        membership:
-          type: array
-          items:
-            type: object
-            additionalProperties: {}
-          readOnly: true
-      required:
-      - group
-      - membership
-      - user
-    PatchedGroupTelegramSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    UserTelegramSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    FlowMessageLevelEnum:
-      enum:
-      - debug
-      - info
-      - success
-      - warning
-      - error
-      type: string
-    SyncStatus:
-      type: object
-      description: Provider/source sync status
-      properties:
-        is_running:
-          type: boolean
-        last_successful_sync:
-          type: string
-          format: date-time
-        last_sync_status:
-          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
-      required:
-      - is_running
-    PatchedUserOAuthSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-        access_token:
-          type:
-          - string
-          - 'null'
-          writeOnly: true
-        expires:
-          type: string
-          format: date-time
     PaginatedSourceList:
       type: object
       properties:
@@ -5667,1126 +5557,6 @@ components:
       - autocomplete
       - pagination
       - results
-    TaskAggregatedStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
-    DigestAlgorithmEnum:
-      enum:
-      - http://www.w3.org/2000/09/xmldsig#sha1
-      - http://www.w3.org/2001/04/xmlenc#sha256
-      - http://www.w3.org/2001/04/xmldsig-more#sha384
-      - http://www.w3.org/2001/04/xmlenc#sha512
-      type: string
-    PaginatedSCIMSourceGroupList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SCIMSourceGroup'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    PatchedSCIMSourceUserRequest:
-      type: object
-      description: SCIMSourceUser Serializer
-      properties:
-        id:
-          type: string
-          minLength: 1
-        external_id:
-          type: string
-          minLength: 1
-        user:
-          type: integer
-        source:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-          additionalProperties: {}
-    GroupSAMLSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    PlexSourceRequest:
-      type: object
-      description: Plex Source Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Source's display Name.
-        slug:
-          type: string
-          minLength: 1
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        user_path_template:
-          type: string
-          minLength: 1
-        icon:
-          type: string
-        group_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/GroupMatchingModeEnum'
-          description: How the source determines if an existing group should be used or a new group created.
-        client_id:
-          type: string
-          minLength: 1
-          description: Client identifier used to talk to Plex.
-        allowed_servers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: Which servers a user has to be a member of to be granted access. Empty list allows every server.
-        allow_friends:
-          type: boolean
-          description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
-          type: string
-          minLength: 1
-          description: Plex token used to check friends
-      required:
-      - name
-      - plex_token
-      - slug
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    PaginatedPlexSourceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlexSource'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UserPlexSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-        plex_token:
-          type: string
-          writeOnly: true
-          minLength: 1
-      required:
-      - identifier
-      - plex_token
-      - source
-    GroupTelegramSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    PatchedSCIMSourceRequest:
-      type: object
-      description: SCIMSource Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Source's display Name.
-        slug:
-          type: string
-          minLength: 1
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        user_path_template:
-          type: string
-          minLength: 1
-    PaginatedSCIMSourceUserList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SCIMSourceUser'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UserLDAPSourceConnection:
-      type: object
-      description: User source connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        user:
-          type: integer
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - created
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-      - user
-      - user_obj
-    SCIMSourceRequest:
-      type: object
-      description: SCIMSource Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Source's display Name.
-        slug:
-          type: string
-          minLength: 1
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        user_path_template:
-          type: string
-          minLength: 1
-      required:
-      - name
-      - slug
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    GroupSAMLSourceConnection:
-      type: object
-      description: Group Source Connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        group:
-          type: string
-          format: uuid
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - group
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-    ErrorDetail:
-      type: object
-      description: Serializer for rest_framework's error messages
-      properties:
-        string:
-          type: string
-        code:
-          type: string
-      required:
-      - code
-      - string
-    PartialGroup:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - pk
-    GroupTelegramSourceConnection:
-      type: object
-      description: Group Source Connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        group:
-          type: string
-          format: uuid
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - group
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-    AuthorizationCodeAuthMethodEnum:
-      enum:
-      - basic_auth
-      - post_body
-      type: string
-    PaginatedLDAPSourceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LDAPSource'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UserSetting:
-      type: object
-      description: Serializer for User settings for stages and sources
-      properties:
-        object_uid:
-          type: string
-        component:
-          type: string
-        title:
-          type: string
-        configure_url:
-          type: string
-        icon_url:
-          type: string
-      required:
-      - component
-      - object_uid
-      - title
-    PaginatedSAMLSourceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SAMLSource'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedGroupOAuthSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupOAuthSourceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GroupKerberosSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    PatchedGroupLDAPSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    GroupKerberosSourceConnection:
-      type: object
-      description: Group Source Connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        group:
-          type: string
-          format: uuid
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - group
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-    PatchedGroupSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    SignatureAlgorithmEnum:
-      enum:
-      - http://www.w3.org/2000/09/xmldsig#rsa-sha1
-      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
-      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
-      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
-      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
-      - http://www.w3.org/2000/09/xmldsig#dsa-sha1
-      type: string
-    PlexTokenRedeemRequest:
-      type: object
-      description: Serializer to redeem a plex token
-      properties:
-        plex_token:
-          type: string
-          minLength: 1
-      required:
-      - plex_token
-    GroupMatchingModeEnum:
-      enum:
-      - identifier
-      - name_link
-      - name_deny
-      type: string
-    SCIMSourceGroup:
-      type: object
-      description: SCIMSourceGroup Serializer
-      properties:
-        id:
-          type: string
-        external_id:
-          type: string
-        group:
-          type: string
-          format: uuid
-        group_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialGroup'
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - external_id
-      - group
-      - group_obj
-      - source
-    PKCEMethodEnum:
-      enum:
-      - none
-      - plain
-      - S256
-      type: string
-    GroupLDAPSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    PatchedGroupOAuthSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    SCIMSourceUser:
-      type: object
-      description: SCIMSourceUser Serializer
-      properties:
-        id:
-          type: string
-        external_id:
-          type: string
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - external_id
-      - source
-      - user
-      - user_obj
-    RedirectChallenge:
-      type: object
-      description: Challenge type to redirect the client
-      properties:
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfo'
-        component:
-          type: string
-          default: xak-flow-redirect
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-        to:
-          type: string
-        final_redirect:
-          type: boolean
-          default: false
-      required:
-      - to
-    ThemedUrls:
-      type: object
-      description: Themed URLs - maps theme names to URLs for light and dark themes
-      properties:
-        light:
-          type:
-          - string
-          - 'null'
-        dark:
-          type:
-          - string
-          - 'null'
-    KadminTypeEnum:
-      enum:
-      - MIT
-      - Heimdal
-      type: string
-    PatchedLDAPSourceRequest:
-      type: object
-      description: LDAP Source Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Source's display Name.
-        slug:
-          type: string
-          minLength: 1
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        user_path_template:
-          type: string
-          minLength: 1
-        icon:
-          type: string
-        server_uri:
-          type: string
-          minLength: 1
-          format: uri
-        peer_certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
-        client_certificate:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Client certificate to authenticate against the LDAP Server's Certificate.
-        bind_cn:
-          type: string
-        bind_password:
-          type: string
-          writeOnly: true
-        start_tls:
-          type: boolean
-          title: Enable Start TLS
-        sni:
-          type: boolean
-          title: Use Server URI for SNI verification
-        base_dn:
-          type: string
-          minLength: 1
-        additional_user_dn:
-          type: string
-          title: Addition User DN
-          description: Prepended to Base DN for User-queries.
-        additional_group_dn:
-          type: string
-          title: Addition Group DN
-          description: Prepended to Base DN for Group-queries.
-        user_object_filter:
-          type: string
-          minLength: 1
-          description: Consider Objects matching this filter to be Users.
-        group_object_filter:
-          type: string
-          minLength: 1
-          description: Consider Objects matching this filter to be Groups.
-        group_membership_field:
-          type: string
-          minLength: 1
-          description: Field which contains members of a group.
-        user_membership_attribute:
-          type: string
-          minLength: 1
-          description: Attribute which matches the value of `group_membership_field`.
-        object_uniqueness_field:
-          type: string
-          minLength: 1
-          description: Field which contains a unique Identifier.
-        password_login_update_internal_password:
-          type: boolean
-          description: Update internal authentik password when login succeeds with LDAP
-        sync_users:
-          type: boolean
-        sync_users_password:
-          type: boolean
-          description: When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
-        sync_groups:
-          type: boolean
-        sync_parent_group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        lookup_groups_from_user:
-          type: boolean
-          description: Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
-        delete_not_found_objects:
-          type: boolean
-          description: Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
-        sync_outgoing_trigger_mode:
-          allOf:
-          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
-          description: When to trigger sync for outgoing providers
-        sync_group_hierarchy:
-          type: boolean
-          description: Sync group parentage/hierarchy from LDAP directories.
-    PatchedGroupPlexSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    PaginatedUserSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserSourceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UserMatchingModeEnum:
-      enum:
-      - identifier
-      - email_link
-      - email_deny
-      - username_link
-      - username_deny
-      type: string
-    UserSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    PlexSource:
-      type: object
-      description: Plex Source Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pbm uuid
-        name:
-          type: string
-          description: Source's display Name.
-        slug:
-          type: string
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-          readOnly: true
-        user_path_template:
-          type: string
-        icon:
-          type: string
-        icon_url:
-          type: string
-          readOnly: true
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-          readOnly: true
-        group_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/GroupMatchingModeEnum'
-          description: How the source determines if an existing group should be used or a new group created.
-        client_id:
-          type: string
-          description: Client identifier used to talk to Plex.
-        allowed_servers:
-          type: array
-          items:
-            type: string
-          description: Which servers a user has to be a member of to be granted access. Empty list allows every server.
-        allow_friends:
-          type: boolean
-          description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
-          type: string
-          description: Plex token used to check friends
-      required:
-      - component
-      - icon_themed_urls
-      - icon_url
-      - managed
-      - meta_model_name
-      - name
-      - pk
-      - plex_token
-      - slug
-      - verbose_name
-      - verbose_name_plural
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    PaginatedSCIMSourceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SCIMSource'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GroupOAuthSourceConnection:
-      type: object
-      description: Group Source Connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        group:
-          type: string
-          format: uuid
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - group
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
     LDAPSource:
       type: object
       description: LDAP Source Serializer
@@ -6970,53 +5740,6 @@ components:
       - slug
       - verbose_name
       - verbose_name_plural
-    PatchedUserPlexSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-        plex_token:
-          type: string
-          writeOnly: true
-          minLength: 1
-    PatchedUserTelegramSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    UserSAMLSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    PatchedGroupSAMLSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
     PaginatedUserTelegramSourceConnectionList:
       type: object
       properties:
@@ -7032,7 +5755,38 @@ components:
       - autocomplete
       - pagination
       - results
-    PaginatedUserLDAPSourceConnectionList:
+    UserKerberosSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    UserSetting:
+      type: object
+      description: Serializer for User settings for stages and sources
+      properties:
+        object_uid:
+          type: string
+        component:
+          type: string
+        title:
+          type: string
+        configure_url:
+          type: string
+        icon_url:
+          type: string
+      required:
+      - component
+      - object_uid
+      - title
+    PaginatedGroupLDAPSourceConnectionList:
       type: object
       properties:
         pagination:
@@ -7040,30 +5794,217 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/UserLDAPSourceConnection'
+            $ref: '#/components/schemas/GroupLDAPSourceConnection'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    Role:
+    Autocomplete:
       type: object
-      description: Role serializer
+      additionalProperties: {}
+    PaginatedLDAPSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PlexSource:
+      type: object
+      description: Plex Source Serializer
       properties:
         pk:
           type: string
           format: uuid
           readOnly: true
-          title: Uuid
+          title: Pbm uuid
         name:
           type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        icon:
+          type: string
+        icon_url:
+          type: string
+          readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used or a new group created.
+        client_id:
+          type: string
+          description: Client identifier used to talk to Plex.
+        allowed_servers:
+          type: array
+          items:
+            type: string
+          description: Which servers a user has to be a member of to be granted access. Empty list allows every server.
+        allow_friends:
+          type: boolean
+          description: Allow friends to authenticate, even if you don't share a server.
+        plex_token:
+          type: string
+          description: Plex token used to check friends
       required:
+      - component
+      - icon_themed_urls
+      - icon_url
+      - managed
+      - meta_model_name
       - name
       - pk
-    PatchedKerberosSourceRequest:
+      - plex_token
+      - slug
+      - verbose_name
+      - verbose_name_plural
+    UserLDAPSourceConnection:
       type: object
-      description: Kerberos Source Serializer
+      description: User source connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - created
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+      - user
+      - user_obj
+    PatchedGroupKerberosSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    ProviderTypeEnum:
+      enum:
+      - openidconnect
+      - apple
+      - discord
+      - entraid
+      - facebook
+      - github
+      - gitlab
+      - google
+      - mailcow
+      - okta
+      - patreon
+      - reddit
+      - slack
+      - twitch
+      - twitter
+      - wechat
+      type: string
+    PatchedSAMLSourceRequest:
+      type: object
+      description: SAMLSource Serializer
       properties:
         name:
           type: string
@@ -7116,54 +6057,82 @@ components:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
           description: How the source determines if an existing group should be used or a new group created.
-        realm:
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          description: Flow used before authentication.
+        issuer_override:
+          type: string
+          description: Also known as Entity ID. Defaults to the Metadata URL.
+        sso_url:
           type: string
           minLength: 1
-          description: Kerberos realm
-        krb5_conf:
-          type: string
-          description: Custom krb5.conf to use. Uses the system one by default
-        kadmin_type:
+          description: URL that the initial Login request is sent to.
+          format: uri
+        slo_url:
+          type:
+          - string
+          - 'null'
+          description: Optional URL if your IDP supports Single-Logout.
+          format: uri
+        allow_idp_initiated:
+          type: boolean
+          description: Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
+        force_authn:
+          type: boolean
+          description: When enabled, the IdP will re-authenticate the user even if a session exists.
+        name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/KadminTypeEnum'
-          description: KAdmin server type
-        sync_users:
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+          description: NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+        binding_type:
+          $ref: '#/components/schemas/BindingTypeEnum'
+        verification_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Verification Certificate
+          description: When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
+        signing_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Signing Keypair
+          description: Keypair used to sign outgoing Responses going to the Identity Provider.
+        digest_algorithm:
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
+        signature_algorithm:
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+        temporary_user_delete_after:
+          type: string
+          minLength: 1
+          title: Delete temporary users after
+          description: 'Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format ''transient'', and the user doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+        encryption_kp:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
+        signed_assertion:
           type: boolean
-          description: Sync users from Kerberos into authentik
-        sync_users_password:
+        signed_response:
           type: boolean
-          description: When a user changes their password, sync it back to Kerberos
-        sync_principal:
+    SAMLMetadata:
+      type: object
+      description: SAML Provider Metadata serializer
+      properties:
+        metadata:
           type: string
-          description: Principal to authenticate to kadmin for sync.
-        sync_password:
-          type: string
-          writeOnly: true
-          description: Password to authenticate to kadmin for sync
-        sync_keytab:
-          type: string
-          writeOnly: true
-          description: Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual
-        sync_ccache:
-          type: string
-          description: Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
-        spnego_server_name:
-          type: string
-          description: Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
-        spnego_keytab:
-          type: string
-          writeOnly: true
-          description: SPNEGO keytab base64-encoded or path to keytab in the form FILE:path
-        spnego_ccache:
-          type: string
-          description: Credential cache to use for SPNEGO in form type:residual
-        password_login_update_internal_password:
-          type: boolean
-          description: If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
-        sync_outgoing_trigger_mode:
-          allOf:
-          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
-          description: When to trigger sync for outgoing providers
+        download_url:
+          type:
+          - string
+          - 'null'
+      required:
+      - metadata
     SAMLSourceRequest:
       type: object
       description: SAMLSource Serializer
@@ -7288,56 +6257,205 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
-    SourceType:
+    UserOAuthSourceConnection:
       type: object
-      description: Serializer for SourceType
+      description: User source connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+      required:
+      - created
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+      - user
+    GroupPlexSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    PaginatedSCIMSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedGroupSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    GroupSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    ContextualFlowInfo:
+      type: object
+      description: Contextual flow information for a challenge
+      properties:
+        title:
+          type: string
+        background:
+          type: string
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+        cancel_url:
+          type: string
+        layout:
+          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
+      required:
+      - cancel_url
+      - layout
+    PatchedUserSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    SCIMSourceRequest:
+      type: object
+      description: SCIMSource Serializer
       properties:
         name:
           type: string
-        verbose_name:
+          minLength: 1
+          description: Source's display Name.
+        slug:
           type: string
-        urls_customizable:
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
           type: boolean
-        request_token_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        authorization_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        access_token_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        profile_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        oidc_well_known_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        oidc_jwks_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        user_path_template:
+          type: string
+          minLength: 1
       required:
-      - access_token_url
-      - authorization_url
       - name
-      - oidc_jwks_url
-      - oidc_well_known_url
-      - profile_url
-      - request_token_url
-      - urls_customizable
-      - verbose_name
+      - slug
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    GroupMatchingModeEnum:
+      enum:
+      - identifier
+      - name_link
+      - name_deny
+      type: string
+    PaginatedUserPlexSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPlexSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedUserSAMLSourceConnectionList:
       type: object
       properties:
@@ -7353,7 +6471,463 @@ components:
       - autocomplete
       - pagination
       - results
-    TelegramSourceRequest:
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    PatchedUserLDAPSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    RedirectChallenge:
+      type: object
+      description: Challenge type to redirect the client
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: xak-flow-redirect
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        to:
+          type: string
+        final_redirect:
+          type: boolean
+          default: false
+      required:
+      - to
+    UserPlexSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+        plex_token:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - identifier
+      - plex_token
+      - source
+    PatchedUserSAMLSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    Source:
+      type: object
+      description: Source Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        icon:
+          type: string
+        icon_url:
+          type:
+          - string
+          - 'null'
+          description: Get the URL to the source icon
+          readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+      required:
+      - component
+      - icon_themed_urls
+      - icon_url
+      - managed
+      - meta_model_name
+      - name
+      - pk
+      - slug
+      - verbose_name
+      - verbose_name_plural
+    UserSourceConnection:
+      type: object
+      description: User source connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+      - user
+    PatchedSCIMSourceRequest:
+      type: object
+      description: SCIMSource Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        user_path_template:
+          type: string
+          minLength: 1
+    ContextualFlowInfoLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      - sidebar_left_frame_background
+      - sidebar_right_frame_background
+      type: string
+    UserSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    PatchedGroupPlexSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    PatchedGroupSAMLSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    UserSAMLSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    SyncStatus:
+      type: object
+      description: Provider/source sync status
+      properties:
+        is_running:
+          type: boolean
+        last_successful_sync:
+          type: string
+          format: date-time
+        last_sync_status:
+          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
+      required:
+      - is_running
+    PatchedSCIMSourceUserRequest:
+      type: object
+      description: SCIMSourceUser Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        external_id:
+          type: string
+          minLength: 1
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        attributes:
+          type: object
+          additionalProperties: {}
+    PatchedKerberosSourceRequest:
+      type: object
+      description: Kerberos Source Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used or a new group created.
+        realm:
+          type: string
+          minLength: 1
+          description: Kerberos realm
+        krb5_conf:
+          type: string
+          description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
+        sync_users:
+          type: boolean
+          description: Sync users from Kerberos into authentik
+        sync_users_password:
+          type: boolean
+          description: When a user changes their password, sync it back to Kerberos
+        sync_principal:
+          type: string
+          description: Principal to authenticate to kadmin for sync.
+        sync_password:
+          type: string
+          writeOnly: true
+          description: Password to authenticate to kadmin for sync
+        sync_keytab:
+          type: string
+          writeOnly: true
+          description: Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual
+        sync_ccache:
+          type: string
+          description: Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
+        spnego_server_name:
+          type: string
+          description: Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
+        spnego_keytab:
+          type: string
+          writeOnly: true
+          description: SPNEGO keytab base64-encoded or path to keytab in the form FILE:path
+        spnego_ccache:
+          type: string
+          description: Credential cache to use for SPNEGO in form type:residual
+        password_login_update_internal_password:
+          type: boolean
+          description: If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
+    PatchedTelegramSourceRequest:
       type: object
       description: Source Serializer
       properties:
@@ -7420,258 +6994,37 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-      required:
-      - bot_token
-      - bot_username
-      - name
-      - pre_authentication_flow
-      - slug
-    UserTypeEnum:
+    UsedByActionEnum:
       enum:
-      - internal
-      - external
-      - service_account
-      - internal_service_account
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
       type: string
-    PaginatedGroupLDAPSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupLDAPSourceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GroupPlexSourceConnection:
-      type: object
-      description: Group Source Connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        group:
-          type: string
-          format: uuid
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - group
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-    TypeCreate:
-      type: object
-      description: Types of an object that can be created
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
-          type: boolean
-          default: false
-        deprecated:
-          type: boolean
-          default: false
-      required:
-      - component
-      - description
-      - model_name
-      - name
-    PatchedOAuthSourceRequest:
-      type: object
-      description: OAuth Source Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Source's display Name.
-        slug:
-          type: string
-          minLength: 1
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        user_path_template:
-          type: string
-          minLength: 1
-        icon:
-          type: string
-        group_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/GroupMatchingModeEnum'
-          description: How the source determines if an existing group should be used or a new group created.
-        provider_type:
-          $ref: '#/components/schemas/ProviderTypeEnum'
-        request_token_url:
-          type:
-          - string
-          - 'null'
-          description: URL used to request the initial token. This URL is only required for OAuth 1.
-        authorization_url:
-          type:
-          - string
-          - 'null'
-          description: URL the user is redirect to to conest the flow.
-        access_token_url:
-          type:
-          - string
-          - 'null'
-          description: URL used by authentik to retrieve tokens.
-        profile_url:
-          type:
-          - string
-          - 'null'
-          description: URL used by authentik to get user information.
-        pkce:
-          $ref: '#/components/schemas/PKCEMethodEnum'
-        consumer_key:
-          type: string
-          minLength: 1
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        additional_scopes:
-          type: string
-        oidc_well_known_url:
-          type: string
-        oidc_jwks_url:
-          type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
-        authorization_code_auth_method:
-          allOf:
-          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
-          description: How to perform authentication during an authorization_code token request flow
-    UserSAMLSourceConnection:
-      type: object
-      description: User source connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        user:
-          type: integer
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-      - user
-    PaginatedUserKerberosSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserKerberosSourceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    SCIMSourceUserRequest:
+    SAMLNameIDPolicyEnum:
+      enum:
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+      type: string
+    SCIMSourceUser:
       type: object
       description: SCIMSourceUser Serializer
       properties:
         id:
           type: string
-          minLength: 1
         external_id:
           type: string
-          minLength: 1
         user:
           type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -7682,6 +7035,22 @@ components:
       - external_id
       - source
       - user
+      - user_obj
+    PaginatedSCIMSourceGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourceGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedGroupPlexSourceConnectionList:
       type: object
       properties:
@@ -7697,6 +7066,31 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedGroupKerberosSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupKerberosSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedGroupTelegramSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
     User:
       type: object
       description: User Serializer
@@ -7795,19 +7189,111 @@ components:
       - uid
       - username
       - uuid
-    UserLDAPSourceConnectionRequest:
+    OAuthSourceRequest:
       type: object
-      description: User source connection
+      description: OAuth Source Serializer
       properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
+        name:
           type: string
           minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used or a new group created.
+        provider_type:
+          $ref: '#/components/schemas/ProviderTypeEnum'
+        request_token_url:
+          type:
+          - string
+          - 'null'
+          description: URL used to request the initial token. This URL is only required for OAuth 1.
+        authorization_url:
+          type:
+          - string
+          - 'null'
+          description: URL the user is redirect to to conest the flow.
+        access_token_url:
+          type:
+          - string
+          - 'null'
+          description: URL used by authentik to retrieve tokens.
+        profile_url:
+          type:
+          - string
+          - 'null'
+          description: URL used by authentik to get user information.
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
+        consumer_key:
+          type: string
+          minLength: 1
+        consumer_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        additional_scopes:
+          type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
+        authorization_code_auth_method:
+          allOf:
+          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
+          description: How to perform authentication during an authorization_code token request flow
       required:
-      - identifier
-      - source
+      - consumer_key
+      - consumer_secret
+      - name
+      - provider_type
+      - slug
     KerberosSourceRequest:
       type: object
       description: Kerberos Source Serializer
@@ -7915,20 +7401,17 @@ components:
       - name
       - realm
       - slug
-    KerberosSource:
+    LDAPSourceRequest:
       type: object
-      description: Kerberos Source Serializer
+      description: LDAP Source Serializer
       properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pbm uuid
         name:
           type: string
+          minLength: 1
           description: Source's display Name.
         slug:
           type: string
+          minLength: 1
           description: Internal source name, used in URLs.
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
@@ -7958,136 +7441,121 @@ components:
           items:
             type: string
             format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
           description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        managed:
+        user_path_template:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+        server_uri:
+          type: string
+          minLength: 1
+          format: uri
+        peer_certificate:
           type:
           - string
           - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-          readOnly: true
-        user_path_template:
-          type: string
-        icon:
-          type: string
-        icon_url:
-          type: string
-          readOnly: true
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-          readOnly: true
-        group_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/GroupMatchingModeEnum'
-          description: How the source determines if an existing group should be used or a new group created.
-        realm:
-          type: string
-          description: Kerberos realm
-        krb5_conf:
-          type: string
-          description: Custom krb5.conf to use. Uses the system one by default
-        kadmin_type:
-          allOf:
-          - $ref: '#/components/schemas/KadminTypeEnum'
-          description: KAdmin server type
-        sync_users:
-          type: boolean
-          description: Sync users from Kerberos into authentik
-        sync_users_password:
-          type: boolean
-          description: When a user changes their password, sync it back to Kerberos
-        sync_principal:
-          type: string
-          description: Principal to authenticate to kadmin for sync.
-        sync_ccache:
-          type: string
-          description: Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
-        connectivity:
+          format: uuid
+          description: Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
+        client_certificate:
           type:
-          - object
+          - string
           - 'null'
-          additionalProperties:
-            type: string
-          description: Get cached source connectivity
-          readOnly: true
-        spnego_server_name:
+          format: uuid
+          description: Client certificate to authenticate against the LDAP Server's Certificate.
+        bind_cn:
           type: string
-          description: Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
-        spnego_ccache:
+        bind_password:
           type: string
-          description: Credential cache to use for SPNEGO in form type:residual
+          writeOnly: true
+        start_tls:
+          type: boolean
+          title: Enable Start TLS
+        sni:
+          type: boolean
+          title: Use Server URI for SNI verification
+        base_dn:
+          type: string
+          minLength: 1
+        additional_user_dn:
+          type: string
+          title: Addition User DN
+          description: Prepended to Base DN for User-queries.
+        additional_group_dn:
+          type: string
+          title: Addition Group DN
+          description: Prepended to Base DN for Group-queries.
+        user_object_filter:
+          type: string
+          minLength: 1
+          description: Consider Objects matching this filter to be Users.
+        group_object_filter:
+          type: string
+          minLength: 1
+          description: Consider Objects matching this filter to be Groups.
+        group_membership_field:
+          type: string
+          minLength: 1
+          description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          minLength: 1
+          description: Attribute which matches the value of `group_membership_field`.
+        object_uniqueness_field:
+          type: string
+          minLength: 1
+          description: Field which contains a unique Identifier.
         password_login_update_internal_password:
           type: boolean
-          description: If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
+          description: Update internal authentik password when login succeeds with LDAP
+        sync_users:
+          type: boolean
+        sync_users_password:
+          type: boolean
+          description: When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
+        sync_groups:
+          type: boolean
+        sync_parent_group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        lookup_groups_from_user:
+          type: boolean
+          description: Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
+        delete_not_found_objects:
+          type: boolean
+          description: Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
         sync_outgoing_trigger_mode:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
-      - component
-      - connectivity
-      - icon_themed_urls
-      - icon_url
-      - managed
-      - meta_model_name
+      - base_dn
       - name
-      - pk
-      - realm
+      - server_uri
       - slug
-      - verbose_name
-      - verbose_name_plural
-    PatchedUserSAMLSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    UserKerberosSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    SyncOutgoingTriggerModeEnum:
+    SignatureAlgorithmEnum:
       enum:
-      - none
-      - immediate
-      - deferred_end
+      - http://www.w3.org/2000/09/xmldsig#rsa-sha1
+      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+      - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
+      - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
+      - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       type: string
-    PaginatedGroupKerberosSourceConnectionList:
+    PaginatedSAMLSourceList:
       type: object
       properties:
         pagination:
@@ -8095,290 +7563,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/GroupKerberosSourceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    SCIMSource:
-      type: object
-      description: SCIMSource Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pbm uuid
-        name:
-          type: string
-          description: Source's display Name.
-        slug:
-          type: string
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-          readOnly: true
-        user_path_template:
-          type: string
-        root_url:
-          type: string
-          description: Get Root URL
-          readOnly: true
-        token_obj:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          readOnly: true
-      required:
-      - component
-      - managed
-      - meta_model_name
-      - name
-      - pk
-      - root_url
-      - slug
-      - token_obj
-      - verbose_name
-      - verbose_name_plural
-    OAuthSource:
-      type: object
-      description: OAuth Source Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pbm uuid
-        name:
-          type: string
-          description: Source's display Name.
-        slug:
-          type: string
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-          readOnly: true
-        user_path_template:
-          type: string
-        icon:
-          type: string
-        icon_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-          readOnly: true
-        group_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/GroupMatchingModeEnum'
-          description: How the source determines if an existing group should be used or a new group created.
-        provider_type:
-          $ref: '#/components/schemas/ProviderTypeEnum'
-        request_token_url:
-          type:
-          - string
-          - 'null'
-          description: URL used to request the initial token. This URL is only required for OAuth 1.
-        authorization_url:
-          type:
-          - string
-          - 'null'
-          description: URL the user is redirect to to conest the flow.
-        access_token_url:
-          type:
-          - string
-          - 'null'
-          description: URL used by authentik to retrieve tokens.
-        profile_url:
-          type:
-          - string
-          - 'null'
-          description: URL used by authentik to get user information.
-        pkce:
-          $ref: '#/components/schemas/PKCEMethodEnum'
-        consumer_key:
-          type: string
-        callback_url:
-          type: string
-          description: Get OAuth Callback URL
-          readOnly: true
-        additional_scopes:
-          type: string
-        type:
-          allOf:
-          - $ref: '#/components/schemas/SourceType'
-          readOnly: true
-        oidc_well_known_url:
-          type: string
-        oidc_jwks_url:
-          type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
-        authorization_code_auth_method:
-          allOf:
-          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
-          description: How to perform authentication during an authorization_code token request flow
-      required:
-      - callback_url
-      - component
-      - consumer_key
-      - icon_themed_urls
-      - icon_url
-      - managed
-      - meta_model_name
-      - name
-      - pk
-      - provider_type
-      - slug
-      - type
-      - verbose_name
-      - verbose_name_plural
-    BindingTypeEnum:
-      enum:
-      - REDIRECT
-      - POST
-      - POST_AUTO
-      type: string
-    UserOAuthSourceConnection:
-      type: object
-      description: User source connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        user:
-          type: integer
-          readOnly: true
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-        expires:
-          type: string
-          format: date-time
-      required:
-      - created
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-      - user
-    PaginatedGroupSAMLSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupSAMLSourceConnection'
+            $ref: '#/components/schemas/SAMLSource'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -8426,123 +7611,170 @@ components:
       - pk
       - uid
       - username
-    OAuthSourceRequest:
+    PatchedGroupOAuthSourceConnectionRequest:
       type: object
-      description: OAuth Source Serializer
+      description: Group Source Connection
       properties:
-        name:
+        source:
+          type: string
+          format: uuid
+        identifier:
           type: string
           minLength: 1
-          description: Source's display Name.
-        slug:
+    UserSAMLSourceConnection:
+      type: object
+      description: User source connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+      - user
+    KadminTypeEnum:
+      enum:
+      - MIT
+      - Heimdal
+      type: string
+    PlexTokenRedeemRequest:
+      type: object
+      description: Serializer to redeem a plex token
+      properties:
+        plex_token:
           type: string
           minLength: 1
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
+      required:
+      - plex_token
+    GroupTelegramSourceConnection:
+      type: object
+      description: Group Source Connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
           format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
+          readOnly: true
+        source:
+          type: string
           format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+    UserKerberosSourceConnection:
+      type: object
+      description: User source connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+      - user
+    PaginatedOAuthSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
           type: array
           items:
-            type: string
-            format: uuid
-        group_property_mappings:
+            $ref: '#/components/schemas/OAuthSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedGroupTelegramSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
           type: array
           items:
-            type: string
-            format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        user_path_template:
-          type: string
-          minLength: 1
-        icon:
-          type: string
-        group_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/GroupMatchingModeEnum'
-          description: How the source determines if an existing group should be used or a new group created.
-        provider_type:
-          $ref: '#/components/schemas/ProviderTypeEnum'
-        request_token_url:
-          type:
-          - string
-          - 'null'
-          description: URL used to request the initial token. This URL is only required for OAuth 1.
-        authorization_url:
-          type:
-          - string
-          - 'null'
-          description: URL the user is redirect to to conest the flow.
-        access_token_url:
-          type:
-          - string
-          - 'null'
-          description: URL used by authentik to retrieve tokens.
-        profile_url:
-          type:
-          - string
-          - 'null'
-          description: URL used by authentik to get user information.
-        pkce:
-          $ref: '#/components/schemas/PKCEMethodEnum'
-        consumer_key:
-          type: string
-          minLength: 1
-        consumer_secret:
-          type: string
-          writeOnly: true
-          minLength: 1
-        additional_scopes:
-          type: string
-        oidc_well_known_url:
-          type: string
-        oidc_jwks_url:
-          type: string
-        oidc_jwks:
-          type: object
-          additionalProperties: {}
-        authorization_code_auth_method:
-          allOf:
-          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
-          description: How to perform authentication during an authorization_code token request flow
+            $ref: '#/components/schemas/GroupTelegramSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - consumer_key
-      - consumer_secret
-      - name
-      - provider_type
-      - slug
-    FlowMessage:
-      type: object
-      description: Serializer for a django.contrib.messages message
-      properties:
-        level:
-          $ref: '#/components/schemas/FlowMessageLevelEnum'
-        message:
-          type: string
-      required:
-      - level
-      - message
-    Source:
+      - autocomplete
+      - pagination
+      - results
+    TelegramSource:
       type: object
       description: Source Serializer
       properties:
@@ -8622,13 +7854,23 @@ components:
           type:
           - string
           - 'null'
-          description: Get the URL to the source icon
           readOnly: true
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
           readOnly: true
+        bot_username:
+          type: string
+          description: Telegram bot username
+        request_message_access:
+          type: boolean
+          description: Request access to send messages from your bot.
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          description: Flow used before authentication.
       required:
+      - bot_username
       - component
       - icon_themed_urls
       - icon_url
@@ -8636,10 +7878,77 @@ components:
       - meta_model_name
       - name
       - pk
+      - pre_authentication_flow
       - slug
       - verbose_name
       - verbose_name_plural
-    PaginatedUserPlexSourceConnectionList:
+    UserTelegramSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    SCIMSourceUserRequest:
+      type: object
+      description: SCIMSourceUser Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        external_id:
+          type: string
+          minLength: 1
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - external_id
+      - source
+      - user
+    TelegramAuthRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        username:
+          type: string
+          minLength: 1
+          maxLength: 255
+        photo_url:
+          type: string
+          format: uri
+          minLength: 1
+        auth_date:
+          type: integer
+        hash:
+          type: string
+          minLength: 1
+          maxLength: 64
+      required:
+      - auth_date
+      - hash
+      - id
+    PaginatedGroupSAMLSourceConnectionList:
       type: object
       properties:
         pagination:
@@ -8647,13 +7956,125 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/UserPlexSourceConnection'
+            $ref: '#/components/schemas/GroupSAMLSourceConnection'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
+    SCIMSource:
+      type: object
+      description: SCIMSource Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        root_url:
+          type: string
+          description: Get Root URL
+          readOnly: true
+        token_obj:
+          allOf:
+          - $ref: '#/components/schemas/Token'
+          readOnly: true
+      required:
+      - component
+      - managed
+      - meta_model_name
+      - name
+      - pk
+      - root_url
+      - slug
+      - token_obj
+      - verbose_name
+      - verbose_name_plural
+    PaginatedUserLDAPSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserLDAPSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PKCEMethodEnum:
+      enum:
+      - none
+      - plain
+      - S256
+      type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    UserMatchingModeEnum:
+      enum:
+      - identifier
+      - email_link
+      - email_deny
+      - username_link
+      - username_deny
+      type: string
     SAMLSource:
       type: object
       description: SAMLSource Serializer
@@ -8821,6 +8242,649 @@ components:
       - url_issuer
       - verbose_name
       - verbose_name_plural
+    DigestAlgorithmEnum:
+      enum:
+      - http://www.w3.org/2000/09/xmldsig#sha1
+      - http://www.w3.org/2001/04/xmlenc#sha256
+      - http://www.w3.org/2001/04/xmldsig-more#sha384
+      - http://www.w3.org/2001/04/xmlenc#sha512
+      type: string
+    GroupKerberosSourceConnection:
+      type: object
+      description: Group Source Connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+    TaskAggregatedStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
+    SourceType:
+      type: object
+      description: Serializer for SourceType
+      properties:
+        name:
+          type: string
+        verbose_name:
+          type: string
+        urls_customizable:
+          type: boolean
+        request_token_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        authorization_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        access_token_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        profile_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        oidc_well_known_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        oidc_jwks_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      required:
+      - access_token_url
+      - authorization_url
+      - name
+      - oidc_jwks_url
+      - oidc_well_known_url
+      - profile_url
+      - request_token_url
+      - urls_customizable
+      - verbose_name
+    PaginatedUserSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    BindingTypeEnum:
+      enum:
+      - REDIRECT
+      - POST
+      - POST_AUTO
+      type: string
+    AuthorizationCodeAuthMethodEnum:
+      enum:
+      - basic_auth
+      - post_body
+      type: string
+    GroupPlexSourceConnection:
+      type: object
+      description: Group Source Connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+    Token:
+      type: object
+      description: Token Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Token uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        identifier:
+          type: string
+          maxLength: 255
+          pattern: ^[-a-zA-Z0-9_]+$
+        intent:
+          $ref: '#/components/schemas/IntentEnum'
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        description:
+          type: string
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        expiring:
+          type: boolean
+      required:
+      - identifier
+      - pk
+      - user_obj
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PaginatedPlexSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlexSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedOAuthSourceRequest:
+      type: object
+      description: OAuth Source Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used or a new group created.
+        provider_type:
+          $ref: '#/components/schemas/ProviderTypeEnum'
+        request_token_url:
+          type:
+          - string
+          - 'null'
+          description: URL used to request the initial token. This URL is only required for OAuth 1.
+        authorization_url:
+          type:
+          - string
+          - 'null'
+          description: URL the user is redirect to to conest the flow.
+        access_token_url:
+          type:
+          - string
+          - 'null'
+          description: URL used by authentik to retrieve tokens.
+        profile_url:
+          type:
+          - string
+          - 'null'
+          description: URL used by authentik to get user information.
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
+        consumer_key:
+          type: string
+          minLength: 1
+        consumer_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        additional_scopes:
+          type: string
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
+        authorization_code_auth_method:
+          allOf:
+          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
+          description: How to perform authentication during an authorization_code token request flow
+    OAuthSource:
+      type: object
+      description: OAuth Source Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        icon:
+          type: string
+        icon_url:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used or a new group created.
+        provider_type:
+          $ref: '#/components/schemas/ProviderTypeEnum'
+        request_token_url:
+          type:
+          - string
+          - 'null'
+          description: URL used to request the initial token. This URL is only required for OAuth 1.
+        authorization_url:
+          type:
+          - string
+          - 'null'
+          description: URL the user is redirect to to conest the flow.
+        access_token_url:
+          type:
+          - string
+          - 'null'
+          description: URL used by authentik to retrieve tokens.
+        profile_url:
+          type:
+          - string
+          - 'null'
+          description: URL used by authentik to get user information.
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
+        consumer_key:
+          type: string
+        callback_url:
+          type: string
+          description: Get OAuth Callback URL
+          readOnly: true
+        additional_scopes:
+          type: string
+        type:
+          allOf:
+          - $ref: '#/components/schemas/SourceType'
+          readOnly: true
+        oidc_well_known_url:
+          type: string
+        oidc_jwks_url:
+          type: string
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
+        authorization_code_auth_method:
+          allOf:
+          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
+          description: How to perform authentication during an authorization_code token request flow
+      required:
+      - callback_url
+      - component
+      - consumer_key
+      - icon_themed_urls
+      - icon_url
+      - managed
+      - meta_model_name
+      - name
+      - pk
+      - provider_type
+      - slug
+      - type
+      - verbose_name
+      - verbose_name_plural
+    GroupKerberosSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    PaginatedUserOAuthSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOAuthSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedSCIMSourceUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourceUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedUserOAuthSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+        access_token:
+          type:
+          - string
+          - 'null'
+          writeOnly: true
+        expires:
+          type: string
+          format: date-time
+    PatchedUserTelegramSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    GroupLDAPSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    TelegramSourceRequest:
+      type: object
+      description: Source Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+        bot_username:
+          type: string
+          minLength: 1
+          description: Telegram bot username
+        bot_token:
+          type: string
+          writeOnly: true
+          minLength: 1
+          description: Telegram bot token
+        request_message_access:
+          type: boolean
+          description: Request access to send messages from your bot.
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          description: Flow used before authentication.
+      required:
+      - bot_token
+      - bot_username
+      - name
+      - pre_authentication_flow
+      - slug
     PatchedPlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -8893,73 +8957,253 @@ components:
           type: string
           minLength: 1
           description: Plex token used to check friends
-    UserSourceConnection:
+    UserTypeEnum:
+      enum:
+      - internal
+      - external
+      - service_account
+      - internal_service_account
+      type: string
+    PatchedUserKerberosSourceConnectionRequest:
       type: object
       description: User source connection
       properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        user:
-          type: integer
-          readOnly: true
         source:
           type: string
           format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
         identifier:
           type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-      - user
-    SAMLNameIDPolicyEnum:
-      enum:
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
-      type: string
-    ProviderTypeEnum:
-      enum:
-      - openidconnect
-      - apple
-      - discord
-      - entraid
-      - facebook
-      - github
-      - gitlab
-      - google
-      - mailcow
-      - okta
-      - patreon
-      - reddit
-      - slack
-      - twitch
-      - twitter
-      - wechat
-      type: string
-    PatchedSAMLSourceRequest:
+          minLength: 1
+    KerberosSource:
       type: object
-      description: SAMLSource Serializer
+      description: Kerberos Source Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+        authentication_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated or a new user enrolled.
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        icon:
+          type: string
+        icon_url:
+          type: string
+          readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used or a new group created.
+        realm:
+          type: string
+          description: Kerberos realm
+        krb5_conf:
+          type: string
+          description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
+        sync_users:
+          type: boolean
+          description: Sync users from Kerberos into authentik
+        sync_users_password:
+          type: boolean
+          description: When a user changes their password, sync it back to Kerberos
+        sync_principal:
+          type: string
+          description: Principal to authenticate to kadmin for sync.
+        sync_ccache:
+          type: string
+          description: Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
+        connectivity:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Get cached source connectivity
+          readOnly: true
+        spnego_server_name:
+          type: string
+          description: Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
+        spnego_ccache:
+          type: string
+          description: Credential cache to use for SPNEGO in form type:residual
+        password_login_update_internal_password:
+          type: boolean
+          description: If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
+      required:
+      - component
+      - connectivity
+      - icon_themed_urls
+      - icon_url
+      - managed
+      - meta_model_name
+      - name
+      - pk
+      - realm
+      - slug
+      - verbose_name
+      - verbose_name_plural
+    GroupTelegramSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
+      type: string
+    PatchedUserPlexSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+        plex_token:
+          type: string
+          writeOnly: true
+          minLength: 1
+    UserLDAPSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    PaginatedKerberosSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UserOAuthSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+        access_token:
+          type:
+          - string
+          - 'null'
+          writeOnly: true
+        expires:
+          type: string
+          format: date-time
+      required:
+      - identifier
+      - source
+    PlexSourceRequest:
+      type: object
+      description: Plex Source Serializer
       properties:
         name:
           type: string
@@ -9012,221 +9256,27 @@ components:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
           description: How the source determines if an existing group should be used or a new group created.
-        pre_authentication_flow:
-          type: string
-          format: uuid
-          description: Flow used before authentication.
-        issuer_override:
-          type: string
-          description: Also known as Entity ID. Defaults to the Metadata URL.
-        sso_url:
+        client_id:
           type: string
           minLength: 1
-          description: URL that the initial Login request is sent to.
-          format: uri
-        slo_url:
-          type:
-          - string
-          - 'null'
-          description: Optional URL if your IDP supports Single-Logout.
-          format: uri
-        allow_idp_initiated:
-          type: boolean
-          description: Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.
-        force_authn:
-          type: boolean
-          description: When enabled, the IdP will re-authenticate the user even if a session exists.
-        name_id_policy:
-          allOf:
-          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
-        binding_type:
-          $ref: '#/components/schemas/BindingTypeEnum'
-        verification_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Verification Certificate
-          description: When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
-        signing_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Signing Keypair
-          description: Keypair used to sign outgoing Responses going to the Identity Provider.
-        digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
-        signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
-        temporary_user_delete_after:
-          type: string
-          minLength: 1
-          title: Delete temporary users after
-          description: 'Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format ''transient'', and the user doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
-        encryption_kp:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          title: Encryption Keypair
-          description: When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-        signed_assertion:
-          type: boolean
-        signed_response:
-          type: boolean
-    PatchedTelegramSourceRequest:
-      type: object
-      description: Source Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Source's display Name.
-        slug:
-          type: string
-          minLength: 1
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
+          description: Client identifier used to talk to Plex.
+        allowed_servers:
           type: array
           items:
             type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        user_path_template:
-          type: string
-          minLength: 1
-        icon:
-          type: string
-        bot_username:
-          type: string
-          minLength: 1
-          description: Telegram bot username
-        bot_token:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: Telegram bot token
-        request_message_access:
+            minLength: 1
+          description: Which servers a user has to be a member of to be granted access. Empty list allows every server.
+        allow_friends:
           type: boolean
-          description: Request access to send messages from your bot.
-        pre_authentication_flow:
-          type: string
-          format: uuid
-          description: Flow used before authentication.
-    GroupSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
+          description: Allow friends to authenticate, even if you don't share a server.
+        plex_token:
           type: string
           minLength: 1
+          description: Plex token used to check friends
       required:
-      - identifier
-      - source
-    TelegramAuthRequest:
-      type: object
-      properties:
-        id:
-          type: integer
-        first_name:
-          type: string
-          minLength: 1
-          maxLength: 255
-        last_name:
-          type: string
-          minLength: 1
-          maxLength: 255
-        username:
-          type: string
-          minLength: 1
-          maxLength: 255
-        photo_url:
-          type: string
-          format: uri
-          minLength: 1
-        auth_date:
-          type: integer
-        hash:
-          type: string
-          minLength: 1
-          maxLength: 64
-      required:
-      - auth_date
-      - hash
-      - id
-    Token:
-      type: object
-      description: Token Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Token uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        identifier:
-          type: string
-          maxLength: 255
-          pattern: ^[-a-zA-Z0-9_]+$
-        intent:
-          $ref: '#/components/schemas/IntentEnum'
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/User'
-          readOnly: true
-        description:
-          type: string
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        expiring:
-          type: boolean
-      required:
-      - identifier
-      - pk
-      - user_obj
+      - name
+      - plex_token
+      - slug
     GroupSourceConnection:
       type: object
       description: Group Source Connection
@@ -9264,16 +9314,31 @@ components:
       - pk
       - source
       - source_obj
-    PatchedUserKerberosSourceConnectionRequest:
+    LDAPDebug:
       type: object
-      description: User source connection
       properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
+        user:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        group:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        membership:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - group
+      - membership
+      - user
     UserTelegramSourceConnection:
       type: object
       description: User source connection
@@ -9310,7 +9375,7 @@ components:
       - source
       - source_obj
       - user
-    PaginatedUserOAuthSourceConnectionList:
+    PaginatedGroupSourceConnectionList:
       type: object
       properties:
         pagination:
@@ -9318,14 +9383,50 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/UserOAuthSourceConnection'
+            $ref: '#/components/schemas/GroupSourceConnection'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    PaginatedTelegramSourceList:
+    SCIMSourceGroupRequest:
+      type: object
+      description: SCIMSourceGroup Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        external_id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - external_id
+      - group
+      - source
+    GroupOAuthSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
+    PaginatedGroupOAuthSourceConnectionList:
       type: object
       properties:
         pagination:
@@ -9333,23 +9434,24 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/TelegramSource'
+            $ref: '#/components/schemas/GroupOAuthSourceConnection'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    UserPlexSourceConnection:
+    GroupOAuthSourceConnection:
       type: object
-      description: User source connection
+      description: Group Source Connection
       properties:
         pk:
           type: integer
           readOnly: true
           title: ID
-        user:
-          type: integer
+        group:
+          type: string
+          format: uuid
           readOnly: true
         source:
           type: string
@@ -9370,13 +9472,28 @@ components:
           readOnly: true
       required:
       - created
+      - group
       - identifier
       - last_updated
       - pk
       - source
       - source_obj
-      - user
-    PatchedGroupKerberosSourceConnectionRequest:
+    PaginatedUserKerberosSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserKerberosSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GroupSAMLSourceConnectionRequest:
       type: object
       description: Group Source Connection
       properties:
@@ -9386,28 +9503,94 @@ components:
         identifier:
           type: string
           minLength: 1
-    UserOAuthSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-        access_token:
-          type:
-          - string
-          - 'null'
-          writeOnly: true
-        expires:
-          type: string
-          format: date-time
       required:
       - identifier
       - source
-    LDAPSourceRequest:
+    ErrorDetail:
+      type: object
+      description: Serializer for rest_framework's error messages
+      properties:
+        string:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - string
+    SCIMSourceGroup:
+      type: object
+      description: SCIMSourceGroup Serializer
+      properties:
+        id:
+          type: string
+        external_id:
+          type: string
+        group:
+          type: string
+          format: uuid
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - external_id
+      - group
+      - group_obj
+      - source
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    SyncOutgoingTriggerModeEnum:
+      enum:
+      - none
+      - immediate
+      - deferred_end
+      type: string
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PolicyEngineMode:
+      enum:
+      - all
+      - any
+      type: string
+    PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
       properties:
@@ -9544,109 +9727,56 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
-      required:
-      - base_dn
-      - name
-      - server_uri
-      - slug
-    PaginatedOAuthSourceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuthSource'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedGroupSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupSourceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedUserLDAPSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    PatchedSCIMSourceGroupRequest:
-      type: object
-      description: SCIMSourceGroup Serializer
-      properties:
-        id:
-          type: string
-          minLength: 1
-        external_id:
-          type: string
-          minLength: 1
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        attributes:
-          type: object
-          additionalProperties: {}
-    PaginatedGroupTelegramSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupTelegramSourceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedUserSourceConnectionRequest:
-      type: object
-      description: User source connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    GroupOAuthSourceConnectionRequest:
+    GroupSAMLSourceConnection:
       type: object
       description: Group Source Connection
       properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+          readOnly: true
         source:
           type: string
           format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
         identifier:
           type: string
-          minLength: 1
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
+      - created
+      - group
       - identifier
+      - last_updated
+      - pk
       - source
-    UserKerberosSourceConnection:
+      - source_obj
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type:
+          - string
+          - 'null'
+        dark:
+          type:
+          - string
+          - 'null'
+    UserPlexSourceConnection:
       type: object
       description: User source connection
       properties:
@@ -9682,20 +9812,7 @@ components:
       - source
       - source_obj
       - user
-    GroupPlexSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
-      properties:
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - identifier
-      - source
-    PaginatedKerberosSourceList:
+    PaginatedTelegramSourceList:
       type: object
       properties:
         pagination:
@@ -9703,44 +9820,19 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/KerberosSource'
+            $ref: '#/components/schemas/TelegramSource'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    ContextualFlowInfo:
-      type: object
-      description: Contextual flow information for a challenge
-      properties:
-        title:
-          type: string
-        background:
-          type: string
-        background_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-        cancel_url:
-          type: string
-        layout:
-          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowMessage'
-      required:
-      - cancel_url
-      - layout
-    ContextualFlowInfoLayoutEnum:
+    IntentEnum:
       enum:
-      - stacked
-      - content_left
-      - content_right
-      - sidebar_left
-      - sidebar_right
-      - sidebar_left_frame_background
-      - sidebar_right_frame_background
+      - verification
+      - api
+      - recovery
+      - app_password
       type: string
     GroupLDAPSourceConnection:
       type: object
@@ -9784,184 +9876,92 @@ components:
       - pk
       - source
       - source_obj
-    SAMLMetadata:
+    Role:
       type: object
-      description: SAML Provider Metadata serializer
-      properties:
-        metadata:
-          type: string
-        download_url:
-          type:
-          - string
-          - 'null'
-      required:
-      - metadata
-    TelegramSource:
-      type: object
-      description: Source Serializer
+      description: Role serializer
       properties:
         pk:
           type: string
           format: uuid
           readOnly: true
-          title: Pbm uuid
+          title: Uuid
         name:
           type: string
-          description: Source's display Name.
-        slug:
-          type: string
-          description: Internal source name, used in URLs.
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        promoted:
-          type: boolean
-          description: When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-        authentication_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated or a new user enrolled.
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-          readOnly: true
-        user_path_template:
-          type: string
-        icon:
-          type: string
-        icon_url:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
-          readOnly: true
-        bot_username:
-          type: string
-          description: Telegram bot username
-        request_message_access:
-          type: boolean
-          description: Request access to send messages from your bot.
-        pre_authentication_flow:
-          type: string
-          format: uuid
-          description: Flow used before authentication.
       required:
-      - bot_username
-      - component
-      - icon_themed_urls
-      - icon_url
-      - managed
-      - meta_model_name
       - name
       - pk
-      - pre_authentication_flow
-      - slug
-      - verbose_name
-      - verbose_name_plural
-    PolicyEngineMode:
-      enum:
-      - all
-      - any
-      type: string
-    IntentEnum:
-      enum:
-      - verification
-      - api
-      - recovery
-      - app_password
-      type: string
-    Autocomplete:
+    PatchedSCIMSourceGroupRequest:
       type: object
-      additionalProperties: {}
+      description: SCIMSourceGroup Serializer
+      properties:
+        id:
+          type: string
+          minLength: 1
+        external_id:
+          type: string
+          minLength: 1
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        attributes:
+          type: object
+          additionalProperties: {}
+    PatchedGroupLDAPSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
       description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
   securitySchemes:
     authentik:
       type: http

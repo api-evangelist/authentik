@@ -3447,19 +3447,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PropertyMappingTestResult:
-      type: object
-      description: Result of a Property-mapping test
-      properties:
-        result:
-          type: string
-          readOnly: true
-        successful:
-          type: boolean
-          readOnly: true
-      required:
-      - result
-      - successful
     PatchedMicrosoftEntraProviderMappingRequest:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -3477,7 +3464,27 @@ components:
         expression:
           type: string
           minLength: 1
-    PaginatedSAMLSourcePropertyMappingList:
+    KerberosSourcePropertyMappingRequest:
+      type: object
+      description: Kerberos PropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    PaginatedRadiusProviderPropertyMappingList:
       type: object
       properties:
         pagination:
@@ -3485,67 +3492,17 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+            $ref: '#/components/schemas/RadiusProviderPropertyMapping'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    GenericError:
+    Autocomplete:
       type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    SCIMSourcePropertyMapping:
-      type: object
-      description: SCIMSourcePropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PaginatedTelegramSourcePropertyMappingList:
+      additionalProperties: {}
+    PaginatedNotificationWebhookMappingList:
       type: object
       properties:
         pagination:
@@ -3553,84 +3510,16 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/TelegramSourcePropertyMapping'
+            $ref: '#/components/schemas/NotificationWebhookMapping'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    Pagination:
+    MicrosoftEntraProviderMappingRequest:
       type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    GoogleWorkspaceProviderMapping:
-      type: object
-      description: GoogleWorkspaceProviderMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    SCIMMappingRequest:
-      type: object
-      description: SCIMMapping Serializer
+      description: MicrosoftEntraProviderMapping Serializer
       properties:
         managed:
           type:
@@ -3648,225 +3537,9 @@ components:
       required:
       - expression
       - name
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    PatchedSCIMMappingRequest:
-      type: object
-      description: SCIMMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    PaginatedLDAPSourcePropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LDAPSourcePropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    SAMLPropertyMappingRequest:
-      type: object
-      description: SAMLPropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-        saml_name:
-          type: string
-          minLength: 1
-        friendly_name:
-          type:
-          - string
-          - 'null'
-      required:
-      - expression
-      - name
-      - saml_name
-    PatchedRadiusProviderPropertyMappingRequest:
-      type: object
-      description: RadiusProviderPropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    PatchedLDAPSourcePropertyMappingRequest:
+    LDAPSourcePropertyMapping:
       type: object
       description: LDAP PropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    SCIMSourcePropertyMappingRequest:
-      type: object
-      description: SCIMSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    ScopeMapping:
-      type: object
-      description: ScopeMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        scope_name:
-          type: string
-          description: Scope name requested by the client
-        description:
-          type: string
-          description: Description shown to the user when consenting. If left empty, the user won't be informed.
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - scope_name
-      - verbose_name
-      - verbose_name_plural
-    PatchedTelegramSourcePropertyMappingRequest:
-      type: object
-      description: TelegramSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    PaginatedMicrosoftEntraProviderMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    OAuthSourcePropertyMapping:
-      type: object
-      description: OAuthSourcePropertyMapping Serializer
       properties:
         pk:
           type: string
@@ -3931,44 +3604,7 @@ components:
           type:
           - string
           - 'null'
-    TelegramSourcePropertyMappingRequest:
-      type: object
-      description: TelegramSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    PatchedSAMLSourcePropertyMappingRequest:
-      type: object
-      description: SAMLSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    KerberosSourcePropertyMappingRequest:
+    PatchedKerberosSourcePropertyMappingRequest:
       type: object
       description: Kerberos PropertyMapping Serializer
       properties:
@@ -3985,12 +3621,9 @@ components:
         expression:
           type: string
           minLength: 1
-      required:
-      - expression
-      - name
-    PatchedSCIMSourcePropertyMappingRequest:
+    PatchedSCIMMappingRequest:
       type: object
-      description: SCIMSourcePropertyMapping Serializer
+      description: SCIMMapping Serializer
       properties:
         managed:
           type:
@@ -4005,148 +3638,6 @@ components:
         expression:
           type: string
           minLength: 1
-    PatchedOAuthSourcePropertyMappingRequest:
-      type: object
-      description: OAuthSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    GoogleWorkspaceProviderMappingRequest:
-      type: object
-      description: GoogleWorkspaceProviderMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    PaginatedPropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    ScopeMappingRequest:
-      type: object
-      description: ScopeMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-        scope_name:
-          type: string
-          minLength: 1
-          description: Scope name requested by the client
-        description:
-          type: string
-          description: Description shown to the user when consenting. If left empty, the user won't be informed.
-      required:
-      - expression
-      - name
-      - scope_name
-    RadiusProviderPropertyMapping:
-      type: object
-      description: RadiusProviderPropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
     KerberosSourcePropertyMapping:
       type: object
       description: Kerberos PropertyMapping Serializer
@@ -4190,7 +3681,7 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    PaginatedSCIMSourcePropertyMappingList:
+    PaginatedPlexSourcePropertyMappingList:
       type: object
       properties:
         pagination:
@@ -4198,16 +3689,31 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+            $ref: '#/components/schemas/PlexSourcePropertyMapping'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    LDAPSourcePropertyMappingRequest:
+    PaginatedRACPropertyMappingList:
       type: object
-      description: LDAP PropertyMapping Serializer
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedScopeMappingRequest:
+      type: object
+      description: ScopeMapping Serializer
       properties:
         managed:
           type:
@@ -4222,9 +3728,13 @@ components:
         expression:
           type: string
           minLength: 1
-      required:
-      - expression
-      - name
+        scope_name:
+          type: string
+          minLength: 1
+          description: Scope name requested by the client
+        description:
+          type: string
+          description: Description shown to the user when consenting. If left empty, the user won't be informed.
     PaginatedSCIMMappingList:
       type: object
       properties:
@@ -4240,9 +3750,157 @@ components:
       - autocomplete
       - pagination
       - results
-    LDAPSourcePropertyMapping:
+    TypeCreate:
       type: object
-      description: LDAP PropertyMapping Serializer
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    PropertyMappingTestResult:
+      type: object
+      description: Result of a Property-mapping test
+      properties:
+        result:
+          type: string
+          readOnly: true
+        successful:
+          type: boolean
+          readOnly: true
+      required:
+      - result
+      - successful
+    PatchedSAMLSourcePropertyMappingRequest:
+      type: object
+      description: SAMLSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    PaginatedMicrosoftEntraProviderMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedGoogleWorkspaceProviderMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ScopeMappingRequest:
+      type: object
+      description: ScopeMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+        scope_name:
+          type: string
+          minLength: 1
+          description: Scope name requested by the client
+        description:
+          type: string
+          description: Description shown to the user when consenting. If left empty, the user won't be informed.
+      required:
+      - expression
+      - name
+      - scope_name
+    PaginatedSAMLSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PlexSourcePropertyMapping:
+      type: object
+      description: PlexSourcePropertyMapping Serializer
       properties:
         pk:
           type: string
@@ -4283,9 +3941,1054 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    PlexSourcePropertyMappingRequest:
+    TelegramSourcePropertyMappingRequest:
+      type: object
+      description: TelegramSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    SAMLSourcePropertyMapping:
+      type: object
+      description: SAMLSourcePropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedLDAPSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedTelegramSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TelegramSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    NotificationWebhookMappingRequest:
+      type: object
+      description: NotificationWebhookMapping Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    PaginatedPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    SAMLPropertyMapping:
+      type: object
+      description: SAMLPropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        saml_name:
+          type: string
+        friendly_name:
+          type:
+          - string
+          - 'null'
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - saml_name
+      - verbose_name
+      - verbose_name_plural
+    SCIMSourcePropertyMapping:
+      type: object
+      description: SCIMSourcePropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    SAMLPropertyMappingRequest:
+      type: object
+      description: SAMLPropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+        saml_name:
+          type: string
+          minLength: 1
+        friendly_name:
+          type:
+          - string
+          - 'null'
+      required:
+      - expression
+      - name
+      - saml_name
+    PaginatedOAuthSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    SCIMMappingRequest:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    SCIMMapping:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedNotificationWebhookMappingRequest:
+      type: object
+      description: NotificationWebhookMapping Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    PropertyMapping:
+      type: object
+      description: PropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RACPropertyMappingRequest:
+      type: object
+      description: RACPropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+        static_settings:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - static_settings
+    NotificationWebhookMapping:
+      type: object
+      description: NotificationWebhookMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        name:
+          type: string
+        expression:
+          type: string
+      required:
+      - expression
+      - name
+      - pk
+    PaginatedScopeMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScopeMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    LDAPSourcePropertyMappingRequest:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    GoogleWorkspaceProviderMappingRequest:
+      type: object
+      description: GoogleWorkspaceProviderMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    MicrosoftEntraProviderMapping:
+      type: object
+      description: MicrosoftEntraProviderMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedRadiusProviderPropertyMappingRequest:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    GoogleWorkspaceProviderMapping:
+      type: object
+      description: GoogleWorkspaceProviderMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedKerberosSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    OAuthSourcePropertyMapping:
+      type: object
+      description: OAuthSourcePropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedRACPropertyMappingRequest:
+      type: object
+      description: RACPropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+        static_settings:
+          type: object
+          additionalProperties: {}
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    ScopeMapping:
+      type: object
+      description: ScopeMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        scope_name:
+          type: string
+          description: Scope name requested by the client
+        description:
+          type: string
+          description: Description shown to the user when consenting. If left empty, the user won't be informed.
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - scope_name
+      - verbose_name
+      - verbose_name_plural
+    TelegramSourcePropertyMapping:
+      type: object
+      description: TelegramSourcePropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    SAMLSourcePropertyMappingRequest:
+      type: object
+      description: SAMLSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    PropertyMappingTestRequest:
+      type: object
+      description: Test property mapping execution for a user/group with context
+      properties:
+        user:
+          type:
+          - integer
+          - 'null'
+        context:
+          type: object
+          additionalProperties: {}
+        group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    PaginatedSAMLPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedPlexSourcePropertyMappingRequest:
       type: object
       description: PlexSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    PaginatedSCIMSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PatchedSCIMSourcePropertyMappingRequest:
+      type: object
+      description: SCIMSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    SCIMSourcePropertyMappingRequest:
+      type: object
+      description: SCIMSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    PatchedTelegramSourcePropertyMappingRequest:
+      type: object
+      description: TelegramSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    PatchedLDAPSourcePropertyMappingRequest:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    RadiusProviderPropertyMapping:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type:
+          - string
+          - 'null'
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RadiusProviderPropertyMappingRequest:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    PatchedGoogleWorkspaceProviderMappingRequest:
+      type: object
+      description: GoogleWorkspaceProviderMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PatchedOAuthSourcePropertyMappingRequest:
+      type: object
+      description: OAuthSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    OAuthSourcePropertyMappingRequest:
+      type: object
+      description: OAuthSourcePropertyMapping Serializer
       properties:
         managed:
           type:
@@ -4349,281 +5052,7 @@ components:
       - static_settings
       - verbose_name
       - verbose_name_plural
-    PaginatedNotificationWebhookMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/NotificationWebhookMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    MicrosoftEntraProviderMappingRequest:
-      type: object
-      description: MicrosoftEntraProviderMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    NotificationWebhookMappingRequest:
-      type: object
-      description: NotificationWebhookMapping Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    TypeCreate:
-      type: object
-      description: Types of an object that can be created
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
-          type: boolean
-          default: false
-        deprecated:
-          type: boolean
-          default: false
-      required:
-      - component
-      - description
-      - model_name
-      - name
-    PatchedKerberosSourcePropertyMappingRequest:
-      type: object
-      description: Kerberos PropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    MicrosoftEntraProviderMapping:
-      type: object
-      description: MicrosoftEntraProviderMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PaginatedKerberosSourcePropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/KerberosSourcePropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    SAMLSourcePropertyMappingRequest:
-      type: object
-      description: SAMLSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    TelegramSourcePropertyMapping:
-      type: object
-      description: TelegramSourcePropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    SCIMMapping:
-      type: object
-      description: SCIMMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    RadiusProviderPropertyMappingRequest:
-      type: object
-      description: RadiusProviderPropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    PatchedPlexSourcePropertyMappingRequest:
+    PlexSourcePropertyMappingRequest:
       type: object
       description: PlexSourcePropertyMapping Serializer
       properties:
@@ -4640,481 +5069,52 @@ components:
         expression:
           type: string
           minLength: 1
-    NotificationWebhookMapping:
-      type: object
-      description: NotificationWebhookMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        name:
-          type: string
-        expression:
-          type: string
       required:
       - expression
       - name
-      - pk
-    SAMLSourcePropertyMapping:
-      type: object
-      description: SAMLSourcePropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PatchedGoogleWorkspaceProviderMappingRequest:
-      type: object
-      description: GoogleWorkspaceProviderMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    PropertyMapping:
-      type: object
-      description: PropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PaginatedOAuthSourcePropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuthSourcePropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedRadiusProviderPropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RadiusProviderPropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedNotificationWebhookMappingRequest:
-      type: object
-      description: NotificationWebhookMapping Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-    OAuthSourcePropertyMappingRequest:
-      type: object
-      description: OAuthSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-    PaginatedSAMLPropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SAMLPropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedScopeMappingRequest:
-      type: object
-      description: ScopeMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-        scope_name:
-          type: string
-          minLength: 1
-          description: Scope name requested by the client
-        description:
-          type: string
-          description: Description shown to the user when consenting. If left empty, the user won't be informed.
-    PaginatedRACPropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RACPropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    RACPropertyMappingRequest:
-      type: object
-      description: RACPropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-        static_settings:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - static_settings
-    PaginatedScopeMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScopeMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedGoogleWorkspaceProviderMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PlexSourcePropertyMapping:
-      type: object
-      description: PlexSourcePropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PaginatedPlexSourcePropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlexSourcePropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PropertyMappingTestRequest:
-      type: object
-      description: Test property mapping execution for a user/group with context
-      properties:
-        user:
-          type:
-          - integer
-          - 'null'
-        context:
-          type: object
-          additionalProperties: {}
-        group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    SAMLPropertyMapping:
-      type: object
-      description: SAMLPropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type:
-          - string
-          - 'null'
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        saml_name:
-          type: string
-        friendly_name:
-          type:
-          - string
-          - 'null'
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - saml_name
-      - verbose_name
-      - verbose_name_plural
-    PatchedRACPropertyMappingRequest:
-      type: object
-      description: RACPropertyMapping Serializer
-      properties:
-        managed:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-        static_settings:
-          type: object
-          additionalProperties: {}
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
       description: ''
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
   securitySchemes:
     authentik:
       type: http

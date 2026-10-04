@@ -443,413 +443,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ReviewRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        iteration:
-          type: string
-          format: uuid
-        note:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-      required:
-      - iteration
-    UserOffboardingRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        user:
-          type: integer
-        scheduled_at:
-          type: string
-          format: date-time
-          description: Absolute time at which the offboarding action is executed.
-        action:
-          $ref: '#/components/schemas/OffboardingActionEnum'
-        revoke_sessions:
-          type: boolean
-          description: Revoke all of the user's sessions when offboarding.
-        revoke_tokens:
-          type: boolean
-          description: Revoke all of the user's tokens when offboarding.
-      required:
-      - scheduled_at
-      - user
-    RelatedRule:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        reviewer_groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/PartialGroup'
-          readOnly: true
-        min_reviewers:
-          type: integer
-          readOnly: true
-        reviewers:
-          type: array
-          items:
-            $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - min_reviewers
-      - name
-      - reviewer_groups
-      - reviewers
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    UserOffboarding:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        scheduled_at:
-          type: string
-          format: date-time
-          description: Absolute time at which the offboarding action is executed.
-        action:
-          $ref: '#/components/schemas/OffboardingActionEnum'
-        revoke_sessions:
-          type: boolean
-          description: Revoke all of the user's sessions when offboarding.
-        revoke_tokens:
-          type: boolean
-          description: Revoke all of the user's tokens when offboarding.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/OffboardingStatusEnum'
-          readOnly: true
-        created_by_obj:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        executed_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          readOnly: true
-      required:
-      - created_at
-      - created_by_obj
-      - executed_at
-      - id
-      - scheduled_at
-      - status
-      - user
-      - user_obj
-    PaginatedUserOffboardingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserOffboarding'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    LifecycleRuleRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        name:
-          type: string
-          minLength: 1
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
-        object_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        interval:
-          type: string
-          minLength: 1
-        grace_period:
-          type: string
-          minLength: 1
-        reviewer_groups:
-          type: array
-          items:
-            type: string
-            format: uuid
-        min_reviewers:
-          type: integer
-          maximum: 32767
-          minimum: 0
-        min_reviewers_is_per_group:
-          type: boolean
-        reviewers:
-          type: array
-          items:
-            type: string
-            format: uuid
-        notification_transports:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
-      required:
-      - content_type
-      - name
-      - reviewers
-    PaginatedLifecycleIterationList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LifecycleIteration'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    LifecycleIteration:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
-        object_id:
-          type: string
-          readOnly: true
-        object_verbose:
-          type: string
-          readOnly: true
-        object_admin_url:
-          type: string
-          readOnly: true
-        state:
-          allOf:
-          - $ref: '#/components/schemas/LifecycleIterationStateEnum'
-          readOnly: true
-        opened_on:
-          type: string
-          format: date-time
-          readOnly: true
-        grace_period_end:
-          type: string
-          format: date-time
-          readOnly: true
-        next_review_date:
-          type: string
-          format: date-time
-          readOnly: true
-        reviews:
-          type: array
-          items:
-            $ref: '#/components/schemas/Review'
-          readOnly: true
-        rule:
-          allOf:
-          - $ref: '#/components/schemas/RelatedRule'
-          readOnly: true
-        user_can_review:
-          type: boolean
-          readOnly: true
-      required:
-      - content_type
-      - grace_period_end
-      - id
-      - next_review_date
-      - object_admin_url
-      - object_id
-      - object_verbose
-      - opened_on
-      - reviews
-      - rule
-      - state
-      - user_can_review
-    OffboardingActionEnum:
-      enum:
-      - deactivate
-      - delete
-      type: string
-    PartialGroup:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - pk
-    LifecycleIterationStateEnum:
-      enum:
-      - REVIEWED
-      - PENDING
-      - OVERDUE
-      - CANCELED
-      type: string
-    OffboardingStatusEnum:
-      enum:
-      - pending
-      - completed
-      - failed
-      - canceled
-      type: string
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    LifecycleIterationRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
-      required:
-      - content_type
-    PatchedLifecycleRuleRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        name:
-          type: string
-          minLength: 1
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
-        object_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        interval:
-          type: string
-          minLength: 1
-        grace_period:
-          type: string
-          minLength: 1
-        reviewer_groups:
-          type: array
-          items:
-            type: string
-            format: uuid
-        min_reviewers:
-          type: integer
-          maximum: 32767
-          minimum: 0
-        min_reviewers_is_per_group:
-          type: boolean
-        reviewers:
-          type: array
-          items:
-            type: string
-            format: uuid
-        notification_transports:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
     LifecycleRule:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -915,12 +508,178 @@ components:
       - reviewers
       - reviewers_obj
       - target_verbose
-    ContentTypeEnum:
-      enum:
-      - authentik_core.application
-      - authentik_core.group
-      - authentik_rbac.role
-      type: string
+    PatchedLifecycleRuleRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        name:
+          type: string
+          minLength: 1
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        interval:
+          type: string
+          minLength: 1
+        grace_period:
+          type: string
+          minLength: 1
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        reviewers:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    LifecycleIteration:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+          readOnly: true
+        object_verbose:
+          type: string
+          readOnly: true
+        object_admin_url:
+          type: string
+          readOnly: true
+        state:
+          allOf:
+          - $ref: '#/components/schemas/LifecycleIterationStateEnum'
+          readOnly: true
+        opened_on:
+          type: string
+          format: date-time
+          readOnly: true
+        grace_period_end:
+          type: string
+          format: date-time
+          readOnly: true
+        next_review_date:
+          type: string
+          format: date-time
+          readOnly: true
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+          readOnly: true
+        rule:
+          allOf:
+          - $ref: '#/components/schemas/RelatedRule'
+          readOnly: true
+        user_can_review:
+          type: boolean
+          readOnly: true
+      required:
+      - content_type
+      - grace_period_end
+      - id
+      - next_review_date
+      - object_admin_url
+      - object_id
+      - object_verbose
+      - opened_on
+      - reviews
+      - rule
+      - state
+      - user_can_review
+    PaginatedUserOffboardingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOffboarding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    LifecycleRuleRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        name:
+          type: string
+          minLength: 1
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        interval:
+          type: string
+          minLength: 1
+        grace_period:
+          type: string
+          minLength: 1
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        reviewers:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
+      required:
+      - content_type
+      - name
+      - reviewers
     Review:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -951,6 +710,232 @@ components:
       - iteration
       - reviewer
       - timestamp
+    OffboardingStatusEnum:
+      enum:
+      - pending
+      - completed
+      - failed
+      - canceled
+      type: string
+    ReviewRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        iteration:
+          type: string
+          format: uuid
+        note:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+      required:
+      - iteration
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PaginatedLifecycleIterationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LifecycleIteration'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    RelatedRule:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        reviewer_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        min_reviewers:
+          type: integer
+          readOnly: true
+        reviewers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - min_reviewers
+      - name
+      - reviewer_groups
+      - reviewers
+    UserOffboardingRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        user:
+          type: integer
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+      required:
+      - scheduled_at
+      - user
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    LifecycleIterationRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+      required:
+      - content_type
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - pk
+    UserOffboarding:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingStatusEnum'
+          readOnly: true
+        created_by_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        executed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by_obj
+      - executed_at
+      - id
+      - scheduled_at
+      - status
+      - user
+      - user_obj
     PaginatedLifecycleRuleList:
       type: object
       properties:
@@ -966,6 +951,24 @@ components:
       - autocomplete
       - pagination
       - results
+    ContentTypeEnum:
+      enum:
+      - authentik_core.application
+      - authentik_core.group
+      - authentik_rbac.role
+      type: string
+    LifecycleIterationStateEnum:
+      enum:
+      - REVIEWED
+      - PENDING
+      - OVERDUE
+      - CANCELED
+      type: string
+    OffboardingActionEnum:
+      enum:
+      - deactivate
+      - delete
+      type: string
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -1007,9 +1010,31 @@ components:
       - pk
       - uid
       - username
-    Autocomplete:
-      type: object
-      additionalProperties: {}
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   responses:
     GenericErrorResponse:
       content:
@@ -1023,31 +1048,6 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
-  parameters:
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
   securitySchemes:
     authentik:
       type: http

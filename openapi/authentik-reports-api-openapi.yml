@@ -92,6 +92,31 @@ paths:
       summary: Reports exports destroy
       x-summary-source: derived
 components:
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   schemas:
     Pagination:
       type: object
@@ -118,30 +143,17 @@ components:
       - previous
       - start_index
       - total_pages
-    ContentType:
+    ValidationError:
       type: object
+      description: Validation Error
       properties:
-        id:
-          type: integer
-          readOnly: true
-        app_label:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
           type: string
-          readOnly: true
-        model:
-          type: string
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          readOnly: true
-        fully_qualified_model:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - fully_qualified_model
-      - id
-      - model
-      - verbose_name_plural
+      additionalProperties: {}
     DataExport:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -181,6 +193,16 @@ components:
       - query_params
       - requested_by
       - requested_on
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     PaginatedDataExportList:
       type: object
       properties:
@@ -196,6 +218,30 @@ components:
       - autocomplete
       - pagination
       - results
+    ContentType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        fully_qualified_model:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - fully_qualified_model
+      - id
+      - model
+      - verbose_name_plural
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -237,68 +283,22 @@ components:
       - pk
       - uid
       - username
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
     Autocomplete:
       type: object
       additionalProperties: {}
   responses:
-    ValidationErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-      description: ''
     GenericErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/GenericError'
       description: ''
-  parameters:
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
+    ValidationErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+      description: ''
   securitySchemes:
     authentik:
       type: http

@@ -511,155 +511,6 @@ components:
           - flows_continuous_login
       required:
       - flags
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    ThemedUrls:
-      type: object
-      description: Themed URLs - maps theme names to URLs for light and dark themes
-      properties:
-        light:
-          type:
-          - string
-          - 'null'
-        dark:
-          type:
-          - string
-          - 'null'
-    UsageEnum:
-      enum:
-      - media
-      type: string
-    UsedBy:
-      type: object
-      description: A list of all objects referencing the queried object
-      properties:
-        app:
-          type: string
-        model_name:
-          type: string
-        pk:
-          type: string
-        name:
-          type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
-      required:
-      - action
-      - app
-      - model_name
-      - name
-      - pk
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    Settings:
-      type: object
-      description: Settings Serializer
-      properties:
-        avatars:
-          type: string
-          description: Configure how authentik should show avatars for users.
-        base_url:
-          type: string
-          description: Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
-          format: uri
-          maxLength: 200
-        default_user_change_name:
-          type: boolean
-          description: Enable the ability for users to change their name.
-        default_user_change_email:
-          type: boolean
-          description: Enable the ability for users to change their email address.
-        default_user_change_username:
-          type: boolean
-          description: Enable the ability for users to change their username.
-        event_retention:
-          type: string
-          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
-        reputation_lower_limit:
-          type: integer
-          maximum: 0
-          minimum: -2147483648
-          description: Reputation cannot decrease lower than this value. Zero or negative.
-        reputation_upper_limit:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Reputation cannot increase higher than this value. Zero or positive.
-        footer_links: {}
-        gdpr_compliance:
-          type: boolean
-          description: When enabled, all the events caused by a user will be deleted upon the user's deletion.
-        impersonation:
-          type: boolean
-          description: Globally enable/disable impersonation.
-        impersonation_require_reason:
-          type: boolean
-          description: Require administrators to provide a reason for impersonating a user.
-        default_token_duration:
-          type: string
-          description: Default token duration
-        default_token_length:
-          type: integer
-          maximum: 2147483647
-          minimum: 1
-          description: Default token length
-        pagination_default_page_size:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Default page size for API responses, if no size was requested.
-        pagination_max_page_size:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Maximum page size
-        flags:
-          type: object
-          properties:
-            core_default_app_access:
-              type: boolean
-              description: Applications with no policies bound can be accessed by any user.
-            enterprise_audit_include_expanded_diff:
-              type: boolean
-              description: Include additional information in audit logs, may incur a performance penalty.
-            flows_continuous_login:
-              type: boolean
-              description: Upon successful authentication, re-start authentication in other open tabs.
-          required:
-          - core_default_app_access
-          - enterprise_audit_include_expanded_diff
-          - flows_continuous_login
-      required:
-      - flags
-    FileUploadRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        file:
-          type: string
-          format: binary
-        name:
-          type: string
-        usage:
-          type: string
-          minLength: 1
-          default: media
-      required:
-      - file
     PatchedSettingsRequest:
       type: object
       description: Settings Serializer
@@ -741,17 +592,46 @@ components:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-    ValidationError:
+    App:
       type: object
-      description: Validation Error
+      description: Serialize Application info
       properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
+        name:
           type: string
-      additionalProperties: {}
+        label:
+          type: string
+      required:
+      - label
+      - name
+    UsageEnum:
+      enum:
+      - media
+      type: string
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    FileList:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        name:
+          type: string
+        mime_type:
+          type: string
+        url:
+          type: string
+        themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+      required:
+      - mime_type
+      - name
+      - url
     SystemInfo:
       type: object
       description: Get system information.
@@ -833,34 +713,172 @@ components:
       - http_is_secure
       - runtime
       - server_time
-    App:
+    Settings:
       type: object
-      description: Serialize Application info
+      description: Settings Serializer
       properties:
-        name:
+        avatars:
           type: string
-        label:
+          description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          description: Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+          format: uri
+          maxLength: 200
+        default_user_change_name:
+          type: boolean
+          description: Enable the ability for users to change their name.
+        default_user_change_email:
+          type: boolean
+          description: Enable the ability for users to change their email address.
+        default_user_change_username:
+          type: boolean
+          description: Enable the ability for users to change their username.
+        event_retention:
+          type: string
+          description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        reputation_lower_limit:
+          type: integer
+          maximum: 0
+          minimum: -2147483648
+          description: Reputation cannot decrease lower than this value. Zero or negative.
+        reputation_upper_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Reputation cannot increase higher than this value. Zero or positive.
+        footer_links: {}
+        gdpr_compliance:
+          type: boolean
+          description: When enabled, all the events caused by a user will be deleted upon the user's deletion.
+        impersonation:
+          type: boolean
+          description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating a user.
+        default_token_duration:
+          type: string
+          description: Default token duration
+        default_token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
+        flags:
+          type: object
+          properties:
+            core_default_app_access:
+              type: boolean
+              description: Applications with no policies bound can be accessed by any user.
+            enterprise_audit_include_expanded_diff:
+              type: boolean
+              description: Include additional information in audit logs, may incur a performance penalty.
+            flows_continuous_login:
+              type: boolean
+              description: Upon successful authentication, re-start authentication in other open tabs.
+          required:
+          - core_default_app_access
+          - enterprise_audit_include_expanded_diff
+          - flows_continuous_login
+      required:
+      - flags
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
           type: string
       required:
-      - label
+      - detail
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type:
+          - string
+          - 'null'
+        dark:
+          type:
+          - string
+          - 'null'
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
+      required:
+      - action
+      - app
+      - model_name
       - name
-    FileList:
+      - pk
+    FileUploadRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
+        file:
+          type: string
+          format: binary
         name:
           type: string
-        mime_type:
+        usage:
           type: string
-        url:
-          type: string
-        themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrls'
+          minLength: 1
+          default: media
       required:
-      - mime_type
-      - name
-      - url
+      - file
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
   responses:
     GenericErrorResponse:
       content:
@@ -874,24 +892,6 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
-  parameters:
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
   securitySchemes:
     authentik:
       type: http

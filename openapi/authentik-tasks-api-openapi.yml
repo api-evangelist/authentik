@@ -368,20 +368,93 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Worker:
+    Schedule:
       type: object
       properties:
-        worker_id:
+        id:
           type: string
-        version:
+          format: uuid
+          readOnly: true
+        identifier:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+          description: Unique schedule identifier
+        uid:
           type: string
-        version_matching:
+          readOnly: true
+        actor_name:
+          type: string
+          readOnly: true
+          description: Dramatiq actor to call
+        rel_obj_app_label:
+          type: string
+          readOnly: true
+        rel_obj_model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        rel_obj_id:
+          type:
+          - string
+          - 'null'
+        crontab:
+          type: string
+          description: When to schedule tasks
+        paused:
           type: boolean
+          description: Pause this schedule
+        next_run:
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        last_task_status:
+          allOf:
+          - $ref: '#/components/schemas/LastTaskStatusEnum'
+          readOnly: true
       required:
-      - version
-      - version_matching
-      - worker_id
-    LastTaskStatusEnum:
+      - actor_name
+      - crontab
+      - description
+      - id
+      - identifier
+      - last_task_status
+      - next_run
+      - rel_obj_app_label
+      - rel_obj_model
+      - uid
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    LogEvent:
+      type: object
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    TaskAggregatedStatusEnum:
       enum:
       - waiting_for_dependencies
       - queued
@@ -395,50 +468,17 @@ components:
       - warning
       - error
       type: string
-    GlobalTaskStatus:
-      type: object
-      properties:
-        queued:
-          type: integer
-          readOnly: true
-        consumed:
-          type: integer
-          readOnly: true
-        preprocess:
-          type: integer
-          readOnly: true
-        running:
-          type: integer
-          readOnly: true
-        postprocess:
-          type: integer
-          readOnly: true
-        rejected:
-          type: integer
-          readOnly: true
-        done:
-          type: integer
-          readOnly: true
-        info:
-          type: integer
-          readOnly: true
-        warning:
-          type: integer
-          readOnly: true
-        error:
-          type: integer
-          readOnly: true
-      required:
-      - consumed
-      - done
-      - error
-      - info
-      - postprocess
-      - preprocess
+    TaskStatusEnum:
+      enum:
+      - waiting_for_dependencies
       - queued
-      - rejected
+      - consumed
+      - preprocess
       - running
-      - warning
+      - postprocess
+      - rejected
+      - done
+      type: string
     Task:
       type: object
       properties:
@@ -511,7 +551,21 @@ components:
       - rel_obj_app_label
       - rel_obj_model
       - uid
-    PatchedScheduleRequest:
+    LastTaskStatusEnum:
+      enum:
+      - waiting_for_dependencies
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
+    ScheduleRequest:
       type: object
       properties:
         rel_obj_id:
@@ -526,52 +580,8 @@ components:
         paused:
           type: boolean
           description: Pause this schedule
-    TaskAggregatedStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
-    TaskStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      type: string
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
       required:
-      - detail
+      - crontab
     Pagination:
       type: object
       properties:
@@ -597,21 +607,55 @@ components:
       - previous
       - start_index
       - total_pages
-    PaginatedTaskList:
+    ValidationError:
       type: object
+      description: Validation Error
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        non_field_errors:
           type: array
           items:
-            $ref: '#/components/schemas/Task'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
       required:
-      - autocomplete
-      - pagination
-      - results
+      - detail
+    Worker:
+      type: object
+      properties:
+        worker_id:
+          type: string
+        version:
+          type: string
+        version_matching:
+          type: boolean
+      required:
+      - version
+      - version_matching
+      - worker_id
+    PatchedScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
     PaginatedScheduleList:
       type: object
       properties:
@@ -627,120 +671,101 @@ components:
       - autocomplete
       - pagination
       - results
-    ValidationError:
+    GlobalTaskStatus:
       type: object
-      description: Validation Error
       properties:
-        non_field_errors:
+        queued:
+          type: integer
+          readOnly: true
+        consumed:
+          type: integer
+          readOnly: true
+        preprocess:
+          type: integer
+          readOnly: true
+        running:
+          type: integer
+          readOnly: true
+        postprocess:
+          type: integer
+          readOnly: true
+        rejected:
+          type: integer
+          readOnly: true
+        done:
+          type: integer
+          readOnly: true
+        info:
+          type: integer
+          readOnly: true
+        warning:
+          type: integer
+          readOnly: true
+        error:
+          type: integer
+          readOnly: true
+      required:
+      - consumed
+      - done
+      - error
+      - info
+      - postprocess
+      - preprocess
+      - queued
+      - rejected
+      - running
+      - warning
+    PaginatedTaskList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
           type: array
           items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    Schedule:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        identifier:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-          description: Unique schedule identifier
-        uid:
-          type: string
-          readOnly: true
-        actor_name:
-          type: string
-          readOnly: true
-          description: Dramatiq actor to call
-        rel_obj_app_label:
-          type: string
-          readOnly: true
-        rel_obj_model:
-          type: string
-          title: Python model class name
-          readOnly: true
-        rel_obj_id:
-          type:
-          - string
-          - 'null'
-        crontab:
-          type: string
-          description: When to schedule tasks
-        paused:
-          type: boolean
-          description: Pause this schedule
-        next_run:
-          type: string
-          format: date-time
-          readOnly: true
-        description:
-          type:
-          - string
-          - 'null'
-          readOnly: true
-        last_task_status:
-          allOf:
-          - $ref: '#/components/schemas/LastTaskStatusEnum'
-          readOnly: true
+            $ref: '#/components/schemas/Task'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
-      - actor_name
-      - crontab
-      - description
-      - id
-      - identifier
-      - last_task_status
-      - next_run
-      - rel_obj_app_label
-      - rel_obj_model
-      - uid
-    ScheduleRequest:
-      type: object
-      properties:
-        rel_obj_id:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        crontab:
-          type: string
-          minLength: 1
-          description: When to schedule tasks
-        paused:
-          type: boolean
-          description: Pause this schedule
-      required:
-      - crontab
-    LogEvent:
-      type: object
-      description: Single log message with all context logged.
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
-    Autocomplete:
-      type: object
-      additionalProperties: {}
+      - autocomplete
+      - pagination
+      - results
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+  parameters:
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
   responses:
     GenericErrorResponse:
       content:
@@ -754,31 +779,6 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
-  parameters:
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
   securitySchemes:
     authentik:
       type: http
