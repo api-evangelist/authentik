@@ -757,6 +757,9 @@ apis:
   - type: GitHubRepository
     url: https://github.com/goauthentik/authentik
 common:
+- type: CapabilityMap
+  url: capabilities/authentik-capability-edges.yml
+  name: Authentik Business Capability Map
 - type: Overlay
   url: overlays/authentik-oauth2-api-overlay.yaml
 - type: IssueTracker

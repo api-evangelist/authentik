@@ -1,0 +1,157 @@
+slug: authentik
+provider: Authentik
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 14
+edges:
+- tag: Authenticators
+  spec_file: authentik-authenticators-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.92
+  evidence: '"Authenticators admin duo list", schemas TOTPDevice, WebAuthnDeviceRequest, StaticDeviceToken,
+    SMSDeviceRequest'
+  reason: Lifecycle management of user MFA authenticator devices (Duo, email, SMS, TOTP, WebAuthn) in
+    an identity provider — Identity & Access Management.
+- tag: Core
+  spec_file: authentik-core-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.9
+  evidence: '"Core applications create", "Core application entitlements list", schemas SessionUser, GroupRequest,
+    AuthenticatedSession, UserRecoveryEmailRequest'
+  reason: Users, groups, applications, entitlements and authenticated sessions in an identity provider
+    — core Identity & Access Management administration.
+- tag: RBAC
+  spec_file: authentik-rbac-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.9
+  evidence: 'GET /rbac/permissions/assigned_by_roles/, POST /rbac/permissions/assigned_by_roles/{uuid}/assign/,
+    schemas: RoleObjectPermission, InitialPermissions'
+  reason: Role and permission definition plus assignment/unassignment to users and roles is role-based
+    access control, explicitly Identity & Access Management.
+- tag: Sources
+  spec_file: authentik-sources-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.9
+  evidence: GET /sources/all/ ... /sources/group_connections/all/ ; schemas SCIMSourceGroupRequest, PlexSourceRequest,
+    PatchedSCIMSourceRequest, GroupSAMLSourceConnectionRequest, LDAPDebug
+  reason: Configuration of federated identity sources (LDAP, SAML, OAuth, SCIM) and their user/group connections
+    — directly federation and identity lifecycle, i.e. Identity & Access Management for this IdP product.
+- tag: Providers
+  spec_file: authentik-providers-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.88
+  evidence: 'schemas: SAMLProvider, OAuth2Provider, SCIMProvider, MicrosoftEntraProviderRequest; POST
+    /providers/google_workspace/{id}/sync/object/'
+  reason: Configures SAML/OAuth2/SCIM/LDAP application providers and user/group synchronisation to Google
+    Workspace and Microsoft Entra — identity federation and provisioning, core IAM.
+- tag: Flows
+  spec_file: authentik-flows-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: 'GET /flows/executor/{flow_slug}/ ''Flows executor get'', schemas: AuthenticatorValidationChallenge,
+    AuthenticatorTOTPChallenge, ConsentChallengeResponseRequest, LogoutURL'
+  reason: Defines and executes authentication/enrolment flows with MFA challenges, consent and logout
+    — core authentication orchestration, i.e. Identity & Access Management.
+- tag: OAuth2
+  spec_file: authentik-oauth2-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: 'GET /oauth2/access_tokens/, GET /oauth2/authorization_codes/, GET /oauth2/refresh_tokens/,
+    schemas: ExpiringBaseGrantModel, TokenModel'
+  reason: Lists and revokes OAuth2 grants, access and refresh tokens issued to users — administration
+    of federated access credentials, squarely Identity & Access Management.
+- tag: Requests
+  spec_file: authentik-requests-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: POST /requests/grant-requests/ ... PATCH /requests/grant-requests/{uuid}/fulfill/ ... DELETE
+    /requests/grant-requests/{uuid}/revoke/ ... GET /requests/grant-requests/pending_review/
+  reason: Access-grant request workflow with review, fulfilment and revocation plus rule bindings — this
+    is access request/approval within identity and access management for this identity provider, not a
+    generic ticketing surface.
+- tag: Stages
+  spec_file: authentik-stages-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: GET /stages/account_lockdown/ ; schemas PatchedAuthenticatorTOTPStageRequest, ConsentStage,
+    AuthenticatorValidateStage, InvitationSendEmailRequest
+  reason: Authentication flow stages — MFA/TOTP authenticators, consent, prompts, account lockdown, invitations.
+    These configure how users authenticate and enrol, squarely Identity & Access Management.
+- tag: Lifecycle
+  spec_file: authentik-lifecycle-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.82
+  evidence: 'GET /lifecycle/user_offboarding/, POST /lifecycle/reviews/, schemas: UserOffboarding, OffboardingActionEnum,
+    LifecycleIteration, Review'
+  reason: User offboarding actions and periodic access review iterations/rules are joiners-movers-leavers
+    and access certification, explicitly in scope of Identity & Access Management.
+- tag: rac
+  spec_file: authentik-rac-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: GET /rac/connection_tokens/ ; POST /rac/endpoints/ ; schemas ConnectionToken, Endpoint, RACProvider,
+    EndpointAuthModeEnum, ProtocolEnum
+  reason: 'Remote access control: brokered connection tokens and protected endpoints with auth modes —
+    privileged/remote access provisioning, an access management surface of the identity provider.'
+- tag: Tenants
+  spec_file: authentik-tenants-api-openapi.yml
+  capability_id: BC-4230.10
+  capability_id_l1: BC-4230
+  capability_name: Tenant Provisioning & Lifecycle
+  confidence: 0.75
+  evidence: POST /tenants/tenants/ tenants_tenants_create ; DELETE /tenants/tenants/{tenant_uuid}/ ; schemas
+    Tenant, Domain, TenantRecoveryKeyResponse
+  reason: CRUD over tenants and their domain mappings in a multi-tenant deployment, including tenant recovery
+    keys — tenant provisioning and lifecycle. Some ambiguity as domain binding also touches tenant configuration.
+- tag: propertymappings
+  spec_file: authentik-propertymappings-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: GET /propertymappings/all/types/ ; schemas SAMLPropertyMappingRequest, SCIMSourcePropertyMapping,
+    ScopeMapping, LDAPSourcePropertyMapping, PropertyMappingTestResult
+  reason: Attribute and scope mapping between the IdP and SAML/SCIM/LDAP/OAuth providers and sources —
+    identity attribute transformation used in federation, so IAM rather than generic data mapping.
+- tag: Policies
+  spec_file: authentik-policies-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: 'schemas: PasswordPolicy, GeoIPPolicyRequest, ReputationPolicyRequest, PolicyBindingRequest;
+    POST /policies/all/{policy_uuid}/test/'
+  reason: Defines and binds runtime access-decision policies (password strength, geo-IP, reputation, expression)
+    evaluated during authentication/authorisation — access control configuration within IAM rather than
+    corporate policy management.
