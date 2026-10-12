@@ -1,0 +1,38 @@
+generated: '2026-10-13'
+method: searched
+checked:
+- https://openid.net/developers/certified-openid-connect-implementations/
+marketplace_apps: []
+edges:
+- partner_name: OpenID Foundation certification
+  partner: null
+  partner_match: domain
+  type: contract
+  channel: network-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://openid.net/developers/certified-openid-connect-implementations/
+  contract_reference:
+    register: OpenID Foundation certified implementations
+    spec_file: null
+    role: certified-op
+    registered_name: Authentik Security Inc
+    products:
+    - authentik 2026.8.0
+    matched_domain: goauthentik.io
+    api_families:
+    - Back-Channel OP
+    - Basic OP
+    - Config OP
+    - Form Post OP
+    - Front-Channel OP
+    - Hybrid OP
+    - Implicit OP
+    - RP-Initiated OP
+    - openid-providers-for-logout-profiles
+    - openid-providers-profiles
+    api_families_basis: conformance profiles / certification levels passed
+    detected_by: sweep-identity.py
+    detected: '2026-10-13'
+  detected_by: sweep-identity.py
+  detected: '2026-10-13'
