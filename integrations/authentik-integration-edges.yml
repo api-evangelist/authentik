@@ -1,6 +1,7 @@
 generated: '2026-10-13'
 method: searched
 checked:
+- https://github.com/marketplace?type=actions
 - https://openid.net/developers/certified-openid-connect-implementations/
 marketplace_apps: []
 edges:
@@ -36,3 +37,22 @@ edges:
     detected: '2026-10-13'
   detected_by: sweep-identity.py
   detected: '2026-10-13'
+- partner_name: GitHub Marketplace (actions)
+  partner: github-actions
+  partner_match: aggregator
+  type: marketplace
+  marketplace: github-actions
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://github.com/marketplace/actions/configure-authentik-credentials-action-for-github-actions
+  listing_count: 1
+  apps:
+  - '"Configure authentik Credentials" Action for GitHub Actions'
+  publisher_name: Authentik Security
+  badges:
+  - Verified creator
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+source:
+- https://github.com/marketplace?type=actions
