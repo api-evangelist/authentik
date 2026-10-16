@@ -2,13 +2,6 @@
   "repo": "authentik",
   "feeds": [
     {
-      "source": "https://goauthentik.io/pricing",
-      "feed_url": "https://goauthentik.io/blog/rss.xml",
-      "title": "",
-      "saved": 0,
-      "method": "discovered"
-    },
-    {
       "source": "https://goauthentik.io/blog/rss.xml",
       "feed_url": "https://goauthentik.io/blog/rss.xml",
       "title": "",
@@ -16,7 +9,7 @@
       "method": "feed"
     }
   ],
-  "fetched": "2026-10-03T12:30:02Z",
+  "fetched": "2026-10-10T13:15:00Z",
   "post_count": 25,
   "feed_nature": "vendor-blog",
   "feed_nature_basis": "path_blog",
