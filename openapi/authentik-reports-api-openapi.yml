@@ -93,67 +93,31 @@ paths:
       x-summary-source: derived
 components:
   parameters:
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
     QueryPaginationPageSize:
       in: query
       name: page_size
       schema:
         type: integer
       description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   schemas:
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     DataExport:
       type: object
       description: 'Mixin to validate that a valid enterprise license
@@ -193,55 +157,42 @@ components:
       - query_params
       - requested_by
       - requested_on
-    GenericError:
+    Pagination:
       type: object
-      description: Generic API Error
       properties:
-        detail:
-          type: string
-        code:
-          type: string
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
       required:
-      - detail
-    PaginatedDataExportList:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    ValidationError:
       type: object
+      description: Validation Error
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        non_field_errors:
           type: array
           items:
-            $ref: '#/components/schemas/DataExport'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    ContentType:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        app_label:
+            type: string
+        code:
           type: string
-          readOnly: true
-        model:
-          type: string
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          readOnly: true
-        fully_qualified_model:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - fully_qualified_model
-      - id
-      - model
-      - verbose_name_plural
+      additionalProperties: {}
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -283,21 +234,70 @@ components:
       - pk
       - uid
       - username
+    PaginatedDataExportList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataExport'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ContentType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        fully_qualified_model:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - fully_qualified_model
+      - id
+      - model
+      - verbose_name_plural
     Autocomplete:
       type: object
       additionalProperties: {}
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
       description: ''
   securitySchemes:
     authentik:

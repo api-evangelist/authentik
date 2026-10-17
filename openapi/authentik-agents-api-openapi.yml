@@ -212,6 +212,12 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    PolicyBehaviorEnum:
+      enum:
+      - mirror
+      - copy
+      - none
+      type: string
     AgentCreated:
       type: object
       description: Response returned once when an agent is created, carrying the one-time API token.
@@ -226,121 +232,6 @@ components:
       required:
       - agent
       - token
-    Agent:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        expiring:
-          type: boolean
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        parent:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-        policy_behavior:
-          allOf:
-          - $ref: '#/components/schemas/PolicyBehaviorEnum'
-          readOnly: true
-        token_identifier:
-          type:
-          - string
-          - 'null'
-          description: Identifier of the agent's API token, so its key can be retrieved/copied later.
-          readOnly: true
-      required:
-      - name
-      - parent
-      - pk
-      - policy_behavior
-      - token_identifier
-      - uid
-      - username
-      - uuid
-    AgentRequest:
-      type: object
-      description: 'Mixin to validate that a valid enterprise license
-
-        exists before allowing to save the object'
-      properties:
-        username:
-          type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          minLength: 1
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-        last_login:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        expiring:
-          type: boolean
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - name
-      - username
     ValidationError:
       type: object
       description: Validation Error
@@ -352,21 +243,6 @@ components:
         code:
           type: string
       additionalProperties: {}
-    PaginatedAgentList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Agent'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
     Pagination:
       type: object
       properties:
@@ -392,39 +268,6 @@ components:
       - previous
       - start_index
       - total_pages
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    AgentCreateRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        parent:
-          type: integer
-        label:
-          type: string
-        expiring:
-          type: boolean
-          default: false
-        expires:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        policy_behavior:
-          allOf:
-          - $ref: '#/components/schemas/PolicyBehaviorEnum'
-          default: mirror
-    Autocomplete:
-      type: object
-      additionalProperties: {}
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -506,13 +349,176 @@ components:
           - string
           - 'null'
           format: date-time
-    PolicyBehaviorEnum:
-      enum:
-      - mirror
-      - copy
-      - none
-      type: string
+    Agent:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        expiring:
+          type: boolean
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          readOnly: true
+        token_identifier:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the agent's API token, so its key can be retrieved/copied later.
+          readOnly: true
+      required:
+      - name
+      - parent
+      - pk
+      - policy_behavior
+      - token_identifier
+      - uid
+      - username
+      - uuid
+    PaginatedAgentList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agent'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    AgentRequest:
+      type: object
+      description: 'Mixin to validate that a valid enterprise license
+
+        exists before allowing to save the object'
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+        last_login:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - name
+      - username
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    AgentCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        parent:
+          type: integer
+        label:
+          type: string
+        expiring:
+          type: boolean
+          default: false
+        expires:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          default: mirror
   parameters:
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
     QueryPaginationOrdering:
       in: query
       name: ordering
@@ -531,24 +537,18 @@ components:
       schema:
         type: string
       description: A search term.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
   responses:
-    GenericErrorResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/GenericError'
-      description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
+      description: ''
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenericError'
       description: ''
   securitySchemes:
     authentik:

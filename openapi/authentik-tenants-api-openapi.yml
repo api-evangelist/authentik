@@ -399,6 +399,58 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    TenantAdminGroupRequestRequest:
+      type: object
+      description: Tenant admin group creation request serializer
+      properties:
+        user:
+          type: string
+          minLength: 1
+      required:
+      - user
+    Domain:
+      type: object
+      description: Domain Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        domain:
+          type: string
+          maxLength: 253
+        is_primary:
+          type: boolean
+        tenant:
+          type: string
+          format: uuid
+      required:
+      - domain
+      - id
+      - tenant
+    PatchedDomainRequest:
+      type: object
+      description: Domain Serializer
+      properties:
+        domain:
+          type: string
+          minLength: 1
+          maxLength: 253
+        is_primary:
+          type: boolean
+        tenant:
+          type: string
+          format: uuid
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     PaginatedDomainList:
       type: object
       properties:
@@ -408,6 +460,53 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Domain'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    Tenant:
+      type: object
+      description: Tenant Serializer
+      properties:
+        tenant_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        schema_name:
+          type: string
+          maxLength: 63
+        name:
+          type: string
+        ready:
+          type: boolean
+      required:
+      - name
+      - schema_name
+      - tenant_uuid
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    PaginatedTenantList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -430,31 +529,6 @@ components:
       required:
       - domain
       - tenant
-    TenantAdminGroupRequestRequest:
-      type: object
-      description: Tenant admin group creation request serializer
-      properties:
-        user:
-          type: string
-          minLength: 1
-      required:
-      - user
-    PatchedDomainRequest:
-      type: object
-      description: Domain Serializer
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
-    Autocomplete:
-      type: object
-      additionalProperties: {}
     TenantRecoveryKeyResponse:
       type: object
       description: Tenant recovery key creation response serializer
@@ -467,6 +541,34 @@ components:
       required:
       - expiry
       - url
+    TenantRequest:
+      type: object
+      description: Tenant Serializer
+      properties:
+        schema_name:
+          type: string
+          minLength: 1
+          maxLength: 63
+        name:
+          type: string
+          minLength: 1
+        ready:
+          type: boolean
+      required:
+      - name
+      - schema_name
+    TenantRecoveryKeyRequestRequest:
+      type: object
+      description: Tenant recovery key creation request serializer
+      properties:
+        user:
+          type: string
+          minLength: 1
+        duration_days:
+          type: integer
+      required:
+      - duration_days
+      - user
     Pagination:
       type: object
       properties:
@@ -492,17 +594,6 @@ components:
       - previous
       - start_index
       - total_pages
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
     PatchedTenantRequest:
       type: object
       description: Tenant Serializer
@@ -516,122 +607,6 @@ components:
           minLength: 1
         ready:
           type: boolean
-    PaginatedTenantList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tenant'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    Tenant:
-      type: object
-      description: Tenant Serializer
-      properties:
-        tenant_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        schema_name:
-          type: string
-          maxLength: 63
-        name:
-          type: string
-        ready:
-          type: boolean
-      required:
-      - name
-      - schema_name
-      - tenant_uuid
-    TenantRecoveryKeyRequestRequest:
-      type: object
-      description: Tenant recovery key creation request serializer
-      properties:
-        user:
-          type: string
-          minLength: 1
-        duration_days:
-          type: integer
-      required:
-      - duration_days
-      - user
-    TenantRequest:
-      type: object
-      description: Tenant Serializer
-      properties:
-        schema_name:
-          type: string
-          minLength: 1
-          maxLength: 63
-        name:
-          type: string
-          minLength: 1
-        ready:
-          type: boolean
-      required:
-      - name
-      - schema_name
-    Domain:
-      type: object
-      description: Domain Serializer
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        domain:
-          type: string
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
-      required:
-      - domain
-      - id
-      - tenant
-  parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
   responses:
     GenericErrorResponse:
       content:
@@ -645,6 +620,31 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
   securitySchemes:
     authentik:
       type: http

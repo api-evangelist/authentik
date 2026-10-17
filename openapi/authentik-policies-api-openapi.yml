@@ -2510,700 +2510,17 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    GeoIPPolicy:
+    PolicyTestRequest:
       type: object
-      description: GeoIP Policy Serializer
+      description: Test policy execution for a user with context
       properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
-          type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
-        asns:
-          type: array
-          items:
-            type: integer
-            maximum: 2147483647
-            minimum: -2147483648
-        countries:
-          type: array
-          items:
-            $ref: '#/components/schemas/CountryCodeEnum'
-          maxItems: 249
-        countries_obj:
-          type: array
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                minLength: 2
-                maxLength: 2
-              name:
-                type: string
-            required:
-            - code
-            - name
-          readOnly: true
-        check_history_distance:
-          type: boolean
-        history_max_distance_km:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-        distance_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        history_login_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        check_impossible_travel:
-          type: boolean
-        impossible_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-      required:
-      - bound_to
-      - component
-      - countries
-      - countries_obj
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PolicyBindingRequest:
-      type: object
-      description: PolicyBinding Serializer
-      properties:
-        policy:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        group:
-          type:
-          - string
-          - 'null'
-          format: uuid
         user:
-          type:
-          - integer
-          - 'null'
-        target:
-          type: string
-          format: uuid
-        negate:
-          type: boolean
-          description: Negates the outcome of the policy. Messages are unaffected.
-        enabled:
-          type: boolean
-        order:
           type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Timeout after which Policy execution is terminated.
-        failure_result:
-          type: boolean
-          description: Result if the Policy execution fails.
-      required:
-      - order
-      - target
-    PatchedEventMatcherPolicyRequest:
-      type: object
-      description: Event Matcher Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        action:
-          allOf:
-          - $ref: '#/components/schemas/EventActions'
-          description: Match created events with this action type. When left empty, all action types will be matched.
-        client_ip:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
-        app:
-          allOf:
-          - $ref: '#/components/schemas/AppEnum'
-          description: Match events created by selected application. When left empty, all applications are matched.
-        model:
-          allOf:
-          - $ref: '#/components/schemas/ModelEnum'
-          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-        query:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-    UniquePasswordPolicyRequest:
-      type: object
-      description: Password Uniqueness Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        password_field:
-          type: string
-          minLength: 1
-          description: Field key to check, field keys defined in Prompt stages are available.
-        num_historical_passwords:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Number of passwords to check against.
-      required:
-      - name
-    Autocomplete:
-      type: object
-      additionalProperties: {}
-    LogEvent:
-      type: object
-      description: Single log message with all context logged.
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        log_level:
-          $ref: '#/components/schemas/LogLevelEnum'
-        logger:
-          type: string
-        event:
-          type: string
-        attributes:
+        context:
           type: object
           additionalProperties: {}
       required:
-      - attributes
-      - event
-      - log_level
-      - logger
-      - timestamp
-    PatchedPolicyBindingRequest:
-      type: object
-      description: PolicyBinding Serializer
-      properties:
-        policy:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        group:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        user:
-          type:
-          - integer
-          - 'null'
-        target:
-          type: string
-          format: uuid
-        negate:
-          type: boolean
-          description: Negates the outcome of the policy. Messages are unaffected.
-        enabled:
-          type: boolean
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Timeout after which Policy execution is terminated.
-        failure_result:
-          type: boolean
-          description: Result if the Policy execution fails.
-    DetailedCountry:
-      type: object
-      properties:
-        code:
-          $ref: '#/components/schemas/CountryCodeEnum'
-        name:
-          type: string
-      required:
-      - code
-      - name
-    PaginatedDummyPolicyList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/DummyPolicy'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PatchedDummyPolicyRequest:
-      type: object
-      description: Dummy Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        result:
-          type: boolean
-        wait_min:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        wait_max:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-    ReputationPolicyRequest:
-      type: object
-      description: Reputation Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        check_ip:
-          type: boolean
-        check_username:
-          type: boolean
-        threshold:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - name
-    PaginatedGeoIPPolicyList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GeoIPPolicy'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedPasswordPolicyList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PasswordPolicy'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    GeoIPPolicyRequest:
-      type: object
-      description: GeoIP Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        asns:
-          type: array
-          items:
-            type: integer
-            maximum: 2147483647
-            minimum: -2147483648
-        countries:
-          type: array
-          items:
-            $ref: '#/components/schemas/CountryCodeEnum'
-          maxItems: 249
-        check_history_distance:
-          type: boolean
-        history_max_distance_km:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-        distance_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        history_login_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        check_impossible_travel:
-          type: boolean
-        impossible_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-      required:
-      - countries
-      - name
-    PatchedReputationPolicyRequest:
-      type: object
-      description: Reputation Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        check_ip:
-          type: boolean
-        check_username:
-          type: boolean
-        threshold:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-    ExpressionPolicy:
-      type: object
-      description: Group Membership Policy Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
-          type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
-        expression:
-          type: string
-      required:
-      - bound_to
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    Policy:
-      type: object
-      description: Policy Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
-          type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
-      required:
-      - bound_to
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PasswordExpiryPolicyRequest:
-      type: object
-      description: Password Expiry Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        days:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        deny_only:
-          type: boolean
-      required:
-      - days
-      - name
-    DummyPolicy:
-      type: object
-      description: Dummy Policy Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
-          type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
-        result:
-          type: boolean
-        wait_min:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        wait_max:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - bound_to
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PaginatedPolicyList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Policy'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    EventMatcherPolicyRequest:
-      type: object
-      description: Event Matcher Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        action:
-          allOf:
-          - $ref: '#/components/schemas/EventActions'
-          description: Match created events with this action type. When left empty, all action types will be matched.
-        client_ip:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
-        app:
-          allOf:
-          - $ref: '#/components/schemas/AppEnum'
-          description: Match events created by selected application. When left empty, all applications are matched.
-        model:
-          allOf:
-          - $ref: '#/components/schemas/ModelEnum'
-          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-        query:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-      required:
-      - name
-    DummyPolicyRequest:
-      type: object
-      description: Dummy Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        result:
-          type: boolean
-        wait_min:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        wait_max:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - name
-    UsedByActionEnum:
-      enum:
-      - cascade
-      - cascade_many
-      - set_null
-      - set_default
-      - left_dangling
-      type: string
-    PasswordExpiryPolicy:
-      type: object
-      description: Password Expiry Policy Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
-          type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
-        days:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        deny_only:
-          type: boolean
-      required:
-      - bound_to
-      - component
-      - days
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
+      - user
     AppEnum:
       enum:
       - authentik.commands
@@ -3289,24 +2606,83 @@ components:
       - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
       type: string
-    PaginatedReputationList:
+    DummyPolicy:
       type: object
+      description: Dummy Policy Serializer
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reputation'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        result:
+          type: boolean
+        wait_min:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        wait_max:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
       required:
-      - autocomplete
-      - pagination
-      - results
-    ExpressionPolicyRequest:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    LogEvent:
       type: object
-      description: Group Membership Policy Serializer
+      description: Single log message with all context logged.
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        log_level:
+          $ref: '#/components/schemas/LogLevelEnum'
+        logger:
+          type: string
+        event:
+          type: string
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - attributes
+      - event
+      - log_level
+      - logger
+      - timestamp
+    PatchedEventMatcherPolicyRequest:
+      type: object
+      description: Event Matcher Policy Serializer
       properties:
         name:
           type: string
@@ -3314,27 +2690,135 @@ components:
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        action:
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
+          description: Match created events with this action type. When left empty, all action types will be matched.
+        client_ip:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
+        app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
+          description: Match events created by selected application. When left empty, all applications are matched.
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+        query:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+    PolicyBindingRequest:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        policy:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user:
+          type:
+          - integer
+          - 'null'
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+      required:
+      - order
+      - target
+    ExpressionPolicy:
+      type: object
+      description: Group Membership Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
         expression:
           type: string
-          minLength: 1
       required:
+      - bound_to
+      - component
       - expression
+      - meta_model_name
       - name
-    PaginatedReputationPolicyList:
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    UsedBy:
       type: object
+      description: A list of all objects referencing the queried object
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReputationPolicy'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/UsedByActionEnum'
       required:
-      - autocomplete
-      - pagination
-      - results
+      - action
+      - app
+      - model_name
+      - name
+      - pk
     ModelEnum:
       enum:
       - authentik_tenants.domain
@@ -3469,322 +2953,37 @@ components:
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
       type: string
-    PaginatedPolicyBindingList:
+    Reputation:
       type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyBinding'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    EventMatcherPolicy:
-      type: object
-      description: Event Matcher Policy Serializer
+      description: Reputation Serializer
       properties:
         pk:
           type: string
           format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
+          title: Reputation uuid
+        identifier:
           type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
+        ip:
           type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
+        ip_geo_data:
+          type: object
+          additionalProperties: {}
+        ip_asn_data:
+          type: object
+          additionalProperties: {}
+        score:
           type: integer
-          description: Return objects policy is bound to
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        updated:
+          type: string
+          format: date-time
           readOnly: true
-        action:
-          allOf:
-          - $ref: '#/components/schemas/EventActions'
-          description: Match created events with this action type. When left empty, all action types will be matched.
-        client_ip:
-          type:
-          - string
-          - 'null'
-          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
-        app:
-          allOf:
-          - $ref: '#/components/schemas/AppEnum'
-          description: Match events created by selected application. When left empty, all applications are matched.
-        model:
-          allOf:
-          - $ref: '#/components/schemas/ModelEnum'
-          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-        query:
-          type:
-          - string
-          - 'null'
       required:
-      - bound_to
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    Pagination:
-      type: object
-      properties:
-        next:
-          type: number
-        previous:
-          type: number
-        count:
-          type: number
-        current:
-          type: number
-        total_pages:
-          type: number
-        start_index:
-          type: number
-        end_index:
-          type: number
-      required:
-      - count
-      - current
-      - end_index
-      - next
-      - previous
-      - start_index
-      - total_pages
-    ValidationError:
-      type: object
-      description: Validation Error
-      properties:
-        non_field_errors:
-          type: array
-          items:
-            type: string
-        code:
-          type: string
-      additionalProperties: {}
-    PasswordPolicy:
-      type: object
-      description: Password Policy Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
-          type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
-        password_field:
-          type: string
-          description: Field key to check, field keys defined in Prompt stages are available.
-        amount_digits:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        amount_uppercase:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        amount_lowercase:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        amount_symbols:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        length_min:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        symbol_charset:
-          type: string
-        error_message:
-          type: string
-        check_static_rules:
-          type: boolean
-        check_have_i_been_pwned:
-          type: boolean
-        check_zxcvbn:
-          type: boolean
-        hibp_allowed_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: How many times the password hash is allowed to be on haveibeenpwned
-        zxcvbn_score_threshold:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: If the zxcvbn score is equal or less than this value, the policy will fail.
-      required:
-      - bound_to
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    GenericError:
-      type: object
-      description: Generic API Error
-      properties:
-        detail:
-          type: string
-        code:
-          type: string
-      required:
-      - detail
-    PasswordPolicyRequest:
-      type: object
-      description: Password Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        password_field:
-          type: string
-          minLength: 1
-          description: Field key to check, field keys defined in Prompt stages are available.
-        amount_digits:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        amount_uppercase:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        amount_lowercase:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        amount_symbols:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        length_min:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        symbol_charset:
-          type: string
-          minLength: 1
-        error_message:
-          type: string
-        check_static_rules:
-          type: boolean
-        check_have_i_been_pwned:
-          type: boolean
-        check_zxcvbn:
-          type: boolean
-        hibp_allowed_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: How many times the password hash is allowed to be on haveibeenpwned
-        zxcvbn_score_threshold:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: If the zxcvbn score is equal or less than this value, the policy will fail.
-      required:
-      - name
-    UniquePasswordPolicy:
-      type: object
-      description: Password Uniqueness Policy Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Policy uuid
-        name:
-          type: string
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        bound_to:
-          type: integer
-          description: Return objects policy is bound to
-          readOnly: true
-        password_field:
-          type: string
-          description: Field key to check, field keys defined in Prompt stages are available.
-        num_historical_passwords:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-          description: Number of passwords to check against.
-      required:
-      - bound_to
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
+      - identifier
+      - ip
+      - updated
     PaginatedExpressionPolicyList:
       type: object
       properties:
@@ -3800,29 +2999,9 @@ components:
       - autocomplete
       - pagination
       - results
-    PolicyTestResult:
+    PatchedGeoIPPolicyRequest:
       type: object
-      description: result of a policy test
-      properties:
-        passing:
-          type: boolean
-        messages:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        log_messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-      required:
-      - log_messages
-      - messages
-      - passing
-    PatchedPasswordExpiryPolicyRequest:
-      type: object
-      description: Password Expiry Policy Serializer
+      description: GeoIP Policy Serializer
       properties:
         name:
           type: string
@@ -3830,13 +3009,64 @@ components:
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        days:
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        check_history_distance:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        distance_tolerance_km:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
-        deny_only:
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        check_impossible_travel:
           type: boolean
-    PaginatedPasswordExpiryPolicyList:
+        impossible_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+    TypeCreate:
+      type: object
+      description: Types of an object that can be created
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        component:
+          type: string
+        model_name:
+          type: string
+        icon_url:
+          type: string
+        requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
+          type: boolean
+          default: false
+      required:
+      - component
+      - description
+      - model_name
+      - name
+    PaginatedEventMatcherPolicyList:
       type: object
       properties:
         pagination:
@@ -3844,7 +3074,86 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/PasswordExpiryPolicy'
+            $ref: '#/components/schemas/EventMatcherPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PasswordExpiryPolicy:
+      type: object
+      description: Password Expiry Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        days:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deny_only:
+          type: boolean
+      required:
+      - bound_to
+      - component
+      - days
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedDummyPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DummyPolicy'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -4103,34 +3412,9 @@ components:
       - ZM
       - ZW
       type: string
-    PartialGroup:
+    DummyPolicyRequest:
       type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - pk
-    PatchedUniquePasswordPolicyRequest:
-      type: object
-      description: Password Uniqueness Policy Serializer
+      description: Dummy Policy Serializer
       properties:
         name:
           type: string
@@ -4138,16 +3422,19 @@ components:
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        password_field:
-          type: string
-          minLength: 1
-          description: Field key to check, field keys defined in Prompt stages are available.
-        num_historical_passwords:
+        result:
+          type: boolean
+        wait_min:
           type: integer
           maximum: 2147483647
-          minimum: 0
-          description: Number of passwords to check against.
-    PaginatedUniquePasswordPolicyList:
+          minimum: -2147483648
+        wait_max:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - name
+    PaginatedReputationList:
       type: object
       properties:
         pagination:
@@ -4155,87 +3442,118 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/UniquePasswordPolicy'
+            $ref: '#/components/schemas/Reputation'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
-    Cache:
+    ReputationPolicy:
       type: object
-      description: Generic cache stats for an object
+      description: Reputation Policy Serializer
       properties:
-        count:
-          type: integer
+        pk:
+          type: string
+          format: uuid
           readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        check_ip:
+          type: boolean
+        check_username:
+          type: boolean
+        threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
       required:
-      - count
-    EventActions:
-      enum:
-      - login
-      - login_failed
-      - logout
-      - user_write
-      - user_offboarded
-      - suspicious_request
-      - password_set
-      - secret_view
-      - secret_rotate
-      - invitation_used
-      - authorize_application
-      - source_linked
-      - impersonation_started
-      - impersonation_ended
-      - flow_execution
-      - policy_execution
-      - policy_exception
-      - property_mapping_exception
-      - system_task_execution
-      - system_task_exception
-      - system_exception
-      - configuration_error
-      - configuration_warning
-      - model_created
-      - model_updated
-      - model_deleted
-      - email_sent
-      - update_available
-      - export_ready
-      - review_initiated
-      - review_overdue
-      - review_attested
-      - review_completed
-      - access_request_created
-      - access_request_approved
-      - access_request_denied
-      - access_request_revoked
-      - custom_
-      type: string
-    TypeCreate:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PatchedPasswordExpiryPolicyRequest:
       type: object
-      description: Types of an object that can be created
+      description: Password Expiry Policy Serializer
       properties:
         name:
           type: string
-        description:
-          type: string
-        component:
-          type: string
-        model_name:
-          type: string
-        icon_url:
-          type: string
-        requires_enterprise:
+          minLength: 1
+        execution_logging:
           type: boolean
-          default: false
-        deprecated:
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        days:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deny_only:
           type: boolean
-          default: false
+    PolicyTestResult:
+      type: object
+      description: result of a policy test
+      properties:
+        passing:
+          type: boolean
+        messages:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        log_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
       required:
-      - component
-      - description
-      - model_name
+      - log_messages
+      - messages
+      - passing
+    ReputationPolicyRequest:
+      type: object
+      description: Reputation Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        check_ip:
+          type: boolean
+        check_username:
+          type: boolean
+        threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
       - name
     PatchedExpressionPolicyRequest:
       type: object
@@ -4323,48 +3641,676 @@ components:
       - policy_obj
       - target
       - user_obj
-    UsedBy:
+    PasswordPolicy:
       type: object
-      description: A list of all objects referencing the queried object
+      description: Password Policy Serializer
       properties:
-        app:
-          type: string
-        model_name:
-          type: string
         pk:
           type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
         name:
           type: string
-        action:
-          $ref: '#/components/schemas/UsedByActionEnum'
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        password_field:
+          type: string
+          description: Field key to check, field keys defined in Prompt stages are available.
+        amount_digits:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_uppercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_lowercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_symbols:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        length_min:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        symbol_charset:
+          type: string
+        error_message:
+          type: string
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy will fail.
       required:
-      - action
-      - app
-      - model_name
+      - bound_to
+      - component
+      - meta_model_name
       - name
       - pk
-    LogLevelEnum:
-      enum:
-      - critical
-      - exception
-      - error
-      - warn
-      - warning
-      - info
-      - debug
-      - notset
-      type: string
-    PolicyTestRequest:
+      - verbose_name
+      - verbose_name_plural
+    PaginatedUniquePasswordPolicyList:
       type: object
-      description: Test policy execution for a user with context
       properties:
-        user:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UniquePasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UsedByActionEnum:
+      enum:
+      - cascade
+      - cascade_many
+      - set_null
+      - set_default
+      - left_dangling
+      type: string
+    PasswordPolicyRequest:
+      type: object
+      description: Password Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        password_field:
+          type: string
+          minLength: 1
+          description: Field key to check, field keys defined in Prompt stages are available.
+        amount_digits:
           type: integer
-        context:
+          maximum: 2147483647
+          minimum: 0
+        amount_uppercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_lowercase:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        amount_symbols:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        length_min:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        symbol_charset:
+          type: string
+          minLength: 1
+        error_message:
+          type: string
+        check_static_rules:
+          type: boolean
+        check_have_i_been_pwned:
+          type: boolean
+        check_zxcvbn:
+          type: boolean
+        hibp_allowed_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many times the password hash is allowed to be on haveibeenpwned
+        zxcvbn_score_threshold:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: If the zxcvbn score is equal or less than this value, the policy will fail.
+      required:
+      - name
+    PaginatedGeoIPPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoIPPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    UniquePasswordPolicy:
+      type: object
+      description: Password Uniqueness Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        password_field:
+          type: string
+          description: Field key to check, field keys defined in Prompt stages are available.
+        num_historical_passwords:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Number of passwords to check against.
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    PaginatedReputationPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReputationPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    ExpressionPolicyRequest:
+      type: object
+      description: Group Membership Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+    PatchedDummyPolicyRequest:
+      type: object
+      description: Dummy Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        result:
+          type: boolean
+        wait_min:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        wait_max:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+    PatchedUniquePasswordPolicyRequest:
+      type: object
+      description: Password Uniqueness Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        password_field:
+          type: string
+          minLength: 1
+          description: Field key to check, field keys defined in Prompt stages are available.
+        num_historical_passwords:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Number of passwords to check against.
+    PasswordExpiryPolicyRequest:
+      type: object
+      description: Password Expiry Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        days:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deny_only:
+          type: boolean
+      required:
+      - days
+      - name
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
           type: object
           additionalProperties: {}
       required:
-      - user
+      - name
+      - num_pk
+      - pk
+    PatchedPolicyBindingRequest:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        policy:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        group:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        user:
+          type:
+          - integer
+          - 'null'
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+    PaginatedPasswordExpiryPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PasswordExpiryPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    GeoIPPolicyRequest:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        check_history_distance:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        check_impossible_travel:
+          type: boolean
+        impossible_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - countries
+      - name
+    GeoIPPolicy:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        countries_obj:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                minLength: 2
+                maxLength: 2
+              name:
+                type: string
+            required:
+            - code
+            - name
+          readOnly: true
+        check_history_distance:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        check_impossible_travel:
+          type: boolean
+        impossible_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - bound_to
+      - component
+      - countries
+      - countries_obj
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    Autocomplete:
+      type: object
+      additionalProperties: {}
+    EventActions:
+      enum:
+      - login
+      - login_failed
+      - logout
+      - user_write
+      - user_offboarded
+      - suspicious_request
+      - password_set
+      - secret_view
+      - secret_rotate
+      - invitation_used
+      - authorize_application
+      - source_linked
+      - impersonation_started
+      - impersonation_ended
+      - flow_execution
+      - policy_execution
+      - policy_exception
+      - property_mapping_exception
+      - system_task_execution
+      - system_task_exception
+      - system_exception
+      - configuration_error
+      - configuration_warning
+      - model_created
+      - model_updated
+      - model_deleted
+      - email_sent
+      - update_available
+      - export_ready
+      - review_initiated
+      - review_overdue
+      - review_attested
+      - review_completed
+      - access_request_created
+      - access_request_approved
+      - access_request_denied
+      - access_request_revoked
+      - custom_
+      type: string
+    UniquePasswordPolicyRequest:
+      type: object
+      description: Password Uniqueness Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        password_field:
+          type: string
+          minLength: 1
+          description: Field key to check, field keys defined in Prompt stages are available.
+        num_historical_passwords:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Number of passwords to check against.
+      required:
+      - name
+    Policy:
+      type: object
+      description: Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+      required:
+      - bound_to
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    Cache:
+      type: object
+      description: Generic cache stats for an object
+      properties:
+        count:
+          type: integer
+          readOnly: true
+      required:
+      - count
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -4406,7 +4352,7 @@ components:
       - pk
       - uid
       - username
-    PaginatedEventMatcherPolicyList:
+    PaginatedPolicyBindingList:
       type: object
       properties:
         pagination:
@@ -4414,13 +4360,23 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/EventMatcherPolicy'
+            $ref: '#/components/schemas/PolicyBinding'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
       - autocomplete
       - pagination
       - results
+    DetailedCountry:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        name:
+          type: string
+      required:
+      - code
+      - name
     PatchedPasswordPolicyRequest:
       type: object
       description: Password Policy Serializer
@@ -4476,9 +4432,60 @@ components:
           maximum: 2147483647
           minimum: 0
           description: If the zxcvbn score is equal or less than this value, the policy will fail.
-    ReputationPolicy:
+    PaginatedPasswordPolicyList:
       type: object
-      description: Reputation Policy Serializer
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    LogLevelEnum:
+      enum:
+      - critical
+      - exception
+      - error
+      - warn
+      - warning
+      - info
+      - debug
+      - notset
+      type: string
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - count
+      - current
+      - end_index
+      - next
+      - previous
+      - start_index
+      - total_pages
+    EventMatcherPolicy:
+      type: object
+      description: Event Matcher Policy Serializer
       properties:
         pk:
           type: string
@@ -4510,14 +4517,27 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
-        check_ip:
-          type: boolean
-        check_username:
-          type: boolean
-        threshold:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
+        action:
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
+          description: Match created events with this action type. When left empty, all action types will be matched.
+        client_ip:
+          type:
+          - string
+          - 'null'
+          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
+        app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
+          description: Match events created by selected application. When left empty, all applications are matched.
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+        query:
+          type:
+          - string
+          - 'null'
       required:
       - bound_to
       - component
@@ -4526,40 +4546,9 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    Reputation:
+    EventMatcherPolicyRequest:
       type: object
-      description: Reputation Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Reputation uuid
-        identifier:
-          type: string
-        ip:
-          type: string
-        ip_geo_data:
-          type: object
-          additionalProperties: {}
-        ip_asn_data:
-          type: object
-          additionalProperties: {}
-        score:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: -9223372036854775808
-          format: int64
-        updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - identifier
-      - ip
-      - updated
-    PatchedGeoIPPolicyRequest:
-      type: object
-      description: GeoIP Policy Serializer
+      description: Event Matcher Policy Serializer
       properties:
         name:
           type: string
@@ -4567,68 +4556,49 @@ components:
         execution_logging:
           type: boolean
           description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-        asns:
-          type: array
-          items:
-            type: integer
-            maximum: 2147483647
-            minimum: -2147483648
-        countries:
-          type: array
-          items:
-            $ref: '#/components/schemas/CountryCodeEnum'
-          maxItems: 249
-        check_history_distance:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/EventActions'
+          description: Match created events with this action type. When left empty, all action types will be matched.
+        client_ip:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          description: Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
+        app:
+          allOf:
+          - $ref: '#/components/schemas/AppEnum'
+          description: Match events created by selected application. When left empty, all applications are matched.
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+        query:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+      required:
+      - name
+    PatchedReputationPolicyRequest:
+      type: object
+      description: Reputation Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
           type: boolean
-        history_max_distance_km:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-        distance_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        history_login_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        check_impossible_travel:
+          description: When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+        check_ip:
           type: boolean
-        impossible_tolerance_km:
+        check_username:
+          type: boolean
+        threshold:
           type: integer
           maximum: 2147483647
-          minimum: 0
-  parameters:
-    QuerySearch:
-      in: query
-      name: search
-      schema:
-        type: string
-      description: A search term.
-    QueryPaginationOrdering:
-      in: query
-      name: ordering
-      schema:
-        type: string
-      description: Which field to use when ordering the results.
-    QueryPaginationPage:
-      in: query
-      name: page
-      schema:
-        type: integer
-      description: A page number within the paginated result set.
-    QueryPaginationPageSize:
-      in: query
-      name: page_size
-      schema:
-        type: integer
-      description: Number of results to return per page.
-    QueryName:
-      in: query
-      name: name
-      schema:
-        type: string
+          minimum: -2147483648
   responses:
     GenericErrorResponse:
       content:
@@ -4642,6 +4612,36 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
       description: ''
+  parameters:
+    QueryPaginationOrdering:
+      in: query
+      name: ordering
+      schema:
+        type: string
+      description: Which field to use when ordering the results.
+    QueryName:
+      in: query
+      name: name
+      schema:
+        type: string
+    QueryPaginationPageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+      description: Number of results to return per page.
+    QuerySearch:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: A search term.
+    QueryPaginationPage:
+      in: query
+      name: page
+      schema:
+        type: integer
+      description: A page number within the paginated result set.
   securitySchemes:
     authentik:
       type: http
