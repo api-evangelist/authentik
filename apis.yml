@@ -108,6 +108,8 @@ apis:
   humanURL: https://api.goauthentik.io/
   baseURL: https://{authentik_host}/api/v3
   tags:
+  - Cryptocurrency
+  tags_raw:
   - Crypto
   properties:
   - type: OpenAPI
