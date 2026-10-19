@@ -1,11 +1,18 @@
 generated: '2026-10-13'
 method: searched
 checked:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
 - https://focus.finops.org/data-generators/
 - https://github.com/cncf/k8s-conformance
 - https://github.com/cncf/landscape
 - https://github.com/marketplace?type=actions
 - https://openid.net/developers/certified-openid-connect-implementations/
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 marketplace_apps: []
 edges:
 - partner_name: OpenID Foundation certification
@@ -90,5 +97,65 @@ edges:
     detected: '2026-10-15'
   detected_by: sweep-cloud-native.py
   first_seen: '2026-10-15'
+- partner_name: Go module proxy
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (Go)
+  evidence: https://pkg.go.dev/goauthentik.io/api/v3
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: goauthentik.io/api/v3
+      version: v3.2026080.4
+      released: '2026-10-14'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/goauthentik.io/api/v3
+      repo_leg: domain:goauthentik.io
+      publisher_leg: module-path:goauthentik.io
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@goauthentik/api
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@goauthentik/api'
+      version: 2026.8.4
+      released: '2026-10-14'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@goauthentik/api
+      repo_leg: github-org:goauthentik
+      publisher_leg: email:goauthentik.io
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 source:
 - https://github.com/marketplace?type=actions
