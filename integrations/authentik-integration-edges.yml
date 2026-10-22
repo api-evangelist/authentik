@@ -16,6 +16,7 @@ checked:
 - opentofu/integrations/opentofu-integration-edges.yml
 - pulumi/integrations/pulumi-integration-edges.yml
 - terraform/integrations/terraform-integration-edges.yml
+- digital-ocean/integrations/digital-ocean-integration-edges.yml
 marketplace_apps: []
 edges:
 - partner_name: OpenID Foundation certification
@@ -217,5 +218,22 @@ edges:
   category: infrastructure-as-code provider registry listing
   badges:
   - Verified publisher (GitHub domain-verified organization)
+- partner_name: Digital Ocean (own)
+  partner: digital-ocean
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.digitalocean.com/apps/authentik
+  mirror_of: digital-ocean/integrations/digital-ocean-integration-edges.yml
+  apps:
+  - authentik
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  category: Security
 source:
 - https://github.com/marketplace?type=actions

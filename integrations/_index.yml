@@ -181,3 +181,16 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: authentik-digital-ocean-own
+  label: Digital Ocean (own)
+  partner: digital-ocean
+  partner_name: Digital Ocean (own)
+  category: Security
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://marketplace.digitalocean.com/apps/authentik
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
