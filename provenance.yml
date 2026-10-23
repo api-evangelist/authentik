@@ -12,6 +12,9 @@ artifacts:
   authentication/authentik-authentication.yml:
     method: searched
     evidence: declared in the artifact
+  capabilities/authentik-capability-edges.yml:
+    method: unknown
+    evidence: no authorship recorded
   changelog/authentik-changelog.yml:
     method: searched
     evidence: declared in the artifact
@@ -39,127 +42,13 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
+  integrations/_index.yml:
     method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T125852.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T133943.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T143147.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-25T154045.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-26T215308.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T094438.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T103455.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T123021.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T132314.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-27T140727.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-28T221322.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T213958.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-29T230545.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T203505.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-30T220315.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-31T223420.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T063623.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T210448.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-01T222808.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-02T224043.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T161828.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-03T174231.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T062714.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T212454.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-04T224856.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T055819.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T072335.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T144739.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T195450.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-05T211839.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T011047.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T211804.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-06T224210.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T200636.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-07T213054.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T214843.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-08T232836.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T204815.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-09-10T222408.yml:
+    evidence: carries an API Evangelist house phrase
+  integrations/authentik-integration-edges.yml:
+    method: searched
+    evidence: declared in the artifact
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-12T062655.yml:
@@ -243,6 +132,21 @@ artifacts:
   kin/score-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/authentik-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -254,7 +158,8 @@ artifacts:
     evidence: declared in the artifact
   openapi/_original/authentik-openapi.yml:
     method: harvested
-    evidence: fetched from https://api.goauthentik.io/schema.yml (recorded in the document)
+    evidence: the same operations as https://api.goauthentik.io/schema.yml (sha256 a1e3f6c427d9, fetched
+      2026-10-04)
   openapi/authentik-admin-api-openapi.yml:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
@@ -337,86 +242,167 @@ artifacts:
     method: derived
     evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   overlays/authentik-admin-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-admin-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-agents-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-agents-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-authenticators-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-authenticators-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-core-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-core-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-crypto-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-crypto-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-endpoints-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-endpoints-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-enterprise-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-enterprise-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-events-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-events-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-flows-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-flows-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-lifecycle-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-lifecycle-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-managed-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-managed-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-oauth2-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-oauth2-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-outposts-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-outposts-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-policies-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-policies-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-propertymappings-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-propertymappings-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-providers-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-providers-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-rac-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-rac-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-rbac-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-rbac-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-reports-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-reports-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-requests-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-requests-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-root-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-root-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-schema-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-schema-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-sources-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-sources-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-ssf-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-ssf-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-stages-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-stages-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-tasks-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-tasks-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   overlays/authentik-tenants-api-overlay.yaml:
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
+  overlays/authentik-tenants-api-phrasing-overlay.yaml:
     method: generated
-    evidence: https://api.goauthentik.io/schema.yml
+    evidence: declared in the artifact
   packages/authentik-packages.yml:
     method: searched
     evidence: declared in the artifact
