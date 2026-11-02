@@ -1,0 +1,76 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://goauthentik.io/pricing/
+sources:
+- https://goauthentik.io/pricing/
+- https://goauthentik.io/pricing
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T120612
+  grounding: every price_text was found verbatim in the fetched page text
+audience: business-product
+pricing_basis: per-seat
+delivery:
+  delivery: open-core
+  method: page
+  read: '2026-10-28'
+  evidence: Open Source For homelab users and simple use cases
+  free_edition: Open Source
+published: true
+note: Self-hosted only; page states no hosted version is offered. External user add-on priced at $0.02/month.
+plan_count: 3
+currency: USD
+plans:
+- name: Open Source
+  price_text: Free
+  period: none
+  included_quota: For homelab users and simple use cases; OIDC, SAML, LDAP, SCIM, RADIUS, Kerberos, Proxy;
+    Community Discord; No support
+- name: Enterprise
+  price_text: $5 / user / month
+  price: 5
+  currency: USD
+  period: month
+  unit: user
+  included_quota: Everything in Open Source, plus enterprise features. Billed annually. No cost for service
+    accounts. Ticket-based support for subscriptions over $1k
+  overage: $0.02 / external user* / month
+- name: Enterprise Plus
+  price_text: Starting at $20k annually
+  price: 20000
+  currency: USD
+  period: year
+  included_quota: Everything in Enterprise, plus invoice billing, dedicated support and SLAs, volume discounts,
+    multi-instance deployments, FIPS compliance
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - seat
+  - subscription
+  units:
+  - seat
+  plans:
+  - name: Open Source
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Enterprise
+    access: other
+    model: seat
+    model_how: derived
+    units:
+    - seat
+    periods:
+    - month
+  - name: Enterprise Plus
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - year
