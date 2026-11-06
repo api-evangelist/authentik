@@ -44,7 +44,7 @@ plans:
   included_quota: Everything in Enterprise, plus invoice billing, dedicated support and SLAs, volume discounts,
     multi-instance deployments, FIPS compliance
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - seat
