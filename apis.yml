@@ -43,7 +43,7 @@ accessModel:
   - authentication
   - rate-limits
   - security
-  generated: '2026-11-06'
+  generated: '2026-11-13'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/authentik.png
 x-docs-platform: docusaurus
@@ -920,6 +920,14 @@ common:
   url: https://goauthentik.io/legal/privacy-policy/
 - type: Integrations
   url: https://integrations.goauthentik.io
+- type: UsageTerms
+  url: terms/authentik-terms-of-service.yml
+- type: DataProcessing
+  url: privacy/authentik-privacy-policy.yml
+- type: Eligibility
+  url: eligibility/authentik-eligibility.yml
+- type: DataLicense
+  url: data-license/authentik-data-license.yml
 x-enrichment:
   date: '2026-09-04'
   status: enriched
